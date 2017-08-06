@@ -24,6 +24,14 @@ body {
 			display: none;
 		}
 
+		button {
+			border: none;
+			background-color: transparent;
+			cursor: pointer;
+			font-weight: 900; 
+			text-transform: uppercase; 
+		}
+
 		.book-keeper {
 			position: relative;
 			display: table-cell;
@@ -45,7 +53,7 @@ body {
 				}
 
 			}
-			.results {
+			.results, .fallbacks {
 				min-height: 200px;
 				border: 1px solid #ffffff;
 			}
@@ -54,13 +62,6 @@ body {
 
 		.eye-suit {
 			padding: 0 0 42px 0;
-			button {
-				border: none;
-				background-color: transparent;
-				cursor: pointer;
-				font-weight: 900; 
-				text-transform: uppercase; 
-			}
 		}
 
 		.table {

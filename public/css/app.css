@@ -8369,6 +8369,14 @@ body #app h1 {
   display: none;
 }
 
+body #app button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 body #app .book-keeper {
   position: relative;
   display: table-cell;
@@ -8394,21 +8402,14 @@ body #app .book-keeper .interaction .fake-input {
   font-size: 35px;
 }
 
-body #app .book-keeper .results {
+body #app .book-keeper .results,
+body #app .book-keeper .fallbacks {
   min-height: 200px;
   border: 1px solid #ffffff;
 }
 
 body #app .eye-suit {
   padding: 0 0 42px 0;
-}
-
-body #app .eye-suit button {
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  font-weight: 900;
-  text-transform: uppercase;
 }
 
 body #app .table {

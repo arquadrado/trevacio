@@ -1,18 +1,8 @@
 <template>
 	<div class="display">
-		<div class="results">
-			<div class="showcase" v-if="showResults">
-				<button>{{ book.title }} - {{ book.author }}</button>
-				<div class="continue-interaction" @click="__setNextAction('default_action')">
-					<button>Continue</button>
-				</div>
-			</div>
-		</div>
 		<div class="fallbacks" v-if="showFallbacks">
 			<div class="fallback" v-for="fallback in fallbacks" @click="__setNextAction(fallback.command)">
-				<button>
-					{{ fallback.label }}
-				</button>
+				<button>{{ fallback.label }}</button>
 			</div>
 		</div>
 	</div>
@@ -22,17 +12,14 @@
 	import { mapGetters, mapActions } from 'vuex'
 
 	export default {
-		name: 'get_book',
+		name: 'add',
 		props: [
 			'shouldProcess'
 		],
 		data() {
 			return {
-				book: null,
 				prompts: [
-					'What book can I get you?',
-					'What have you been reading?',
-					'What did you read today?'
+					'What is the title of the book?',
 				],
 
 				breakers: [
@@ -51,8 +38,8 @@
 
 					},
 					{
-						command: 'add',
-						label: 'Add book'
+						command: 'get_book',
+						label: 'Get book'
 
 					},
 					{
@@ -61,16 +48,13 @@
 
 					}
 				],
-
+				book: null,
 				finished: false
 			}
 		},
 		computed: {
-			showResults() {
-				return this.finished && this.book
-			},
 			showFallbacks() {
-				return this.finished && !this.book
+				return this.finished
 			},
 			prompt() {
 				if (!this.sessionInteractionsCount) {
@@ -82,13 +66,13 @@
 			...mapGetters({
 				user: 'getUser',
 				userInput: 'getUserInput',
-				sessionInteractionsCount: 'getSessionInteractionsCount',
-				books: 'getBooks'
+				sessionInteractionsCount: 'getSessionInteractionsCount'
 			})
 		},
 		methods: {
 			__respond(action, prompt) {
 				this.$emit('input-processed')
+
 				if (action) {
 					this.__setNextAction(action)	
 					return
@@ -100,48 +84,26 @@
 				this.$emit('input-processed')
 				this.setAction(action)
 			},
-			__getBook(title) {
-				let book = null
-				const self = this
-				if (this.books.length) {
-					this.books.some((b) => {
-						if (self.userInput.includes(b.title)) {
-							book = b
-						}
-						return self.userInput.includes(b.title)
-					})
-				}
-
-				return book
-			},
-
 			processInput() {
 				this.finished = false
 				if (this.userInput) {
 					if (this.tryToBreak()) {
 						return this.breakAction(this.tryToBreak())
 					}
+					if (this.book && this.book.hasOwnProperty('title')) {
+						this.book.author = this.userInput
+						this.addBook(this.book)
+						this.book = null
+						this.__respond(null, 'Done. What else?')
+						this.finished = true
+						return
+					}
+					this.book = {
+						title: this.userInput
+					}
 
-					this.getResults()
+					this.__respond(null, 'Who wrote it?')
 				}
-			},
-			getResults() {
-				let book = this.__getBook(this.userInput)
-				if (book) {
-					this.book = book
-					this.__respond(null, 'There you have it fucker')
-					this.finished = true
-					return
-				}
-
-				if (this.checkFallbacks()) {
-					this.__respond(this.checkFallbacks())
-					this.finished = true
-					return
-				}
-
-				this.__respond(null, 'What...?')
-
 			},
 			tryToBreak() {
 				let breaker = null 
@@ -153,6 +115,7 @@
 					}
 					return self.userInput.includes(option)
 				})
+
 				if (breaker) {
 					return breaker
 				}
@@ -182,6 +145,7 @@
 			...mapActions({
 				setAction: 'setAction',
 				addUserInput: 'addUserInput',
+				addBook: 'addBook'
 			})
 		},
 

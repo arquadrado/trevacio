@@ -2,7 +2,9 @@
 	<div class="display">
 		<div class="results">
 			<div class="showcase" v-if="showResults">
-				<button>{{ book.title }} - {{ book.author }}</button>
+				<div class="book" v-for="book in books">
+					<button>{{ book.title }} - {{ book.author }}</button>
+				</div>
 				<div class="continue-interaction" @click="__setNextAction('default_action')">
 					<button>Continue</button>
 				</div>
@@ -10,9 +12,7 @@
 		</div>
 		<div class="fallbacks" v-if="showFallbacks">
 			<div class="fallback" v-for="fallback in fallbacks" @click="__setNextAction(fallback.command)">
-				<button>
-					{{ fallback.label }}
-				</button>
+				<button>{{ fallback.label }}</button>
 			</div>
 		</div>
 	</div>
@@ -22,17 +22,14 @@
 	import { mapGetters, mapActions } from 'vuex'
 
 	export default {
-		name: 'get_book',
+		name: 'list',
 		props: [
 			'shouldProcess'
 		],
 		data() {
 			return {
-				book: null,
 				prompts: [
-					'What book can I get you?',
-					'What have you been reading?',
-					'What did you read today?'
+					'How to you want them?',
 				],
 
 				breakers: [
@@ -46,8 +43,8 @@
 
 				fallbacks: [
 					{
-						command: 'list',
-						label: 'List books'
+						command: 'get_book',
+						label: 'Get book'
 
 					},
 					{
@@ -67,10 +64,10 @@
 		},
 		computed: {
 			showResults() {
-				return this.finished && this.book
+				return this.finished && this.books.length
 			},
 			showFallbacks() {
-				return this.finished && !this.book
+				return this.finished && !this.books.length
 			},
 			prompt() {
 				if (!this.sessionInteractionsCount) {
@@ -100,20 +97,6 @@
 				this.$emit('input-processed')
 				this.setAction(action)
 			},
-			__getBook(title) {
-				let book = null
-				const self = this
-				if (this.books.length) {
-					this.books.some((b) => {
-						if (self.userInput.includes(b.title)) {
-							book = b
-						}
-						return self.userInput.includes(b.title)
-					})
-				}
-
-				return book
-			},
 
 			processInput() {
 				this.finished = false
@@ -126,19 +109,10 @@
 				}
 			},
 			getResults() {
-				let book = this.__getBook(this.userInput)
-				if (book) {
-					this.book = book
-					this.__respond(null, 'There you have it fucker')
-					this.finished = true
-					return
-				}
-
-				if (this.checkFallbacks()) {
-					this.__respond(this.checkFallbacks())
-					this.finished = true
-					return
-				}
+				
+				this.finished = true
+				this.__respond(null, 'Here they are')
+				return
 
 				this.__respond(null, 'What...?')
 
@@ -177,6 +151,7 @@
 					}
 					return self.userInput.includes(option.command)
 				})
+				console.log(fallback)
 				return fallback
 			},
 			...mapActions({

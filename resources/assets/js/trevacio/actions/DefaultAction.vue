@@ -1,8 +1,8 @@
 <template>
 	<div class="display">
-		<div class="actions" v-if="showActions">
-			<div class="fallback" v-for="action in actions" @click="setAction(action)">
-				{{ action }}
+		<div class="fallbacks" v-if="showFallbacks">
+			<div class="fallback" v-for="fallback in fallbacks" @click="__setNextAction(fallback.command)">
+				<button>{{ fallback.label }}</button>
 			</div>
 		</div>
 	</div>
@@ -14,8 +14,7 @@
 	export default {
 		name: 'default_action',
 		props: [
-			'shouldProcess',
-			'userInput'
+			'shouldProcess'
 		],
 		data() {
 			return {
@@ -24,20 +23,35 @@
 					'Shall we begin?',
 				],
 
-				actions: [
-					'get_book',
-					'add_book',
-					'list_books',
-					'joke'
+				fallbacks: [
+					{
+						command: 'get_book',
+						label: 'Get book'
+
+					},
+					{
+						command: 'add',
+						label: 'Add book'
+
+					},
+					{
+						command: 'list',
+						label: 'List books'
+
+					},
+					{
+						command: 'joke',
+						label: 'Wanna hear a joke?'
+
+					}
 				],
 
-				processed: false,
-				results: null
+				finished: false
 			}
 		},
 		computed: {
-			showActions() {
-				return this.processed
+			showFallbacks() {
+				return this.finished
 			},
 			prompt() {
 				if (!this.sessionInteractionsCount) {
@@ -48,32 +62,47 @@
 			},
 			...mapGetters({
 				user: 'getUser',
+				userInput: 'getUserInput',
 				sessionInteractionsCount: 'getSessionInteractionsCount'
 			})
 		},
 		methods: {
-			processInput() {
+			__respond(action, prompt) {
+				this.$emit('input-processed')
 
+				if (action) {
+					this.__setNextAction(action)	
+					return
+				}
+				this.$emit('prompt', prompt)
+			},
+			__setNextAction(action) {
+				this.finished = true
+				this.$emit('input-processed')
+				this.setAction(action)
+			},
+			processInput() {
+				this.finished = false
 				this.getResults()
 			},
 			getResults() {
 				let toDo = ''
-				this.actions.some((action) => {
-					if (this.userInput.includes(action)) {
-						toDo = action
+				this.fallbacks.some((fallback) => {
+					if (this.userInput.includes(fallback.command)) {
+						toDo = fallback.command
 					}
 
-					return this.userInput.includes(action)
+					return this.userInput.includes(fallback.command)
 				})
 
 				if (toDo) {
-					this.setAction(toDo)
-					this.$emit('prompt', 'Alraite!')
+					this.__respond(toDo, 'Alraite')
 					return
 				}
 
-				this.$emit('prompt', 'Are you confused? This is what I am willing to do...')
-				this.processed = true
+				this.__respond(null, 'Are you confused? This is what I am willing to do...')
+
+				this.finished = true
 
 			},
 			...mapActions({
@@ -83,9 +112,9 @@
 
 		watch: {
 			shouldProcess() {
-				console.log('gonna process default')
-				this.processInput()
-				this.$emit('processed')
+				if (this.shouldProcess) {
+					this.processInput()
+				}
 			}
 		},
 
