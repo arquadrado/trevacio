@@ -1188,6 +1188,103 @@ var index_esm = {
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1285,103 +1382,6 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// this module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
 
 /***/ }),
 /* 4 */
@@ -11778,7 +11778,7 @@ module.exports = Vue$3;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(12);
-module.exports = __webpack_require__(48);
+module.exports = __webpack_require__(54);
 
 
 /***/ }),
@@ -41707,7 +41707,7 @@ module.exports = __webpack_require__(19);
 var utils = __webpack_require__(0);
 var bind = __webpack_require__(5);
 var Axios = __webpack_require__(21);
-var defaults = __webpack_require__(2);
+var defaults = __webpack_require__(3);
 
 /**
  * Create an instance of Axios
@@ -41790,7 +41790,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(2);
+var defaults = __webpack_require__(3);
 var utils = __webpack_require__(0);
 var InterceptorManager = __webpack_require__(31);
 var dispatchRequest = __webpack_require__(32);
@@ -42512,7 +42512,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(33);
 var isCancel = __webpack_require__(8);
-var defaults = __webpack_require__(2);
+var defaults = __webpack_require__(3);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -42840,11 +42840,11 @@ var mutations = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var Component = __webpack_require__(3)(
+var Component = __webpack_require__(2)(
   /* script */
   __webpack_require__(40),
   /* template */
-  __webpack_require__(47),
+  __webpack_require__(53),
   /* styles */
   null,
   /* scopeId */
@@ -42852,7 +42852,7 @@ var Component = __webpack_require__(3)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/Trevacio.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Trevacio.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Trevacio.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -42863,9 +42863,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-71dbe689", Component.options)
+    hotAPI.createRecord("data-v-9b8daf7c", Component.options)
   } else {
-    hotAPI.reload("data-v-71dbe689", Component.options)
+    hotAPI.reload("data-v-9b8daf7c", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -42886,9 +42886,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__trevacio_actions_DefaultAction_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__trevacio_actions_DefaultAction_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__trevacio_actions_GetBook_vue__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__trevacio_actions_GetBook_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__trevacio_actions_GetBook_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__trevacio_actions_AddBook_vue__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__trevacio_actions_AddBook_vue__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__trevacio_actions_AddBook_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__trevacio_actions_AddBook_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__trevacio_actions_ListBooks_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__trevacio_actions_ListBooks_vue__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__trevacio_actions_ListBooks_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__trevacio_actions_ListBooks_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -42957,11 +42957,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     })),
 
     //for some reason this watch is breaking functionality
-    watch: {
-        selectedAction: function selectedAction() {
-            $('.fake-input').focus();
+    /*watch: {
+        selectedAction() {
+            $('.fake-input').focus()
         }
-    },
+    },*/
 
     directives: {
         focus: {
@@ -42984,7 +42984,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var Component = __webpack_require__(3)(
+var Component = __webpack_require__(2)(
   /* script */
   __webpack_require__(42),
   /* template */
@@ -42996,7 +42996,7 @@ var Component = __webpack_require__(3)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/DefaultAction.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/DefaultAction.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] DefaultAction.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43007,9 +43007,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-067cdc84", Component.options)
+    hotAPI.createRecord("data-v-f74505aa", Component.options)
   } else {
-    hotAPI.reload("data-v-067cdc84", Component.options)
+    hotAPI.reload("data-v-f74505aa", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43026,6 +43026,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Action_js__ = __webpack_require__(64);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -43041,66 +43042,31 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
 	name: 'default_action',
-	props: ['shouldProcess'],
+	mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Action_js__["a" /* default */]],
 	data: function data() {
 		return {
 			prompts: ['What can I do for you today?', 'Shall we begin?'],
-
 			fallbacks: [{
 				command: 'get_book',
 				label: 'Get book'
-
 			}, {
 				command: 'add',
 				label: 'Add book'
-
 			}, {
 				command: 'list',
 				label: 'List books'
-
 			}, {
 				command: 'joke',
 				label: 'Wanna hear a joke?'
-
-			}],
-
-			finished: false
+			}]
 		};
 	},
 
-	computed: _extends({
-		showFallbacks: function showFallbacks() {
-			return this.finished;
-		},
-		prompt: function prompt() {
-			if (!this.sessionInteractionsCount) {
-				return 'Hey ' + this.user.friendly_name + ', ' + this.prompts[Math.floor(Math.random() * this.prompts.length)];
-			}
-
-			return this.prompts[Math.floor(Math.random() * this.prompts.length)];
-		}
-	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-		user: 'getUser',
-		userInput: 'getUserInput',
-		sessionInteractionsCount: 'getSessionInteractionsCount'
-	})),
+	computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({})),
 	methods: _extends({
-		__respond: function __respond(action, prompt) {
-			this.$emit('input-processed');
-
-			if (action) {
-				this.__setNextAction(action);
-				return;
-			}
-			this.$emit('prompt', prompt);
-		},
-		__setNextAction: function __setNextAction(action) {
-			this.finished = true;
-			this.$emit('input-processed');
-			this.setAction(action);
-		},
 		processInput: function processInput() {
 			this.finished = false;
 			this.getResults();
@@ -43113,7 +43079,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 				if (_this.userInput.includes(fallback.command)) {
 					toDo = fallback.command;
 				}
-
 				return _this.userInput.includes(fallback.command);
 			});
 
@@ -43121,26 +43086,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 				this.__respond(toDo, 'Alraite');
 				return;
 			}
-
-			this.__respond(null, 'Are you confused? This is what I am willing to do...');
-
+			this.__respond(null, 'Okay, this is what I can do for you...');
 			this.finished = true;
 		}
-	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-		setAction: 'setAction'
-	})),
-
-	watch: {
-		shouldProcess: function shouldProcess() {
-			if (this.shouldProcess) {
-				this.processInput();
-			}
-		}
-	},
-
-	mounted: function mounted() {
-		this.$emit('prompt', this.prompt);
-	}
+	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({}))
 });
 
 /***/ }),
@@ -43167,7 +43116,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-067cdc84", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-f74505aa", module.exports)
   }
 }
 
@@ -43176,7 +43125,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var Component = __webpack_require__(3)(
+var Component = __webpack_require__(2)(
   /* script */
   __webpack_require__(45),
   /* template */
@@ -43188,7 +43137,7 @@ var Component = __webpack_require__(3)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/GetBook.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/GetBook.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GetBook.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43199,9 +43148,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cf4e7868", Component.options)
+    hotAPI.createRecord("data-v-30ccadb3", Component.options)
   } else {
-    hotAPI.reload("data-v-cf4e7868", Component.options)
+    hotAPI.reload("data-v-30ccadb3", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43218,6 +43167,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Action_js__ = __webpack_require__(64);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -43243,31 +43193,25 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
 	name: 'get_book',
-	props: ['shouldProcess'],
+	mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Action_js__["a" /* default */]],
 	data: function data() {
 		return {
-			book: null,
 			prompts: ['What book can I get you?', 'What have you been reading?', 'What did you read today?'],
-
 			breakers: ['nothing', 'rien', 'nada', 'no', 'nao', 'exit'],
-
 			fallbacks: [{
 				command: 'list',
 				label: 'List books'
-
 			}, {
 				command: 'add',
 				label: 'Add book'
-
 			}, {
 				command: 'default_action',
 				label: 'Let\'s try again?'
-
 			}],
-
-			finished: false
+			book: null
 		};
 	},
 
@@ -43277,34 +43221,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 		},
 		showFallbacks: function showFallbacks() {
 			return this.finished && !this.book;
-		},
-		prompt: function prompt() {
-			if (!this.sessionInteractionsCount) {
-				return 'Hey ' + this.user.friendly_name + ', ' + this.prompts[Math.floor(Math.random() * this.prompts.length)];
-			}
-
-			return this.prompts[Math.floor(Math.random() * this.prompts.length)];
 		}
 	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-		user: 'getUser',
-		userInput: 'getUserInput',
-		sessionInteractionsCount: 'getSessionInteractionsCount',
 		books: 'getBooks'
 	})),
-	methods: _extends({
-		__respond: function __respond(action, prompt) {
-			this.$emit('input-processed');
-			if (action) {
-				this.__setNextAction(action);
-				return;
-			}
-			this.$emit('prompt', prompt);
-		},
-		__setNextAction: function __setNextAction(action) {
-			this.finished = true;
-			this.$emit('input-processed');
-			this.setAction(action);
-		},
+	methods: {
 		__getBook: function __getBook(title) {
 			var book = null;
 			var self = this;
@@ -43316,7 +43237,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 					return self.userInput.includes(b.title);
 				});
 			}
-
 			return book;
 		},
 		processInput: function processInput() {
@@ -43343,60 +43263,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 				this.finished = true;
 				return;
 			}
-
-			this.__respond(null, 'What...?');
-		},
-		tryToBreak: function tryToBreak() {
-			var breaker = null;
-			var self = this;
-
-			this.breakers.some(function (option) {
-				if (self.userInput.includes(option)) {
-					breaker = option;
-				}
-				return self.userInput.includes(option);
-			});
-			if (breaker) {
-				return breaker;
-			}
-
-			return this.checkFallbacks();
-		},
-		breakAction: function breakAction(action) {
-			if (this.breakers.indexOf(action) > -1 || !action) {
-				this.__setNextAction('default_action');
-				return;
-			}
-
-			this.__setNextAction(action);
-		},
-		checkFallbacks: function checkFallbacks() {
-			var fallback = null;
-			var self = this;
-
-			this.fallbacks.some(function (option) {
-				if (self.userInput.includes(option.command)) {
-					fallback = option.command;
-				}
-				return self.userInput.includes(option.command);
-			});
-			return fallback;
+			this.__respond(null, 'What is ' + this.userInput + '? It\'s not a book in my list...');
 		}
-	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-		setAction: 'setAction',
-		addUserInput: 'addUserInput'
-	})),
-
-	watch: {
-		shouldProcess: function shouldProcess() {
-			if (this.shouldProcess) {
-				this.processInput();
-			}
-		}
-	},
-
-	mounted: function mounted() {
-		this.$emit('prompt', this.prompt);
 	}
 });
 
@@ -43435,12 +43303,324 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-cf4e7868", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-30ccadb3", module.exports)
   }
 }
 
 /***/ }),
 /* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(2)(
+  /* script */
+  __webpack_require__(48),
+  /* template */
+  __webpack_require__(49),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/AddBook.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] AddBook.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-7ae01bfe", Component.options)
+  } else {
+    hotAPI.reload("data-v-7ae01bfe", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Action_js__ = __webpack_require__(64);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	name: 'add',
+	mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Action_js__["a" /* default */]],
+	data: function data() {
+		return {
+			prompts: ['What is the title of the book?'],
+			breakers: ['nothing', 'rien', 'nada', 'no', 'nao', 'exit'],
+			fallbacks: [{
+				command: 'list',
+				label: 'List books'
+			}, {
+				command: 'get_book',
+				label: 'Get book'
+			}, {
+				command: 'default_action',
+				label: 'Let\'s try again?'
+			}],
+			book: null
+		};
+	},
+
+	computed: _extends({
+		showFallbacks: function showFallbacks() {
+			return this.finished;
+		}
+	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({})),
+	methods: _extends({
+		processInput: function processInput() {
+			this.finished = false;
+			if (this.userInput) {
+				if (this.tryToBreak()) {
+					return this.breakAction(this.tryToBreak());
+				}
+				if (this.book && this.book.hasOwnProperty('title')) {
+					this.book.author = this.userInput;
+					this.addBook(this.book);
+					this.book = null;
+					this.__respond(null, 'Done. What else?');
+					this.finished = true;
+					return;
+				}
+				this.book = {
+					title: this.userInput
+				};
+				this.__respond(null, 'Who wrote it?');
+			}
+		}
+	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+		addBook: 'addBook'
+	}))
+});
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "display"
+  }, [(_vm.showFallbacks) ? _c('div', {
+    staticClass: "fallbacks"
+  }, _vm._l((_vm.fallbacks), function(fallback) {
+    return _c('div', {
+      staticClass: "fallback",
+      on: {
+        "click": function($event) {
+          _vm.__setNextAction(fallback.command)
+        }
+      }
+    }, [_c('button', [_vm._v(_vm._s(fallback.label))])])
+  })) : _vm._e()])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-7ae01bfe", module.exports)
+  }
+}
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(2)(
+  /* script */
+  __webpack_require__(51),
+  /* template */
+  __webpack_require__(52),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/ListBooks.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ListBooks.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-447ff180", Component.options)
+  } else {
+    hotAPI.reload("data-v-447ff180", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Action_js__ = __webpack_require__(64);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	name: 'list',
+	mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Action_js__["a" /* default */]],
+	data: function data() {
+		return {
+			prompts: ['How to you want them?'],
+			breakers: ['nothing', 'rien', 'nada', 'no', 'nao', 'exit'],
+			fallbacks: [{
+				command: 'get_book',
+				label: 'Get book'
+			}, {
+				command: 'add',
+				label: 'Add book'
+			}, {
+				command: 'default_action',
+				label: 'Let\'s try again?'
+			}]
+		};
+	},
+
+	computed: _extends({
+		showResults: function showResults() {
+			return this.finished && this.books.length;
+		},
+		showFallbacks: function showFallbacks() {
+			return this.finished && !this.books.length;
+		}
+	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+		books: 'getBooks'
+	})),
+	methods: _extends({
+		processInput: function processInput() {
+			this.finished = false;
+			if (this.userInput) {
+				if (this.tryToBreak()) {
+					return this.breakAction(this.tryToBreak());
+				}
+				this.getResults();
+			}
+		},
+		getResults: function getResults() {
+
+			this.finished = true;
+			this.__respond(null, 'Here they are');
+			return;
+
+			this.__respond(null, 'What...?');
+		}
+	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({}))
+});
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "display"
+  }, [_c('div', {
+    staticClass: "results"
+  }, [(_vm.showResults) ? _c('div', {
+    staticClass: "showcase"
+  }, [_vm._l((_vm.books), function(book) {
+    return _c('div', {
+      staticClass: "book"
+    }, [_c('button', [_vm._v(_vm._s(book.title) + " - " + _vm._s(book.author))])])
+  }), _vm._v(" "), _c('div', {
+    staticClass: "continue-interaction",
+    on: {
+      "click": function($event) {
+        _vm.__setNextAction('default_action')
+      }
+    }
+  }, [_c('button', [_vm._v("Continue")])])], 2) : _vm._e()]), _vm._v(" "), (_vm.showFallbacks) ? _c('div', {
+    staticClass: "fallbacks"
+  }, _vm._l((_vm.fallbacks), function(fallback) {
+    return _c('div', {
+      staticClass: "fallback",
+      on: {
+        "click": function($event) {
+          _vm.__setNextAction(fallback.command)
+        }
+      }
+    }, [_c('button', [_vm._v(_vm._s(fallback.label))])])
+  })) : _vm._e()])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-447ff180", module.exports)
+  }
+}
+
+/***/ }),
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -43481,498 +43661,152 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-71dbe689", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-9b8daf7c", module.exports)
   }
 }
 
 /***/ }),
-/* 48 */
+/* 54 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
 /* 55 */,
 /* 56 */,
 /* 57 */,
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var Component = __webpack_require__(3)(
-  /* script */
-  __webpack_require__(59),
-  /* template */
-  __webpack_require__(60),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/AddBook.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] AddBook.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3b279bd2", Component.options)
-  } else {
-    hotAPI.reload("data-v-3b279bd2", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 59 */
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-	name: 'add',
-	props: ['shouldProcess'],
-	data: function data() {
-		return {
-			prompts: ['What is the title of the book?'],
-
-			breakers: ['nothing', 'rien', 'nada', 'no', 'nao', 'exit'],
-
-			fallbacks: [{
-				command: 'list',
-				label: 'List books'
-
-			}, {
-				command: 'get_book',
-				label: 'Get book'
-
-			}, {
-				command: 'default_action',
-				label: 'Let\'s try again?'
-
-			}],
-			book: null,
-			finished: false
-		};
-	},
-
-	computed: _extends({
-		showFallbacks: function showFallbacks() {
-			return this.finished;
-		},
-		prompt: function prompt() {
-			if (!this.sessionInteractionsCount) {
-				return 'Hey ' + this.user.friendly_name + ', ' + this.prompts[Math.floor(Math.random() * this.prompts.length)];
-			}
-
-			return this.prompts[Math.floor(Math.random() * this.prompts.length)];
-		}
-	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-		user: 'getUser',
-		userInput: 'getUserInput',
-		sessionInteractionsCount: 'getSessionInteractionsCount'
-	})),
-	methods: _extends({
-		__respond: function __respond(action, prompt) {
-			this.$emit('input-processed');
-
-			if (action) {
-				this.__setNextAction(action);
-				return;
-			}
-			this.$emit('prompt', prompt);
-		},
-		__setNextAction: function __setNextAction(action) {
-			this.finished = true;
-			this.$emit('input-processed');
-			this.setAction(action);
-		},
-		processInput: function processInput() {
-			this.finished = false;
-			if (this.userInput) {
-				if (this.tryToBreak()) {
-					return this.breakAction(this.tryToBreak());
-				}
-				if (this.book && this.book.hasOwnProperty('title')) {
-					this.book.author = this.userInput;
-					this.addBook(this.book);
-					this.book = null;
-					this.__respond(null, 'Done. What else?');
-					this.finished = true;
-					return;
-				}
-				this.book = {
-					title: this.userInput
-				};
-
-				this.__respond(null, 'Who wrote it?');
-			}
-		},
-		tryToBreak: function tryToBreak() {
-			var breaker = null;
-			var self = this;
-
-			this.breakers.some(function (option) {
-				if (self.userInput.includes(option)) {
-					breaker = option;
-				}
-				return self.userInput.includes(option);
-			});
-
-			if (breaker) {
-				return breaker;
-			}
-
-			return this.checkFallbacks();
-		},
-		breakAction: function breakAction(action) {
-			if (this.breakers.indexOf(action) > -1 || !action) {
-				this.__setNextAction('default_action');
-				return;
-			}
-
-			this.__setNextAction(action);
-		},
-		checkFallbacks: function checkFallbacks() {
-			var fallback = null;
-			var self = this;
-
-			this.fallbacks.some(function (option) {
-				if (self.userInput.includes(option.command)) {
-					fallback = option.command;
-				}
-				return self.userInput.includes(option.command);
-			});
-			return fallback;
-		}
-	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-		setAction: 'setAction',
-		addUserInput: 'addUserInput',
-		addBook: 'addBook'
-	})),
-
-	watch: {
-		shouldProcess: function shouldProcess() {
-			if (this.shouldProcess) {
-				this.processInput();
-			}
-		}
-	},
-
-	mounted: function mounted() {
-		this.$emit('prompt', this.prompt);
-	}
-});
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "display"
-  }, [(_vm.showFallbacks) ? _c('div', {
-    staticClass: "fallbacks"
-  }, _vm._l((_vm.fallbacks), function(fallback) {
-    return _c('div', {
-      staticClass: "fallback",
-      on: {
-        "click": function($event) {
-          _vm.__setNextAction(fallback.command)
+/* harmony default export */ __webpack_exports__["a"] = ({
+    props: {
+        shouldProcess: {
+            type: Boolean,
+            required: true
         }
-      }
-    }, [_c('button', [_vm._v(_vm._s(fallback.label))])])
-  })) : _vm._e()])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-3b279bd2", module.exports)
-  }
-}
+    },
+    data: function data() {
+        return {
+            prompts: [],
 
-/***/ }),
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
+            breakers: [],
 
-var disposed = false
-var Component = __webpack_require__(3)(
-  /* script */
-  __webpack_require__(62),
-  /* template */
-  __webpack_require__(63),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/ListBooks.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] ListBooks.vue: functional components are not supported with templates, they should use render functions.")}
+            fallbacks: [],
+            finished: false
+        };
+    },
 
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0d42354e", Component.options)
-  } else {
-    hotAPI.reload("data-v-0d42354e", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
+    computed: _extends({
+        showFallbacks: function showFallbacks() {
+            return this.finished;
+        },
+        prompt: function prompt() {
+            if (!this.sessionInteractionsCount) {
+                return 'Hey ' + this.user.friendly_name + ', ' + this.prompts[Math.floor(Math.random() * this.prompts.length)];
+            }
 
-module.exports = Component.exports
+            return this.prompts[Math.floor(Math.random() * this.prompts.length)];
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        user: 'getUser',
+        userInput: 'getUserInput',
+        sessionInteractionsCount: 'getSessionInteractionsCount'
+    })),
+    methods: _extends({
+        __respond: function __respond(action, prompt) {
+            this.$emit('input-processed');
+            if (action) {
+                this.__setNextAction(action);
+                return;
+            }
+            this.$emit('prompt', prompt);
+        },
+        __setNextAction: function __setNextAction(action) {
+            this.finished = true;
+            this.$emit('input-processed');
+            this.setAction(action);
+        },
+        __getBook: function __getBook(title) {
+            var book = null;
+            var self = this;
+            if (this.books.length) {
+                this.books.some(function (b) {
+                    if (self.userInput.includes(b.title)) {
+                        book = b;
+                    }
+                    return self.userInput.includes(b.title);
+                });
+            }
 
+            return book;
+        },
+        processInput: function processInput() {},
+        getResults: function getResults() {},
+        tryToBreak: function tryToBreak() {
+            var breaker = null;
+            var self = this;
 
-/***/ }),
-/* 62 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+            this.breakers.some(function (option) {
+                if (self.userInput.includes(option)) {
+                    breaker = option;
+                }
+                return self.userInput.includes(option);
+            });
+            if (breaker) {
+                return breaker;
+            }
 
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+            return this.checkFallbacks();
+        },
+        breakAction: function breakAction(action) {
+            if (this.breakers.indexOf(action) > -1 || !action) {
+                this.__setNextAction('default_action');
+                return;
+            }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+            this.__setNextAction(action);
+        },
+        checkFallbacks: function checkFallbacks() {
+            var fallback = null;
+            var self = this;
 
+            this.fallbacks.some(function (option) {
+                if (self.userInput.includes(option.command)) {
+                    fallback = option.command;
+                }
+                return self.userInput.includes(option.command);
+            });
+            return fallback;
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        setAction: 'setAction',
+        addUserInput: 'addUserInput'
+    })),
 
+    watch: {
+        shouldProcess: function shouldProcess() {
+            if (this.shouldProcess) {
+                this.processInput();
+            }
+        }
+    },
 
-/* harmony default export */ __webpack_exports__["default"] = ({
-	name: 'list',
-	props: ['shouldProcess'],
-	data: function data() {
-		return {
-			prompts: ['How to you want them?'],
-
-			breakers: ['nothing', 'rien', 'nada', 'no', 'nao', 'exit'],
-
-			fallbacks: [{
-				command: 'get_book',
-				label: 'Get book'
-
-			}, {
-				command: 'add',
-				label: 'Add book'
-
-			}, {
-				command: 'default_action',
-				label: 'Let\'s try again?'
-
-			}],
-
-			finished: false
-		};
-	},
-
-	computed: _extends({
-		showResults: function showResults() {
-			return this.finished && this.books.length;
-		},
-		showFallbacks: function showFallbacks() {
-			return this.finished && !this.books.length;
-		},
-		prompt: function prompt() {
-			if (!this.sessionInteractionsCount) {
-				return 'Hey ' + this.user.friendly_name + ', ' + this.prompts[Math.floor(Math.random() * this.prompts.length)];
-			}
-
-			return this.prompts[Math.floor(Math.random() * this.prompts.length)];
-		}
-	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-		user: 'getUser',
-		userInput: 'getUserInput',
-		sessionInteractionsCount: 'getSessionInteractionsCount',
-		books: 'getBooks'
-	})),
-	methods: _extends({
-		__respond: function __respond(action, prompt) {
-			this.$emit('input-processed');
-			if (action) {
-				this.__setNextAction(action);
-				return;
-			}
-			this.$emit('prompt', prompt);
-		},
-		__setNextAction: function __setNextAction(action) {
-			this.finished = true;
-			this.$emit('input-processed');
-			this.setAction(action);
-		},
-		processInput: function processInput() {
-			this.finished = false;
-			if (this.userInput) {
-				if (this.tryToBreak()) {
-					return this.breakAction(this.tryToBreak());
-				}
-
-				this.getResults();
-			}
-		},
-		getResults: function getResults() {
-
-			this.finished = true;
-			this.__respond(null, 'Here they are');
-			return;
-
-			this.__respond(null, 'What...?');
-		},
-		tryToBreak: function tryToBreak() {
-			var breaker = null;
-			var self = this;
-
-			this.breakers.some(function (option) {
-				if (self.userInput.includes(option)) {
-					breaker = option;
-				}
-				return self.userInput.includes(option);
-			});
-			if (breaker) {
-				return breaker;
-			}
-
-			return this.checkFallbacks();
-		},
-		breakAction: function breakAction(action) {
-			if (this.breakers.indexOf(action) > -1 || !action) {
-				this.__setNextAction('default_action');
-				return;
-			}
-
-			this.__setNextAction(action);
-		},
-		checkFallbacks: function checkFallbacks() {
-			var fallback = null;
-			var self = this;
-
-			this.fallbacks.some(function (option) {
-				if (self.userInput.includes(option.command)) {
-					fallback = option.command;
-				}
-				return self.userInput.includes(option.command);
-			});
-			console.log(fallback);
-			return fallback;
-		}
-	}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-		setAction: 'setAction',
-		addUserInput: 'addUserInput'
-	})),
-
-	watch: {
-		shouldProcess: function shouldProcess() {
-			if (this.shouldProcess) {
-				this.processInput();
-			}
-		}
-	},
-
-	mounted: function mounted() {
-		this.$emit('prompt', this.prompt);
-	}
-});
-
-/***/ }),
-/* 63 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "display"
-  }, [_c('div', {
-    staticClass: "results"
-  }, [(_vm.showResults) ? _c('div', {
-    staticClass: "showcase"
-  }, [_vm._l((_vm.books), function(book) {
-    return _c('div', {
-      staticClass: "book"
-    }, [_c('button', [_vm._v(_vm._s(book.title) + " - " + _vm._s(book.author))])])
-  }), _vm._v(" "), _c('div', {
-    staticClass: "continue-interaction",
-    on: {
-      "click": function($event) {
-        _vm.__setNextAction('default_action')
-      }
+    mounted: function mounted() {
+        this.$emit('prompt', this.prompt);
     }
-  }, [_c('button', [_vm._v("Continue")])])], 2) : _vm._e()]), _vm._v(" "), (_vm.showFallbacks) ? _c('div', {
-    staticClass: "fallbacks"
-  }, _vm._l((_vm.fallbacks), function(fallback) {
-    return _c('div', {
-      staticClass: "fallback",
-      on: {
-        "click": function($event) {
-          _vm.__setNextAction(fallback.command)
-        }
-      }
-    }, [_c('button', [_vm._v(_vm._s(fallback.label))])])
-  })) : _vm._e()])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-0d42354e", module.exports)
-  }
-}
+});
 
 /***/ })
 /******/ ]);

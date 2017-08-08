@@ -5,8 +5,8 @@
             <br>
             <span class="fake-input" contenteditable="true" v-focus @keyup.enter="act" @input="processAnswer"></span>
         </div>
-        <component 
-            :is="selectedAction" 
+        <component
+            :is="selectedAction"
             :shouldProcess="shouldProcess"
             @prompt="__setLine"
             @input-processed="__toggleShouldProcess"
@@ -71,11 +71,11 @@
         },
 
         //for some reason this watch is breaking functionality
-        watch: {
+        /*watch: {
             selectedAction() {
                 $('.fake-input').focus()
             }
-        },
+        },*/
 
         directives: {
             focus: {
