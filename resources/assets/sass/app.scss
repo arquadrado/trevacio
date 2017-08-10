@@ -28,8 +28,43 @@ body {
 			border: none;
 			background-color: transparent;
 			cursor: pointer;
-			font-weight: 900; 
-			text-transform: uppercase; 
+			font-weight: 900;
+			text-transform: uppercase;
+		}
+
+		.gui-enter-active, .gui-leave-active {
+			left: 0;
+		  	transition: left .5s
+		}
+		.gui-enter, .gui-leave-to {
+		  	left: -500px;
+		}
+
+		.silent-book-keeper {
+			position: absolute;
+			top: 0;
+			height: 100vh;
+			transition: all 300ms ease-in;
+			.actions-list {
+				position: relative;
+				height: 100%;
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				.action {
+					display: table;
+					text-align: center;
+					font-size: 49px;
+					transition: all 300ms ease-in;
+					opacity: 0.9;
+					cursor: pointer;
+					i {
+						display: table-cell;
+						vertical-align: middle;
+
+					}
+				}
+			}
 		}
 
 		.book-keeper {
@@ -55,7 +90,7 @@ body {
 			}
 			.results, .fallbacks {
 				min-height: 200px;
-				border: 1px solid #ffffff;
+				border: inherit;
 			}
 
 		}

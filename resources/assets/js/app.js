@@ -20,66 +20,37 @@ Vue.devtools = true
 
 import store from './vuex/store'
 
+import { mapGetters, mapActions } from 'vuex'
 import Trevacio from './components/Trevacio.vue'
+import Gui from './components/Gui.vue'
 
 const app = new Vue({
     el: '#app',
     components: {
-        Trevacio
+        Trevacio,
+        Gui
     },
     data: {
-    	suitIndex: 3,
-    	suits: [
-    		{
-    			name: 'lightest',
-    			style: {
-	    			'background-color': '#ffffff',
-	    			'color': '#000000'
-	    		}
-    		},
-            {
-                name: 'lighter',
-                style: {
-                    'background-color': '#ffffff',
-                    'color': '#777777'
-                }
-            },
-    		{
-    			name: 'darkest',
-    			style: {
-	    			'background-color': '#000000',
-	    			'color': '#ffffff'
-	    		}
-    		},
-    		{
-    			name: 'dark',
-    			style: {
-	    			'background-color': '#222222',
-	    			'color': '#ffffff'
-	    		}
-    		},
-    		{
-    			name: 'light',
-    			style: {
-	    			'background-color': '#cccccc',
-	    			'color': '#777777'
-	    		}
-    		}
-    	]
     },
 
     computed: {
     	selectedSuit() {
-    		return this.suits[this.suitIndex]
-    	}
+            console.log(this.colorScheme)
+    		return {
+                'background-color': this.colorScheme.background,
+                'color': this.colorScheme.details
+            }
+    	},
+        ...mapGetters({
+            showGui: 'getShowGui',
+            colorScheme: 'getColorScheme'
+        })
     },
 
     methods: {
-    	suitEyes() {
-            let currentIndex = this.suitIndex
-            currentIndex++
-    		this.suitIndex = currentIndex % this.suits.length
-    	}
+        ...mapActions({
+            suitEyes: 'changeColorScheme'
+        })
     },
     store
 });

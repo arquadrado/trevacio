@@ -3,11 +3,35 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const state = {
+    colorSchemes: [
+        {
+            details: '#ffffff',
+            background: '#222222'
+        },
+        {
+            details: '#ffffff',
+            background: '#000000'
+        },
+        {
+            details: '#000000',
+            background: '#ffffff'
+        },
+        {
+            details: '#777777',
+            background: '#ffffff'
+        },
+        {
+            details: '#cccccc',
+            background: '#777777'
+        },
+    ],
+    selectedColorSchemeIndex: 0,
     user: handover.user,
     userInputs: [],
     selectedAction: 'get_book',
     sessionInteractions: [],
-    books: []
+    books: [],
+    showGui: false
 }
 
 const actions = {
@@ -19,6 +43,12 @@ const actions = {
     },
     addBook({ commit, state }, book) {
         commit('ADD_BOOK', book)
+    },
+    toggleGui({ commit, state }) {
+        commit('TOGGLE_GUI')
+    },
+    changeColorScheme({ commit, state }) {
+        commit('CHANGE_COLOR_SCHEME')
     }
 }
 
@@ -27,7 +57,9 @@ const getters = {
     getUserInput: state => state.userInputs[0],
     getSelectedAction: state => state.selectedAction,
     getSessionInteractionsCount: state => state.userInputs.length,
-    getBooks: state => state.books
+    getBooks: state => state.books,
+    getShowGui: state => state.showGui,
+    getColorScheme: state => state.colorSchemes[state.selectedColorSchemeIndex]
 }
 
 const mutations = {
@@ -39,6 +71,14 @@ const mutations = {
     },
     'ADD_BOOK': (state, book) => {
         state.books.unshift(book)
+    },
+    'TOGGLE_GUI': state => {
+        state.showGui = !state.showGui
+    },
+    'CHANGE_COLOR_SCHEME': state => {
+        let currentIndex = state.selectedColorSchemeIndex
+        currentIndex++
+        state.selectedColorSchemeIndex = currentIndex % state.colorSchemes.length
     }
 }
 

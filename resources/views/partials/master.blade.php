@@ -11,11 +11,13 @@
     <title>{{ config('app.name', 'Days of Books') }}</title>
 
     <!-- Styles -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app" :style="selectedSuit.style">
-        
+    <div id="app" :style="selectedSuit">
+
 
         @yield('content')
     </div>

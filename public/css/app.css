@@ -8377,6 +8377,49 @@ body #app button {
   text-transform: uppercase;
 }
 
+body #app .gui-enter-active,
+body #app .gui-leave-active {
+  left: 0;
+  -webkit-transition: left .5s;
+  transition: left .5s;
+}
+
+body #app .gui-enter,
+body #app .gui-leave-to {
+  left: -500px;
+}
+
+body #app .silent-book-keeper {
+  position: absolute;
+  top: 0;
+  height: 100vh;
+  -webkit-transition: all 300ms ease-in;
+  transition: all 300ms ease-in;
+}
+
+body #app .silent-book-keeper .actions-list {
+  position: relative;
+  height: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+body #app .silent-book-keeper .actions-list .action {
+  display: table;
+  text-align: center;
+  font-size: 49px;
+  -webkit-transition: all 300ms ease-in;
+  transition: all 300ms ease-in;
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+body #app .silent-book-keeper .actions-list .action i {
+  display: table-cell;
+  vertical-align: middle;
+}
+
 body #app .book-keeper {
   position: relative;
   display: table-cell;
@@ -8405,7 +8448,7 @@ body #app .book-keeper .interaction .fake-input {
 body #app .book-keeper .results,
 body #app .book-keeper .fallbacks {
   min-height: 200px;
-  border: 1px solid #ffffff;
+  border: inherit;
 }
 
 body #app .eye-suit {

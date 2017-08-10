@@ -11,6 +11,9 @@
             @prompt="__setLine"
             @input-processed="__toggleShouldProcess"
         ></component>
+        <div class="call-gui">
+            <button @click="toggleGui">Gui is around if you don't feel like talking...</button>
+        </div>
     </div>
 </template>
 
@@ -65,7 +68,8 @@
                 this.userInput = event.target.innerText
             },
             ...mapActions({
-                addUserInput: 'addUserInput'
+                addUserInput: 'addUserInput',
+                toggleGui: 'toggleGui'
             })
 
         },
