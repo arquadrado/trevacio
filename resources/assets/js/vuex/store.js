@@ -24,14 +24,43 @@ const state = {
             details: '#cccccc',
             background: '#777777'
         },
+        {
+            details: '#EB934A',
+            background: '#2D8D8D'
+        },
+        {
+            details: '#EBE44A',
+            background: '#703A9E'
+        },
     ],
     selectedColorSchemeIndex: 0,
     user: handover.user,
     userInputs: [],
-    selectedAction: 'get_book',
+    actions: {
+        add: 'Add book',
+        get: 'Get book',
+        list: 'List books',
+        remove: 'Remove this little fucker?',
+        joke: 'Wanna hear a joke?',
+        default: 'Ok, lets do this!',
+    },
+    selectedAction: 'get',
     sessionInteractions: [],
     books: [],
-    showGui: false
+    showGui: false,
+    showModal: false
+}
+
+const getters = {
+    getUser: state => state.user,
+    getUserInput: state => state.userInputs[0],
+    getActions: state => state.actions,
+    getSelectedAction: state => state.selectedAction,
+    getSessionInteractionsCount: state => state.userInputs.length,
+    getBooks: state => state.books,
+    getShowGui: state => state.showGui,
+    getShowModal: state => state.showModal,
+    getColorScheme: state => state.colorSchemes[state.selectedColorSchemeIndex]
 }
 
 const actions = {
@@ -49,18 +78,12 @@ const actions = {
     },
     changeColorScheme({ commit, state }) {
         commit('CHANGE_COLOR_SCHEME')
+    },
+    toggleModal({ commit, state }) {
+        commit('TOGGLE_MODAL')
     }
 }
 
-const getters = {
-    getUser: state => state.user,
-    getUserInput: state => state.userInputs[0],
-    getSelectedAction: state => state.selectedAction,
-    getSessionInteractionsCount: state => state.userInputs.length,
-    getBooks: state => state.books,
-    getShowGui: state => state.showGui,
-    getColorScheme: state => state.colorSchemes[state.selectedColorSchemeIndex]
-}
 
 const mutations = {
     'SET_ACTION': (state, action) => {
@@ -79,6 +102,9 @@ const mutations = {
         let currentIndex = state.selectedColorSchemeIndex
         currentIndex++
         state.selectedColorSchemeIndex = currentIndex % state.colorSchemes.length
+    },
+    'TOGGLE_MODAL': state => {
+        state.showModal = !state.showModal
     }
 }
 

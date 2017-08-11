@@ -23,7 +23,7 @@
 	import Action from '../../mixins/Action.js'
 
 	export default {
-		name: 'get_book',
+		name: 'get',
 		mixins: [Action],
 		data() {
 			return {
@@ -38,21 +38,13 @@
 					'nada',
 					'no',
 					'nao',
-					'exit'
+					'exit',
+					'help'
 				],
-				fallbacks: [
-					{
-						command: 'list',
-						label: 'List books'
-					},
-					{
-						command: 'add',
-						label: 'Add book'
-					},
-					{
-						command: 'default_action',
-						label: 'Let\'s try again?'
-					}
+				actions: [
+					'add',
+					'list',
+					'default'
 				],
 				book: null,
 			}

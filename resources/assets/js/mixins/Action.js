@@ -13,11 +13,20 @@ export default {
 
             breakers: [],
 
-            fallbacks: [],
+            actions: [],
             finished: false
         }
     },
     computed: {
+        fallbacks() {
+            const self = this
+            return this.actions.map(action => {
+                return {
+                    command: action,
+                    label: self.availableActions[action]
+                }
+            })
+        },
         showFallbacks() {
             return this.finished
         },
@@ -32,6 +41,7 @@ export default {
             user: 'getUser',
             userInput: 'getUserInput',
             sessionInteractionsCount: 'getSessionInteractionsCount',
+            availableActions: 'getActions'
         })
     },
     methods: {

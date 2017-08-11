@@ -1306,12 +1306,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
             breakers: [],
 
-            fallbacks: [],
+            actions: [],
             finished: false
         };
     },
 
     computed: _extends({
+        fallbacks: function fallbacks() {
+            var self = this;
+            return this.actions.map(function (action) {
+                return {
+                    command: action,
+                    label: self.availableActions[action]
+                };
+            });
+        },
         showFallbacks: function showFallbacks() {
             return this.finished;
         },
@@ -1325,7 +1334,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
         user: 'getUser',
         userInput: 'getUserInput',
-        sessionInteractionsCount: 'getSessionInteractionsCount'
+        sessionInteractionsCount: 'getSessionInteractionsCount',
+        availableActions: 'getActions'
     })),
     methods: _extends({
         __respond: function __respond(action, prompt) {
@@ -11906,7 +11916,7 @@ module.exports = Vue$3;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(13);
-module.exports = __webpack_require__(55);
+module.exports = __webpack_require__(58);
 
 
 /***/ }),
@@ -11919,8 +11929,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Trevacio_vue__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Trevacio_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_Trevacio_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__ = __webpack_require__(55);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /**
@@ -11948,11 +11960,13 @@ Vue.devtools = true;
 
 
 
+
 var app = new Vue({
     el: '#app',
     components: {
         Trevacio: __WEBPACK_IMPORTED_MODULE_2__components_Trevacio_vue___default.a,
-        Gui: __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue___default.a
+        Gui: __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue___default.a,
+        Modal: __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue___default.a
     },
     data: {},
 
@@ -11966,6 +11980,7 @@ var app = new Vue({
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_1_vuex__["c" /* mapGetters */])({
         showGui: 'getShowGui',
+        showModal: 'getShowModal',
         colorScheme: 'getColorScheme'
     })),
 
@@ -42888,14 +42903,59 @@ var state = {
     }, {
         details: '#cccccc',
         background: '#777777'
+    }, {
+        details: '#EB934A',
+        background: '#2D8D8D'
+    }, {
+        details: '#EBE44A',
+        background: '#703A9E'
     }],
     selectedColorSchemeIndex: 0,
     user: handover.user,
     userInputs: [],
-    selectedAction: 'get_book',
+    actions: {
+        add: 'Add book',
+        get: 'Get book',
+        list: 'List books',
+        remove: 'Remove this little fucker?',
+        joke: 'Wanna hear a joke?',
+        default: 'Ok, lets do this!'
+    },
+    selectedAction: 'get',
     sessionInteractions: [],
     books: [],
-    showGui: false
+    showGui: false,
+    showModal: false
+};
+
+var getters = {
+    getUser: function getUser(state) {
+        return state.user;
+    },
+    getUserInput: function getUserInput(state) {
+        return state.userInputs[0];
+    },
+    getActions: function getActions(state) {
+        return state.actions;
+    },
+    getSelectedAction: function getSelectedAction(state) {
+        return state.selectedAction;
+    },
+    getSessionInteractionsCount: function getSessionInteractionsCount(state) {
+        return state.userInputs.length;
+    },
+    getBooks: function getBooks(state) {
+        return state.books;
+    },
+    getShowGui: function getShowGui(state) {
+        return state.showGui;
+    },
+    getShowModal: function getShowModal(state) {
+        return state.showModal;
+    },
+    getColorScheme: function getColorScheme(state) {
+        return state.colorSchemes[state.selectedColorSchemeIndex];
+    }
 };
 
 var actions = {
@@ -42928,30 +42988,12 @@ var actions = {
             state = _ref5.state;
 
         commit('CHANGE_COLOR_SCHEME');
-    }
-};
+    },
+    toggleModal: function toggleModal(_ref6) {
+        var commit = _ref6.commit,
+            state = _ref6.state;
 
-var getters = {
-    getUser: function getUser(state) {
-        return state.user;
-    },
-    getUserInput: function getUserInput(state) {
-        return state.userInputs[0];
-    },
-    getSelectedAction: function getSelectedAction(state) {
-        return state.selectedAction;
-    },
-    getSessionInteractionsCount: function getSessionInteractionsCount(state) {
-        return state.userInputs.length;
-    },
-    getBooks: function getBooks(state) {
-        return state.books;
-    },
-    getShowGui: function getShowGui(state) {
-        return state.showGui;
-    },
-    getColorScheme: function getColorScheme(state) {
-        return state.colorSchemes[state.selectedColorSchemeIndex];
+        commit('TOGGLE_MODAL');
     }
 };
 
@@ -42972,6 +43014,9 @@ var mutations = {
         var currentIndex = state.selectedColorSchemeIndex;
         currentIndex++;
         state.selectedColorSchemeIndex = currentIndex % state.colorSchemes.length;
+    },
+    'TOGGLE_MODAL': function TOGGLE_MODAL(state) {
+        state.showModal = !state.showModal;
     }
 };
 
@@ -43070,14 +43115,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: {
         'default_action': __WEBPACK_IMPORTED_MODULE_1__trevacio_actions_DefaultAction_vue___default.a,
-        'get_book': __WEBPACK_IMPORTED_MODULE_2__trevacio_actions_GetBook_vue___default.a,
+        'get': __WEBPACK_IMPORTED_MODULE_2__trevacio_actions_GetBook_vue___default.a,
         'add': __WEBPACK_IMPORTED_MODULE_3__trevacio_actions_AddBook_vue___default.a,
         'list': __WEBPACK_IMPORTED_MODULE_4__trevacio_actions_ListBooks_vue___default.a
     },
     props: [],
     data: function data() {
         return {
-            actions: ['book', 'books', 'joke'],
             trevacioLine: '',
             results: false,
             userInput: '',
@@ -43085,8 +43129,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         };
     },
 
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-        selectedAction: 'getSelectedAction'
+    computed: _extends({
+        guiToggleMessage: function guiToggleMessage() {
+            return this.showGui ? 'Send him away...' : 'Gui is around if you don\'t feel like talking...';
+        },
+        fakeInputStyle: function fakeInputStyle() {
+            return {
+                'border-bottom': '3px solid ' + this.colorScheme.details
+            };
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        showGui: 'getShowGui',
+        selectedAction: 'getSelectedAction',
+        colorScheme: 'getColorScheme'
     })),
     methods: _extends({
         __setLine: function __setLine(line) {
@@ -43202,19 +43257,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 	data: function data() {
 		return {
 			prompts: ['What can I do for you today?', 'Shall we begin?'],
-			fallbacks: [{
-				command: 'get_book',
-				label: 'Get book'
-			}, {
-				command: 'add',
-				label: 'Add book'
-			}, {
-				command: 'list',
-				label: 'List books'
-			}, {
-				command: 'joke',
-				label: 'Wanna hear a joke?'
-			}]
+			actions: ['get', 'add', 'list', 'joke']
 		};
 	},
 
@@ -43348,22 +43391,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	name: 'get_book',
+	name: 'get',
 	mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Action_js__["a" /* default */]],
 	data: function data() {
 		return {
 			prompts: ['What book can I get you?', 'What have you been reading?', 'What did you read today?'],
-			breakers: ['nothing', 'rien', 'nada', 'no', 'nao', 'exit'],
-			fallbacks: [{
-				command: 'list',
-				label: 'List books'
-			}, {
-				command: 'add',
-				label: 'Add book'
-			}, {
-				command: 'default_action',
-				label: 'Let\'s try again?'
-			}],
+			breakers: ['nothing', 'rien', 'nada', 'no', 'nao', 'exit', 'help'],
+			actions: ['add', 'list', 'default'],
 			book: null
 		};
 	},
@@ -43531,16 +43565,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 		return {
 			prompts: ['What is the title of the book?'],
 			breakers: ['nothing', 'rien', 'nada', 'no', 'nao', 'exit'],
-			fallbacks: [{
-				command: 'list',
-				label: 'List books'
-			}, {
-				command: 'get_book',
-				label: 'Get book'
-			}, {
-				command: 'default_action',
-				label: 'Let\'s try again?'
-			}],
+			actions: ['get', 'list', 'default'],
 			book: null
 		};
 	},
@@ -43685,16 +43710,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 		return {
 			prompts: ['How to you want them?'],
 			breakers: ['nothing', 'rien', 'nada', 'no', 'nao', 'exit'],
-			fallbacks: [{
-				command: 'get_book',
-				label: 'Get book'
-			}, {
-				command: 'add',
-				label: 'Add book'
-			}, {
-				command: 'default_action',
-				label: 'Let\'s try again?'
-			}]
+			actions: ['add', 'get', 'default']
 		};
 	},
 
@@ -43789,6 +43805,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       rawName: "v-focus"
     }],
     staticClass: "fake-input",
+    style: (_vm.fakeInputStyle),
     attrs: {
       "contenteditable": "true"
     },
@@ -43814,7 +43831,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.toggleGui
     }
-  }, [_vm._v("Gui is around if you don't feel like talking...")])])], 1)
+  }, [_vm._v(_vm._s(_vm.guiToggleMessage))])])], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -43826,29 +43843,14 @@ if (false) {
 
 /***/ }),
 /* 55 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(2)(
   /* script */
-  __webpack_require__(66),
+  __webpack_require__(56),
   /* template */
-  __webpack_require__(67),
+  __webpack_require__(57),
   /* styles */
   null,
   /* scopeId */
@@ -43880,7 +43882,166 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 66 */
+/* 56 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GuiAction_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GuiAction_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__GuiAction_vue__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    components: {
+        'gui-action': __WEBPACK_IMPORTED_MODULE_1__GuiAction_vue___default.a
+    },
+    props: [],
+    data: function data() {
+        return {};
+    },
+
+    computed: _extends({
+        actionsCount: function actionsCount() {
+            return Object.keys(this.availableActions).length;
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        availableActions: 'getActions'
+    })),
+    methods: _extends({
+        test: function test() {
+            console.log('pato');
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        addUserInput: 'addUserInput'
+    })),
+
+    directives: {
+        dimension: {
+            inserted: function inserted(el, binding, vnode) {
+                console.log(binding);
+                $(el).find('.action').each(function (index, elem) {
+                    $(elem).width($(el).height() / binding.value - 6);
+                    $(elem).height($(el).height() / binding.value - 6);
+                    //$(elem).css('border-radius', ($(el).height() / 8))
+                });
+            },
+            updated: function updated(el) {
+                console.log('updated');
+            }
+        }
+    },
+
+    mounted: function mounted() {
+        console.log('Hello! I\'m Gui... Guilhotina!');
+    }
+});
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "silent-book-keeper"
+  }, [_c('ul', {
+    directives: [{
+      name: "dimension",
+      rawName: "v-dimension:actionsCount",
+      value: (_vm.actionsCount),
+      expression: "actionsCount",
+      arg: "actionsCount"
+    }],
+    staticClass: "actions-list"
+  }, _vm._l((_vm.availableActions), function(label, action) {
+    return _c('gui-action', {
+      key: action,
+      attrs: {
+        "action": action
+      }
+    })
+  }))])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-96e02380", module.exports)
+  }
+}
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(2)(
+  /* script */
+  __webpack_require__(69),
+  /* template */
+  __webpack_require__(70),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/GuiAction.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] GuiAction.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-6199df96", Component.options)
+  } else {
+    hotAPI.reload("data-v-6199df96", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -43903,19 +44064,36 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    components: {},
-    props: [],
+    props: ['action'],
     data: function data() {
-        return {};
+        return {
+            icons: {
+                add: 'playlist_add',
+                get: 'arrow_downward',
+                list: 'list',
+                remove: 'remove'
+            },
+            hover: false
+        };
     },
 
     computed: _extends({
-        listStyle: function listStyle() {
-            return {
-                'left': 0
-            };
+        icon: function icon() {
+            if (this.icons.hasOwnProperty(this.action)) {
+
+                return this.icons[this.action];
+            }
+
+            return 'bug_report';
         },
-        actionStyle: function actionStyle() {
+        style: function style() {
+            if (this.hover) {
+                return {
+                    'background-color': this.colorScheme.details,
+                    'color': this.colorScheme.background,
+                    'border': '3px solid ' + this.colorScheme.background
+                };
+            }
             return {
                 'background-color': this.colorScheme.background,
                 'color': this.colorScheme.details,
@@ -43926,81 +44104,179 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         colorScheme: 'getColorScheme'
     })),
     methods: _extends({
-        test: function test() {
-            console.log('pato');
+        hoverOn: function hoverOn() {
+            this.hover = true;
+        },
+        hoverOff: function hoverOff() {
+            this.hover = false;
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-        addUserInput: 'addUserInput'
-    })),
-
-    directives: {
-        dimension: {
-            inserted: function inserted(el, binding, vnode) {
-                $(el).find('.action').each(function (index, elem) {
-                    console.log($(elem));
-                    $(elem).width($(el).height() / 4 - 6);
-                    $(elem).height($(el).height() / 4 - 6);
-                    //$(elem).css('border-radius', ($(el).height() / 8))
-                });
-            },
-            updated: function updated(el) {
-                console.log('updated');
-            }
-        }
-    },
-
-    mounted: function mounted() {
-        console.log('Hello! I\'m Gui... Guilhotina!');
-    }
+        toggleModal: 'toggleModal'
+    }))
 });
 
 /***/ }),
-/* 67 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "silent-book-keeper"
-  }, [_c('ul', {
-    directives: [{
-      name: "dimension",
-      rawName: "v-dimension"
-    }],
-    staticClass: "actions-list"
-  }, [_c('li', {
+  return _c('li', {
     staticClass: "action",
-    style: (_vm.actionStyle),
+    style: (_vm.style),
     on: {
-      "mouseover": function($event) {
-        _vm.test()
-      }
+      "mouseenter": _vm.hoverOn,
+      "mouseleave": _vm.hoverOff,
+      "click": _vm.toggleModal
     }
   }, [_c('i', {
     staticClass: "material-icons"
-  }, [_vm._v("playlist_add")])]), _vm._v(" "), _c('li', {
-    staticClass: "action",
-    style: (_vm.actionStyle)
-  }, [_c('i', {
-    staticClass: "material-icons"
-  }, [_vm._v("arrow_downward")])]), _vm._v(" "), _c('li', {
-    staticClass: "action",
-    style: (_vm.actionStyle)
-  }, [_c('i', {
-    staticClass: "material-icons"
-  }, [_vm._v("list")])]), _vm._v(" "), _c('li', {
-    staticClass: "action",
-    style: (_vm.actionStyle)
-  }, [_c('i', {
-    staticClass: "material-icons"
-  }, [_vm._v("remove")])])])])
+  }, [_vm._v(_vm._s(_vm.icon))])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-96e02380", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-6199df96", module.exports)
   }
 }
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(2)(
+  /* script */
+  __webpack_require__(73),
+  /* template */
+  __webpack_require__(72),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Modal.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Modal.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-287c0772", Component.options)
+  } else {
+    hotAPI.reload("data-v-287c0772", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('transition', {
+    attrs: {
+      "name": "modal"
+    }
+  }, [_c('div', {
+    staticClass: "modal-mask"
+  }, [_c('div', {
+    staticClass: "modal-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-container",
+    style: (_vm.style)
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_vm._t("header", [_vm._v("\n                        default header\n                      ")])], 2), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, [_vm._t("body", [_vm._v("\n                       default body\n                      ")])], 2), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  }, [_vm._t("footer", [_vm._v("\n                      default footer\n                          "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.toggleModal
+    }
+  }, [_vm._v("\n                           OK\n                          ")])])], 2)])])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-287c0772", module.exports)
+  }
+}
+
+/***/ }),
+/* 73 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    computed: _extends({
+        style: function style() {
+            return {
+                'background-color': this.colorScheme.background,
+                'color': this.colorScheme.details,
+                'border': '3px solid ' + this.colorScheme.details
+            };
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        colorScheme: 'getColorScheme'
+    })),
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        toggleModal: 'toggleModal'
+    }))
+});
 
 /***/ })
 /******/ ]);

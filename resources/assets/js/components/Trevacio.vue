@@ -3,7 +3,7 @@
         <div class="interaction">
             <span class="prompt">{{ trevacioLine }}</span>
             <br>
-            <span class="fake-input" contenteditable="true" v-focus @keyup.enter="act" @input="processAnswer"></span>
+            <span class="fake-input" :style="fakeInputStyle" contenteditable="true" v-focus @keyup.enter="act" @input="processAnswer"></span>
         </div>
         <component
             :is="selectedAction"
@@ -12,7 +12,7 @@
             @input-processed="__toggleShouldProcess"
         ></component>
         <div class="call-gui">
-            <button @click="toggleGui">Gui is around if you don't feel like talking...</button>
+            <button @click="toggleGui">{{ guiToggleMessage }}</button>
         </div>
     </div>
 </template>
@@ -27,7 +27,7 @@
     export default {
         components: {
             'default_action': DefaultAction,
-            'get_book': GetBook,
+            'get': GetBook,
             'add': AddBook,
             'list': ListBooks,
         },
@@ -35,11 +35,6 @@
         ],
         data() {
             return {
-                actions: [
-                    'book',
-                    'books',
-                    'joke'
-                ],
                 trevacioLine: '',
                 results: false,
                 userInput: '',
@@ -47,8 +42,18 @@
             }
         },
         computed: {
+            guiToggleMessage() {
+                return this.showGui ? 'Send him away...' : 'Gui is around if you don\'t feel like talking...'
+            },
+            fakeInputStyle() {
+                return {
+                    'border-bottom': `3px solid ${this.colorScheme.details}`
+                }
+            },
             ...mapGetters({
-                selectedAction: 'getSelectedAction'
+                showGui: 'getShowGui',
+                selectedAction: 'getSelectedAction',
+                colorScheme: 'getColorScheme'
             })
         },
         methods: {

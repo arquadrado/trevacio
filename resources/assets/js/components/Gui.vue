@@ -1,39 +1,33 @@
 <template>
     <div class="silent-book-keeper">
-        <ul class="actions-list" v-dimension>
-            <li class="action" @mouseover="test()" :style="actionStyle"><i class="material-icons">playlist_add</i></li>
-            <li class="action" :style="actionStyle"><i class="material-icons">arrow_downward</i></li>
-            <li class="action" :style="actionStyle"><i class="material-icons">list</i></li>
-            <li class="action" :style="actionStyle"><i class="material-icons">remove</i></li>
+        <ul class="actions-list" v-dimension:actionsCount="actionsCount">
+            <gui-action
+                :action="action"
+                :key="action"
+                v-for="(label, action) in availableActions"
+            ></gui-action>
         </ul>
     </div>
 </template>
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-
+    import GuiAction from './GuiAction.vue'
     export default {
-        components: {},
+        components: {
+            'gui-action': GuiAction
+        },
         props: [
         ],
         data() {
             return {}
         },
         computed: {
-            listStyle() {
-                return {
-                    'left': 0
-                }
-            },
-            actionStyle() {
-                return {
-                    'background-color': this.colorScheme.background,
-                    'color': this.colorScheme.details,
-                    'border': `3px solid ${this.colorScheme.details}`
-                }
+            actionsCount() {
+                return Object.keys(this.availableActions).length
             },
             ...mapGetters({
-                colorScheme: 'getColorScheme'
+                availableActions: 'getActions'
             })
         },
         methods: {
@@ -48,10 +42,10 @@
         directives: {
             dimension: {
                 inserted: function (el, binding, vnode) {
+                    console.log(binding)
                     $(el).find('.action').each((index, elem) => {
-                        console.log($(elem))
-                        $(elem).width(($(el).height() / 4) - 6)
-                        $(elem).height(($(el).height() / 4) - 6)
+                        $(elem).width(($(el).height() / binding.value) - 6)
+                        $(elem).height(($(el).height() / binding.value) - 6)
                         //$(elem).css('border-radius', ($(el).height() / 8))
                     })
                 },

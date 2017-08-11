@@ -21,28 +21,17 @@
 					'What can I do for you today?',
 					'Shall we begin?',
 				],
-				fallbacks: [
-					{
-						command: 'get_book',
-						label: 'Get book'
-					},
-					{
-						command: 'add',
-						label: 'Add book'
-					},
-					{
-						command: 'list',
-						label: 'List books'
-					},
-					{
-						command: 'joke',
-						label: 'Wanna hear a joke?'
-					}
+				actions: [
+					'get',
+					'add',
+					'list',
+					'joke'
 				]
 			}
 		},
 		computed: {
-			...mapGetters({})
+			...mapGetters({
+			})
 		},
 		methods: {
 			processInput() {

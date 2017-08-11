@@ -15,6 +15,14 @@
         <button @click="suitEyes">Suit your eyes</button>
     </div>
 </div>
+
+<modal v-if="showModal">
+    <!--
+      you can use custom content here to overwrite
+      default content
+    -->
+    <h3 slot="header">custom header</h3>
+</modal>
 @endsection
 
 @section('handover')

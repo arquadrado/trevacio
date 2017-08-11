@@ -28,19 +28,10 @@
 					'nao',
 					'exit'
 				],
-				fallbacks: [
-					{
-						command: 'list',
-						label: 'List books'
-					},
-					{
-						command: 'get_book',
-						label: 'Get book'
-					},
-					{
-						command: 'default_action',
-						label: 'Let\'s try again?'
-					}
+				actions: [
+					'get',
+					'list',
+					'default'
 				],
 				book: null,
 			}
