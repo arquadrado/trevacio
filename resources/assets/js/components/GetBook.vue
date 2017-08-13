@@ -12,6 +12,15 @@
                 <br>
                 <span><strong>Title:</strong> {{ selectedBook.title }} </span>
                 <span><strong>Author:</strong> {{ selectedBook.author.name }} </span>
+                <div class="book-actions" v-if="selectedBook.in_library">
+                    <h4>I can do stuff</h4>
+                </div>
+            </div>
+            <div class="modal-footer" v-if="!selectedBook.in_library">
+                <h4>This book is not in your library. Add it to perform actions</h4>
+                <button class="modal-default-button" @click="setModalComponent('add')">
+                    Add book
+                </button>
             </div>
         </div>
 
@@ -107,7 +116,8 @@
             },
             ...mapActions({
                 toggleModal: 'toggleModal',
-                setSelectedBook: 'setSelectedBook'
+                setSelectedBook: 'setSelectedBook',
+                setModalComponent: 'setModalComponent'
             })
         }
     }

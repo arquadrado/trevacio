@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
 
 class Book extends Model
 {
@@ -44,6 +45,7 @@ class Book extends Model
 
     public function getInLibraryAttribute()
     {
-        return Auth::user()->books()->where('book_id', $this->id)->first();
+        return !is_null(Auth::user()->books()->where('book_id', $this->id)->first());
+        //return Auth::user()->books()->where('book_id', $this->id)->first();
     }
 }

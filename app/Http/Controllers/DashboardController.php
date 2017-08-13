@@ -73,7 +73,10 @@ class DashboardController extends Controller
         if ($book) {
             Auth::user()->books()->attach($book->id);
 
-            return response()->json(['message' => 'Book added'], 200);
+            return response()->json([
+                    'message' => 'Book added',
+                    'book' => $book
+                ], 200);
         }
 
         return response()->json(['message' => 'Book not found'], 404);
@@ -91,8 +94,9 @@ class DashboardController extends Controller
         $books = Book::where('title', $data['title'])->get();
 
         if ((isset($data['force']) && $data['force']) || $books->isEmpty()) {
+            $bookId = null;
             try {
-                DB::transaction(function () use ($data) {
+                DB::transaction(function () use ($data, &$bookId) {
                     $author = Author::firstOrCreate([
                                     'name' => $data['author'],
                                     'country' => 'Xis',
@@ -102,6 +106,8 @@ class DashboardController extends Controller
                                 'title' => $data['title'],
                                 'author_id' => $author->id
                             ]);
+
+                    $bookId = $book->id;
                     
                     Auth::user()->books()->attach($book->id);
                 });
@@ -109,7 +115,12 @@ class DashboardController extends Controller
                 dd($e);          
             }
 
-            return response()->json(['message' => 'Book added'], 200);
+            $book = Book::find($bookId);
+
+            return response()->json([
+                    'message' => 'Book added',
+                    'book' => $book
+                ], 200);
         }
 
         return response()->json([

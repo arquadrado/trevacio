@@ -44519,8 +44519,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     computed: {},
     methods: _extends({
-        openBook: function openBook(book) {
-            console.log(book, 'gonna open');
+        openBook: function openBook() {
+            this.setSelectedBook(this.response.book);
+            this.setModalComponent('get');
         },
         setBook: function setBook(book) {
             this.book = book;
@@ -44532,7 +44533,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             this.$emit('newBook');
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-        toggleModal: 'toggleModal'
+        toggleModal: 'toggleModal',
+        setSelectedBook: 'setSelectedBook',
+        setModalComponent: 'setModalComponent'
     }))
 });
 
@@ -44549,9 +44552,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-body"
   }, [_c('h3', [_vm._v("Book Added")]), _vm._v(" "), _c('button', {
     on: {
-      "click": _vm.toggleModal
+      "click": _vm.openBook
     }
-  }, [_vm._v("Close")])])]) : _vm._e(), _vm._v(" "), (_vm.status == 201) ? _c('div', {
+  }, [_vm._v("Open book")])])]) : _vm._e(), _vm._v(" "), (_vm.status == 201) ? _c('div', {
     staticClass: "book-found"
   }, [_c('div', {
     staticClass: "modal-body"
@@ -44787,6 +44790,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -44855,7 +44867,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
         toggleModal: 'toggleModal',
-        setSelectedBook: 'setSelectedBook'
+        setSelectedBook: 'setSelectedBook',
+        setModalComponent: 'setModalComponent'
     }))
 });
 
@@ -45024,7 +45037,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "book"
   }, [_c('div', {
     staticClass: "modal-body"
-  }, [_c('h3', [_vm._v("Here is the fuking book")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Title:")]), _vm._v(" " + _vm._s(_vm.selectedBook.title) + " ")]), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Author:")]), _vm._v(" " + _vm._s(_vm.selectedBook.author.name) + " ")])])]) : _vm._e(), _vm._v(" "), (!_vm.selectedBook && !_vm.response) ? _c('div', {
+  }, [_c('h3', [_vm._v("Here is the fuking book")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Title:")]), _vm._v(" " + _vm._s(_vm.selectedBook.title) + " ")]), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Author:")]), _vm._v(" " + _vm._s(_vm.selectedBook.author.name) + " ")]), _vm._v(" "), (_vm.selectedBook.in_library) ? _c('div', {
+    staticClass: "book-actions"
+  }, [_c('h4', [_vm._v("I can do stuff")])]) : _vm._e()]), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
+    staticClass: "modal-footer"
+  }, [_c('h4', [_vm._v("This book is not in your library. Add it to perform actions")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": function($event) {
+        _vm.setModalComponent('add')
+      }
+    }
+  }, [_vm._v("\n                Add book\n            ")])]) : _vm._e()]) : _vm._e(), _vm._v(" "), (!_vm.selectedBook && !_vm.response) ? _c('div', {
     staticClass: "getbook"
   }, [_c('div', {
     staticClass: "modal-body"

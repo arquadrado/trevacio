@@ -3,7 +3,7 @@
         <div class="success" v-if="status == 200">
             <div class="modal-body">
                 <h3>Book Added</h3>
-                <button @click="toggleModal">Close</button>
+                <button @click="openBook">Open book</button>
             </div>    
         </div>
         <div class="book-found" v-if="status == 201">
@@ -41,8 +41,9 @@
         },
         computed: {},
         methods: {
-            openBook(book) {
-                console.log(book, 'gonna open')
+            openBook() {
+                this.setSelectedBook(this.response.book)
+                this.setModalComponent('get')
             },
             setBook(book) {
                 this.book = book
@@ -54,7 +55,9 @@
                 this.$emit('newBook')
             },
             ...mapActions({
-                toggleModal: 'toggleModal'
+                toggleModal: 'toggleModal',
+                setSelectedBook: 'setSelectedBook',
+                setModalComponent: 'setModalComponent'
             })
         }
     }
