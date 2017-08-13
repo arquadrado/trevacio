@@ -8385,6 +8385,11 @@ body #app button {
   text-transform: uppercase;
 }
 
+body #app button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 body #app .gui-enter-active,
 body #app .gui-leave-active {
   left: 0;
@@ -8448,7 +8453,7 @@ body #app .book-keeper .interaction .prompt {
 body #app .book-keeper .interaction .fake-input {
   display: block;
   min-width: 105px;
-  max-width: 1050px;
+  max-width: 100vw;
   min-height: 63px;
   font-size: 35px;
 }
@@ -8484,6 +8489,34 @@ body #app .center {
 body #app .bottom {
   display: table-cell;
   vertical-align: bottom;
+}
+
+body #app .input-text {
+  margin-top: 28px;
+}
+
+body #app .input-text label {
+  display: block;
+}
+
+body #app .input-text input {
+  background-color: transparent;
+  border: 0;
+  width: calc(100vw - 90px);
+}
+
+body #app .input-text span {
+  display: block;
+  min-width: 105px;
+  max-width: calc(100vw - 90px);
+  min-height: 63px;
+  font-size: 35px;
+}
+
+body #app .input-text textarea {
+  width: calc(100vw - 90px);
+  border: 0;
+  background-color: transparent;
 }
 
 body .modal-mask {

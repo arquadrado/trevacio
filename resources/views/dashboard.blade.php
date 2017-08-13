@@ -28,7 +28,8 @@
 @section('handover')
 <script>
     window.handover = {
-        user: {!! Auth::user() !!}
+        user: {!! Auth::user() !!},
+        _token: '{{ csrf_token() }}'
     }
 </script>
 @endsection

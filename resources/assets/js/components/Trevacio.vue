@@ -43,7 +43,7 @@
         },
         computed: {
             guiToggleMessage() {
-                return this.showGui ? 'Send him away...' : 'Gui is around if you don\'t feel like talking...'
+                return this.showGui ? 'Send her away...' : 'Gui is around if you don\'t feel like talking...'
             },
             fakeInputStyle() {
                 return {

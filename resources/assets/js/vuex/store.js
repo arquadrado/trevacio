@@ -5,6 +5,10 @@ Vue.use(Vuex)
 const state = {
     colorSchemes: [
         {
+            details: '#269A9A',
+            background: '#10317C'
+        },
+        {
             details: '#ffffff',
             background: '#222222'
         },
@@ -46,21 +50,25 @@ const state = {
     },
     selectedAction: 'get',
     sessionInteractions: [],
+    selectedBook: null,
     books: [],
     showGui: false,
-    showModal: false
+    showModal: false,
+    modalComponent: null
 }
 
 const getters = {
+    getColorScheme: state => state.colorSchemes[state.selectedColorSchemeIndex],
     getUser: state => state.user,
     getUserInput: state => state.userInputs[0],
     getActions: state => state.actions,
     getSelectedAction: state => state.selectedAction,
     getSessionInteractionsCount: state => state.userInputs.length,
+    getSelectedBook: state => state.selectedBook,
     getBooks: state => state.books,
     getShowGui: state => state.showGui,
     getShowModal: state => state.showModal,
-    getColorScheme: state => state.colorSchemes[state.selectedColorSchemeIndex]
+    getModalComponent: state => state.modalComponent,
 }
 
 const actions = {
@@ -81,6 +89,12 @@ const actions = {
     },
     toggleModal({ commit, state }) {
         commit('TOGGLE_MODAL')
+    },
+    setModalComponent({ commit, state }, component) {
+        commit('SET_MODAL_COMPONENT', component)
+    },
+    setSelectedBook({ commit, state }, book) {
+        commit('SET_SELECTED_BOOK', book)
     }
 }
 
@@ -105,6 +119,12 @@ const mutations = {
     },
     'TOGGLE_MODAL': state => {
         state.showModal = !state.showModal
+    },
+    'SET_MODAL_COMPONENT': (state, component) => {
+        state.modalComponent = component
+    },
+    'SET_SELECTED_BOOK': (state, book) => {
+        state.selectedBook = book
     }
 }
 

@@ -3,7 +3,7 @@
         :style="style"
         @mouseenter="hoverOn"
         @mouseleave="hoverOff"
-        @click="toggleModal"
+        @click="execute"
     >
         <i class="material-icons">{{ icon }}</i>
     </li>
@@ -53,7 +53,10 @@
             })
         },
         methods: {
-
+            execute() {
+                this.setModalComponent(this.action)
+                this.toggleModal()
+            },
             hoverOn() {
                 this.hover = true
             },
@@ -61,7 +64,8 @@
                 this.hover = false
             },
             ...mapActions({
-                toggleModal: 'toggleModal'
+                toggleModal: 'toggleModal',
+                setModalComponent: 'setModalComponent'
             })
         }
     }

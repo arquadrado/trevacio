@@ -18,4 +18,10 @@ Route::get('/', function () {
 Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
+    Route::post('/save-book', 'DashboardController@saveBook')->name('save-book');
+    Route::post('/add-to-library', 'DashboardController@addToLibrary')->name('add-to-library');
+    Route::post('/get-book', 'DashboardController@getBook')->name('get-book');
+});

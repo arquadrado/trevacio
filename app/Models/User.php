@@ -31,6 +31,19 @@ class User extends Authenticatable
         'friendly_name'
     ];
 
+    /*
+     *
+     * Relations
+     *
+     *
+     *
+     **/
+
+    public function books()
+    {
+        return $this->belongsToMany(Book::class, 'user_book');
+    }
+
 
     /*
      *

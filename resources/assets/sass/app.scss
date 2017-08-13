@@ -19,6 +19,7 @@ body {
 		position: relative;
 		display: table;
 		transition: all 300ms ease-in;
+		//font-size: 28px;
 
 		h1 {
 			display: none;
@@ -30,6 +31,11 @@ body {
 			cursor: pointer;
 			font-weight: 900;
 			text-transform: uppercase;
+		}
+
+		button[disabled] {
+			opacity: 0.5;
+			cursor: not-allowed;
 		}
 
 		.gui-enter-active, .gui-leave-active {
@@ -82,7 +88,7 @@ body {
 				.fake-input {
 					display: block;
 					min-width: 105px;
-					max-width: 1050px;
+					max-width: 100vw;
 					min-height: 63px;
 					font-size: 35px;
 				}
@@ -120,6 +126,31 @@ body {
 		.bottom {
 			display: table-cell;
 			vertical-align: bottom;
+		}
+
+		.input-text {
+			margin-top: 28px;
+			label {
+				display: block;
+			}
+
+			input {
+				background-color: transparent;
+				border: 0;
+				width: calc(100vw - 90px);
+			}
+			span {
+				display: block;
+				min-width: 105px;
+				max-width: calc(100vw - 90px);
+				min-height: 63px;
+				font-size: 35px;
+			}
+			textarea {
+				width: calc(100vw - 90px);
+				border: 0;
+				background-color: transparent;
+			}
 		}
 
 	}

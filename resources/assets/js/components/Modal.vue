@@ -3,27 +3,9 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container" :style="style">
-
-                    <div class="modal-header">
-                        <slot name="header">
-                          default header
-                        </slot>
-                    </div>
-
-                    <div class="modal-body">
-                        <slot name="body">
-                         default body
-                        </slot>
-                    </div>
-
-                    <div class="modal-footer">
-                        <slot name="footer">
-                        default footer
-                            <button class="modal-default-button" @click="toggleModal">
-                             OK
-                            </button>
-                        </slot>
-                    </div>
+                    
+                    <component :is="component"></component>
+                    
                 </div>
             </div>
         </div>
@@ -32,8 +14,14 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import Add from './AddBook.vue'
+    import Get from './GetBook.vue'
 
     export default {
+        components: {
+            'add': Add,
+            'get': Get
+        },
         computed: {
             style() {
                 return {
@@ -43,7 +31,8 @@
                 }
             },
             ...mapGetters({
-                colorScheme: 'getColorScheme'
+                colorScheme: 'getColorScheme',
+                component: 'getModalComponent'
             })
         },
         methods: {
