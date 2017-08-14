@@ -39,10 +39,10 @@
                 </button>
             </div>
         </div>
-        <response 
+        <response
             :response="response.responseJSON"
             :status="response.status"
-            :books="books" 
+            :books="books"
             v-if="response && !selectedBook"
         ></response>
     </div>
@@ -62,7 +62,7 @@
                 books: null,
                 submitted: false,
                 response: false
-            } 
+            }
         },
         computed: {
             canSubmit() {
@@ -97,27 +97,32 @@
             },
             getBook() {
                 const self = this
-                $.post('get-book', {
-                    _token: window.handover._token,
-                    title: this.bookToGet,
-                }, function(response, status, responseContent) {
-                    
-                    if (responseContent.status == 200) {
-                        self.setSelectedBook(response.book)
-                        return
-                    }
+                self.fetchBook({
+                    book: self.bookToGet,
+                    successCallback: (response, status, responseContent) => {
 
-                    self.response = responseContent
-                    if (response.books) {
-                        self.books = response.books
+                        if (responseContent.status == 200) {
+                            self.setSelectedBook(response.book)
+                            return
+                        }
+
+                        self.response = responseContent
+                        if (response.books) {
+                            self.books = response.books
+                        }
+                        self.submitted = true
+                    },
+                    errorCallback: (response) => {
+                        self.response = response
+                        self.submitted = true
                     }
-                    self.submitted = true
                 })
             },
             ...mapActions({
                 toggleModal: 'toggleModal',
                 setSelectedBook: 'setSelectedBook',
-                setModalComponent: 'setModalComponent'
+                setModalComponent: 'setModalComponent',
+                fetchBook: 'fetchBook'
             })
         }
     }

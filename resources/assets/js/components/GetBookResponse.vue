@@ -12,7 +12,7 @@
         <div class="book-owned" v-if="status == 404">
             <div class="modal-body">
                 <h3>{{ response.message }}</h3>
-                <button @click="addBook(book)">
+                <button @click="setModalComponent('add')">
                     Add book
                 </button>
                 <button @click="toggleModal">Close</button>
@@ -29,25 +29,14 @@
         data() {
             return {
                 book: null
-            } 
+            }
         },
         computed: {},
         methods: {
-            openBook(book) {
-                console.log(book, 'gonna open')
-            },
-            setBook(book) {
-                this.book = book
-            },
-            addToLibrary() {
-                this.$emit('addToLibrary', this.book)
-            },
-            newBook() {
-                this.$emit('newBook')
-            },
             ...mapActions({
                 toggleModal: 'toggleModal',
-                setSelectedBook: 'setSelectedBook'
+                setSelectedBook: 'setSelectedBook',
+                setModalComponent: 'setModalComponent'
             })
         }
     }

@@ -42883,39 +42883,20 @@ module.exports = function spread(callback) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modules_appearance_js__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__modules_books_js__ = __webpack_require__(87);
 
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
 
+
+
+
 var state = {
-    colorSchemes: [{
-        details: '#269A9A',
-        background: '#10317C'
-    }, {
-        details: '#ffffff',
-        background: '#222222'
-    }, {
-        details: '#ffffff',
-        background: '#000000'
-    }, {
-        details: '#000000',
-        background: '#ffffff'
-    }, {
-        details: '#777777',
-        background: '#ffffff'
-    }, {
-        details: '#cccccc',
-        background: '#777777'
-    }, {
-        details: '#EB934A',
-        background: '#2D8D8D'
-    }, {
-        details: '#EBE44A',
-        background: '#703A9E'
-    }],
-    selectedColorSchemeIndex: 0,
     user: handover.user,
     userInputs: [],
+    sessionInteractions: [],
+
     actions: {
         add: 'Add book',
         get: 'Get book',
@@ -42925,42 +42906,35 @@ var state = {
         default: 'Ok, lets do this!'
     },
     selectedAction: 'get',
-    sessionInteractions: [],
-    selectedBook: null,
-    books: [],
+
     showGui: false,
+
     showModal: false,
     modalComponent: null
 };
 
 var getters = {
-    getColorScheme: function getColorScheme(state) {
-        return state.colorSchemes[state.selectedColorSchemeIndex];
-    },
     getUser: function getUser(state) {
         return state.user;
     },
     getUserInput: function getUserInput(state) {
         return state.userInputs[0];
     },
+    getSessionInteractionsCount: function getSessionInteractionsCount(state) {
+        return state.userInputs.length;
+    },
+
     getActions: function getActions(state) {
         return state.actions;
     },
     getSelectedAction: function getSelectedAction(state) {
         return state.selectedAction;
     },
-    getSessionInteractionsCount: function getSessionInteractionsCount(state) {
-        return state.userInputs.length;
-    },
-    getSelectedBook: function getSelectedBook(state) {
-        return state.selectedBook;
-    },
-    getBooks: function getBooks(state) {
-        return state.books;
-    },
+
     getShowGui: function getShowGui(state) {
         return state.showGui;
     },
+
     getShowModal: function getShowModal(state) {
         return state.showModal;
     },
@@ -42970,82 +42944,56 @@ var getters = {
 };
 
 var actions = {
-    setAction: function setAction(_ref, action) {
+    addUserInput: function addUserInput(_ref, input) {
         var commit = _ref.commit,
             state = _ref.state;
 
-        commit('SET_ACTION', action);
+        commit('ADD_USER_INPUT', input.trim());
     },
-    addUserInput: function addUserInput(_ref2, input) {
+    setAction: function setAction(_ref2, action) {
         var commit = _ref2.commit,
             state = _ref2.state;
 
-        commit('ADD_USER_INPUT', input.trim());
+        commit('SET_ACTION', action);
     },
-    addBook: function addBook(_ref3, book) {
+    toggleGui: function toggleGui(_ref3) {
         var commit = _ref3.commit,
             state = _ref3.state;
 
-        commit('ADD_BOOK', book);
+        commit('TOGGLE_GUI');
     },
-    toggleGui: function toggleGui(_ref4) {
+    toggleModal: function toggleModal(_ref4) {
         var commit = _ref4.commit,
             state = _ref4.state;
 
-        commit('TOGGLE_GUI');
+        commit('TOGGLE_MODAL');
     },
-    changeColorScheme: function changeColorScheme(_ref5) {
+    setModalComponent: function setModalComponent(_ref5, component) {
         var commit = _ref5.commit,
             state = _ref5.state;
 
-        commit('CHANGE_COLOR_SCHEME');
-    },
-    toggleModal: function toggleModal(_ref6) {
-        var commit = _ref6.commit,
-            state = _ref6.state;
-
-        commit('TOGGLE_MODAL');
-    },
-    setModalComponent: function setModalComponent(_ref7, component) {
-        var commit = _ref7.commit,
-            state = _ref7.state;
-
         commit('SET_MODAL_COMPONENT', component);
-    },
-    setSelectedBook: function setSelectedBook(_ref8, book) {
-        var commit = _ref8.commit,
-            state = _ref8.state;
-
-        commit('SET_SELECTED_BOOK', book);
     }
 };
 
 var mutations = {
-    'SET_ACTION': function SET_ACTION(state, action) {
-        state.selectedAction = action;
-    },
     'ADD_USER_INPUT': function ADD_USER_INPUT(state, input) {
         state.userInputs.unshift(input);
     },
-    'ADD_BOOK': function ADD_BOOK(state, book) {
-        state.books.unshift(book);
+
+    'SET_ACTION': function SET_ACTION(state, action) {
+        state.selectedAction = action;
     },
+
     'TOGGLE_GUI': function TOGGLE_GUI(state) {
         state.showGui = !state.showGui;
     },
-    'CHANGE_COLOR_SCHEME': function CHANGE_COLOR_SCHEME(state) {
-        var currentIndex = state.selectedColorSchemeIndex;
-        currentIndex++;
-        state.selectedColorSchemeIndex = currentIndex % state.colorSchemes.length;
-    },
+
     'TOGGLE_MODAL': function TOGGLE_MODAL(state) {
         state.showModal = !state.showModal;
     },
     'SET_MODAL_COMPONENT': function SET_MODAL_COMPONENT(state, component) {
         state.modalComponent = component;
-    },
-    'SET_SELECTED_BOOK': function SET_SELECTED_BOOK(state, book) {
-        state.selectedBook = book;
     }
 };
 
@@ -43054,7 +43002,10 @@ var mutations = {
     actions: actions,
     getters: getters,
     mutations: mutations,
-    modules: {},
+    modules: {
+        appearance: __WEBPACK_IMPORTED_MODULE_2__modules_appearance_js__["a" /* default */],
+        books: __WEBPACK_IMPORTED_MODULE_3__modules_books_js__["a" /* default */]
+    },
     strict: true
 }));
 
@@ -43075,7 +43026,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/Trevacio.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Trevacio.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Trevacio.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43086,9 +43037,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-71dbe689", Component.options)
+    hotAPI.createRecord("data-v-9b8daf7c", Component.options)
   } else {
-    hotAPI.reload("data-v-71dbe689", Component.options)
+    hotAPI.reload("data-v-9b8daf7c", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43233,7 +43184,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/DefaultAction.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/DefaultAction.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] DefaultAction.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43244,9 +43195,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-067cdc84", Component.options)
+    hotAPI.createRecord("data-v-f74505aa", Component.options)
   } else {
-    hotAPI.reload("data-v-067cdc84", Component.options)
+    hotAPI.reload("data-v-f74505aa", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43341,7 +43292,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-067cdc84", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-f74505aa", module.exports)
   }
 }
 
@@ -43362,7 +43313,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/GetBook.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/GetBook.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GetBook.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43373,9 +43324,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cf4e7868", Component.options)
+    hotAPI.createRecord("data-v-30ccadb3", Component.options)
   } else {
-    hotAPI.reload("data-v-cf4e7868", Component.options)
+    hotAPI.reload("data-v-30ccadb3", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43519,7 +43470,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-cf4e7868", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-30ccadb3", module.exports)
   }
 }
 
@@ -43540,7 +43491,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/AddBook.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/AddBook.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] AddBook.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43551,9 +43502,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3b279bd2", Component.options)
+    hotAPI.createRecord("data-v-7ae01bfe", Component.options)
   } else {
-    hotAPI.reload("data-v-3b279bd2", Component.options)
+    hotAPI.reload("data-v-7ae01bfe", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43654,7 +43605,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-3b279bd2", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-7ae01bfe", module.exports)
   }
 }
 
@@ -43675,7 +43626,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/ListBooks.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/ListBooks.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] ListBooks.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43686,9 +43637,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0d42354e", Component.options)
+    hotAPI.createRecord("data-v-447ff180", Component.options)
   } else {
-    hotAPI.reload("data-v-0d42354e", Component.options)
+    hotAPI.reload("data-v-447ff180", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43813,7 +43764,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-0d42354e", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-447ff180", module.exports)
   }
 }
 
@@ -43866,7 +43817,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-71dbe689", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-9b8daf7c", module.exports)
   }
 }
 
@@ -43887,7 +43838,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/Gui.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Gui.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Gui.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43898,9 +43849,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-2e231f99", Component.options)
+    hotAPI.createRecord("data-v-96e02380", Component.options)
   } else {
-    hotAPI.reload("data-v-2e231f99", Component.options)
+    hotAPI.reload("data-v-96e02380", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43998,7 +43949,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/GuiAction.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/GuiAction.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GuiAction.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44009,9 +43960,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-d3622ba2", Component.options)
+    hotAPI.createRecord("data-v-6199df96", Component.options)
   } else {
-    hotAPI.reload("data-v-d3622ba2", Component.options)
+    hotAPI.reload("data-v-6199df96", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44122,7 +44073,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-d3622ba2", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-6199df96", module.exports)
   }
 }
 
@@ -44155,7 +44106,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-2e231f99", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-96e02380", module.exports)
   }
 }
 
@@ -44176,7 +44127,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/Modal.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Modal.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Modal.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44187,9 +44138,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-ebef72ea", Component.options)
+    hotAPI.createRecord("data-v-287c0772", Component.options)
   } else {
-    hotAPI.reload("data-v-ebef72ea", Component.options)
+    hotAPI.reload("data-v-287c0772", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44270,7 +44221,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/AddBook.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/AddBook.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] AddBook.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44281,9 +44232,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-27cedb08", Component.options)
+    hotAPI.createRecord("data-v-0f5403a2", Component.options)
   } else {
-    hotAPI.reload("data-v-27cedb08", Component.options)
+    hotAPI.reload("data-v-0f5403a2", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44443,7 +44394,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/AddBookResponse.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/AddBookResponse.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] AddBookResponse.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44454,9 +44405,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-42f86a2e", Component.options)
+    hotAPI.createRecord("data-v-29a4d710", Component.options)
   } else {
-    hotAPI.reload("data-v-42f86a2e", Component.options)
+    hotAPI.reload("data-v-29a4d710", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44597,7 +44548,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-42f86a2e", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-29a4d710", module.exports)
   }
 }
 
@@ -44694,7 +44645,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-27cedb08", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-0f5403a2", module.exports)
   }
 }
 
@@ -44715,7 +44666,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/GetBook.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/GetBook.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GetBook.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44726,9 +44677,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-44892686", Component.options)
+    hotAPI.createRecord("data-v-a37ae038", Component.options)
   } else {
-    hotAPI.reload("data-v-44892686", Component.options)
+    hotAPI.reload("data-v-a37ae038", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44848,27 +44799,32 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         },
         getBook: function getBook() {
             var self = this;
-            $.post('get-book', {
-                _token: window.handover._token,
-                title: this.bookToGet
-            }, function (response, status, responseContent) {
+            self.fetchBook({
+                book: self.bookToGet,
+                successCallback: function successCallback(response, status, responseContent) {
 
-                if (responseContent.status == 200) {
-                    self.setSelectedBook(response.book);
-                    return;
-                }
+                    if (responseContent.status == 200) {
+                        self.setSelectedBook(response.book);
+                        return;
+                    }
 
-                self.response = responseContent;
-                if (response.books) {
-                    self.books = response.books;
+                    self.response = responseContent;
+                    if (response.books) {
+                        self.books = response.books;
+                    }
+                    self.submitted = true;
+                },
+                errorCallback: function errorCallback(response) {
+                    self.response = response;
+                    self.submitted = true;
                 }
-                self.submitted = true;
             });
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
         toggleModal: 'toggleModal',
         setSelectedBook: 'setSelectedBook',
-        setModalComponent: 'setModalComponent'
+        setModalComponent: 'setModalComponent',
+        fetchBook: 'fetchBook'
     }))
 });
 
@@ -44889,7 +44845,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/GetBookResponse.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/GetBookResponse.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GetBookResponse.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44900,9 +44856,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7fb1d79e", Component.options)
+    hotAPI.createRecord("data-v-6a5a3876", Component.options)
   } else {
-    hotAPI.reload("data-v-7fb1d79e", Component.options)
+    hotAPI.reload("data-v-6a5a3876", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44956,22 +44912,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     computed: {},
-    methods: _extends({
-        openBook: function openBook(book) {
-            console.log(book, 'gonna open');
-        },
-        setBook: function setBook(book) {
-            this.book = book;
-        },
-        addToLibrary: function addToLibrary() {
-            this.$emit('addToLibrary', this.book);
-        },
-        newBook: function newBook() {
-            this.$emit('newBook');
-        }
-    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
         toggleModal: 'toggleModal',
-        setSelectedBook: 'setSelectedBook'
+        setSelectedBook: 'setSelectedBook',
+        setModalComponent: 'setModalComponent'
     }))
 });
 
@@ -45001,7 +44945,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('h3', [_vm._v(_vm._s(_vm.response.message))]), _vm._v(" "), _c('button', {
     on: {
       "click": function($event) {
-        _vm.addBook(_vm.book)
+        _vm.setModalComponent('add')
       }
     }
   }, [_vm._v("\n                Add book\n            ")]), _vm._v(" "), _c('button', {
@@ -45014,7 +44958,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-7fb1d79e", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-6a5a3876", module.exports)
   }
 }
 
@@ -45101,7 +45045,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-44892686", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-a37ae038", module.exports)
   }
 }
 
@@ -45129,7 +45073,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-ebef72ea", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-287c0772", module.exports)
   }
 }
 
@@ -45138,6 +45082,146 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var state = {
+    colorSchemes: [{
+        details: '#ffffff',
+        background: '#10317C'
+    }, {
+        details: '#269A9A',
+        background: '#10317C'
+    }, {
+        details: '#ffffff',
+        background: '#222222'
+    }, {
+        details: '#ffffff',
+        background: '#000000'
+    }, {
+        details: '#000000',
+        background: '#ffffff'
+    }, {
+        details: '#777777',
+        background: '#ffffff'
+    }, {
+        details: '#cccccc',
+        background: '#777777'
+    }, {
+        details: '#EB934A',
+        background: '#2D8D8D'
+    }, {
+        details: '#EBE44A',
+        background: '#703A9E'
+    }],
+    selectedColorSchemeIndex: 0
+};
+
+var getters = {
+    getColorScheme: function getColorScheme(state) {
+        return state.colorSchemes[state.selectedColorSchemeIndex];
+    }
+};
+
+var actions = {
+    changeColorScheme: function changeColorScheme(_ref) {
+        var commit = _ref.commit,
+            state = _ref.state;
+
+        commit('CHANGE_COLOR_SCHEME');
+    }
+};
+
+var mutations = {
+    'CHANGE_COLOR_SCHEME': function CHANGE_COLOR_SCHEME(state) {
+        var currentIndex = state.selectedColorSchemeIndex;
+        currentIndex++;
+        state.selectedColorSchemeIndex = currentIndex % state.colorSchemes.length;
+    }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    state: state,
+    getters: getters,
+    actions: actions,
+    mutations: mutations
+});
+
+/***/ }),
+/* 87 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var state = {
+    selectedBook: null,
+    books: []
+};
+
+var getters = {
+    getSelectedBook: function getSelectedBook(state) {
+        return state.selectedBook;
+    },
+    getBooks: function getBooks(state) {
+        return state.books;
+    }
+};
+
+var actions = {
+    addBook: function addBook(_ref, book) {
+        var commit = _ref.commit,
+            state = _ref.state;
+
+        commit('ADD_BOOK', book);
+    },
+    fetchBook: function fetchBook(_ref2, args) {
+        var commit = _ref2.commit,
+            dispatch = _ref2.dispatch,
+            state = _ref2.state;
+
+        $.post('get-book', {
+            _token: window.handover._token,
+            title: args.book
+        }, args.successCallback).done(function (response, status, responseContent) {
+            if (responseContent.status == 200) {
+                dispatch('setSelectedBook', response.book);
+            }
+        }).fail(args.errorCallback);
+    },
+    setSelectedBook: function setSelectedBook(_ref3, book) {
+        var commit = _ref3.commit,
+            state = _ref3.state;
+
+        commit('SET_SELECTED_BOOK', book);
+    }
+};
+
+var mutations = {
+    'ADD_BOOK': function ADD_BOOK(state, book) {
+        state.books.unshift(book);
+    },
+    'SET_SELECTED_BOOK': function SET_SELECTED_BOOK(state, book) {
+        state.selectedBook = book;
+    }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    state: state,
+    getters: getters,
+    actions: actions,
+    mutations: mutations
+});
 
 /***/ })
 /******/ ]);
