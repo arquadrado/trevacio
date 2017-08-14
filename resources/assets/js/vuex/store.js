@@ -61,7 +61,6 @@ const actions = {
     },
 }
 
-
 const mutations = {
     'ADD_USER_INPUT': (state, input) => {
         state.userInputs.unshift(input)

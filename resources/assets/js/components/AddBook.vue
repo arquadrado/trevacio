@@ -24,18 +24,18 @@
             </div>
 
             <div class="modal-footer">
-                <button class="modal-default-button" :disabled="!canSubmit" @click="saveBook">
+                <button class="modal-default-button" :disabled="!canSubmit" @click="addBookToLibrary">
                     Save
                 </button>
             </div>
         </div>
-        <response 
+        <response
             :response="response.responseJSON"
             :status="response.status"
-            :books="books" 
+            :books="books"
             v-if="response"
-            @addToLibrary="addToLibrary"
-            @newBook="saveBook($event, true)"
+            @inLibrary="addBookToUserCollection"
+            @newBook="addBookToLibrary($event, true)"
         ></response>
     </div>
 </template>
@@ -57,7 +57,7 @@
                 books: null,
                 submitted: false,
                 response: false
-            } 
+            }
         },
         computed: {
             canSubmit() {
@@ -81,40 +81,92 @@
                 }
             },
             ...mapGetters({
-                colorScheme: 'getColorScheme'
+                colorScheme: 'getColorScheme',
+                userCollection: 'getUserCollection',
+                library: 'getLibrary'
             })
         },
         methods: {
-            addToLibrary(book) {
-                const self = this 
-                $.post('add-to-library', {
-                    _token: window.handover._token,
-                    book: book
-                }, function(response, status, responseContent) {
-                    console.log(response, status, responseContent, 'Esta')
-                    self.response = responseContent
-                    self.submitted = true
+            addBookToUserCollection(book) {
+                const self = this
+                self.addToUserCollection({
+                    book: book,
+                    successCallback: (response, status, responseContent) => {
+                        self.response = responseContent
+                        self.submitted = true
+                    },
+                    errorCallback: (response, status, responseContent) => {
+                        console.log('total failure')
+                    }
                 })
             },
-            saveBook(event, force = null) {
-                console.log('xis', force)
-                const self = this
-                $.post('save-book', {
-                    _token: window.handover._token,
-                    title: this.book.title,
-                    author: this.book.author,
-                    force: force,
-                }, function(response, status, responseContent) {
-                    console.log(response, status, responseContent)
-                    self.response = responseContent
-                    if (response.books) {
-                        self.books = response.books
+            addBookToLibrary(event, force = null) {
+                const books = []
+                for (let id in this.userCollection) {
+                    if (this.userCollection[id].title.includes(this.book.title)) {
+                        books.push(this.userCollection[id])
+                        break
                     }
-                    self.submitted = true
+
+                    let a = this.book.title.split(' ').filter((word) => {
+                        return word.length > 2
+                    })
+
+                    let b = this.userCollection[id].title.split(' ')
+
+                    let matches = a.reduce((reduced, word) => {
+                        if (b.indexOf(word) > -1) {
+                            reduced++
+                        }
+                        return reduced
+                    }, 0)
+
+                    const matchPercentage = matches * 100 / a.length
+
+                    if (matches > 50) {
+                        books.push(this.userCollection[id])
+                    }
+
+                }
+
+                console.log(books, 'hey books')
+                if (books.length > 0) {
+                    console.log('entered')
+                    this.response = {
+                        responseJSON: {
+                            message: 'Found these fukers'
+                        },
+                        status: 201
+                    }
+                    this.books = books
+                    this.submitted = true
+                    return
+                }
+
+                console.log('I will try')
+                const self = this
+                self.addToLibrary({
+                    book: {
+                        title: self.book.title,
+                        author: self.book.author
+                    },
+                    force: force,
+                    successCallback: (response, status, responseContent) => {
+                        self.response = responseContent
+                        if (response.books) {
+                            self.books = response.books
+                        }
+                        self.submitted = true
+                    },
+                    errorCallback: (response, status, responseContent) => {
+                        console.log('total failure')
+                    }
                 })
             },
             ...mapActions({
-                toggleModal: 'toggleModal'
+                toggleModal: 'toggleModal',
+                addToLibrary: 'addToLibrary',
+                addToUserCollection: 'addToUserCollection'
             })
         }
     }

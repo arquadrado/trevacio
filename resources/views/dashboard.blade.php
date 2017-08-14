@@ -28,7 +28,9 @@
 @section('handover')
 <script>
     window.handover = {
-        user: {!! Auth::user() !!},
+        user: {!! $user !!},
+        userCollection: {!! json_encode($userCollection) !!},
+        library: {!! json_encode($library) !!},
         _token: '{{ csrf_token() }}'
     }
 </script>

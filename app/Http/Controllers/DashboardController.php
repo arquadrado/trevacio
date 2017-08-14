@@ -27,7 +27,23 @@ class DashboardController extends Controller
      */
     public function dashboard()
     {
-        return view('dashboard');
+        $user = Auth::user();
+
+        $userCollection = $user->books->reduce(function($reduced, $book) {
+            $reduced[$book->id] = $book;
+            return $reduced;
+        }, []);
+
+        $library = Book::all()->reduce(function($reduced, $book) {
+            $reduced[$book->id] = $book;
+            return $reduced;
+        }, []);
+
+        return view('dashboard', [
+            'user' => $user,
+            'userCollection' => $userCollection,
+            'library' => $library
+        ]);
     }
 
     public function getBook()
@@ -55,7 +71,7 @@ class DashboardController extends Controller
                 ], 201);
     }
 
-    public function addToLibrary()
+    public function addToUserCollection()
     {
         $this->validate(request(), ['book' => 'required']);
 
@@ -108,11 +124,11 @@ class DashboardController extends Controller
                             ]);
 
                     $bookId = $book->id;
-                    
+
                     Auth::user()->books()->attach($book->id);
                 });
             } catch (\Exception $e) {
-                dd($e);          
+                dd($e);
             }
 
             $book = Book::find($bookId);

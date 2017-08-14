@@ -4,7 +4,7 @@
             <div class="modal-body">
                 <h3>Book Added</h3>
                 <button @click="openBook">Open book</button>
-            </div>    
+            </div>
         </div>
         <div class="book-found" v-if="status == 201">
             <div class="modal-body">
@@ -37,7 +37,7 @@
         data() {
             return {
                 book: null
-            } 
+            }
         },
         computed: {},
         methods: {
@@ -49,7 +49,7 @@
                 this.book = book
             },
             addToLibrary() {
-                this.$emit('addToLibrary', this.book)
+                this.$emit('inLibrary', this.book)
             },
             newBook() {
                 this.$emit('newBook')

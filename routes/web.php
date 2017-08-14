@@ -22,6 +22,6 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
     Route::post('/save-book', 'DashboardController@saveBook')->name('save-book');
-    Route::post('/add-to-library', 'DashboardController@addToLibrary')->name('add-to-library');
+    Route::post('/add-to-user-collection', 'DashboardController@addToUserCollection')->name('add-to-user-collection');
     Route::post('/get-book', 'DashboardController@getBook')->name('get-book');
 });
