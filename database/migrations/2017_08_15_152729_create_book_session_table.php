@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateReadingSessionsTable extends Migration
+class CreateBookSessionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateReadingSessionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('reading_sessions', function (Blueprint $table) {
+        Schema::create('book_session', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('start')->unsigned();
-            $table->integer('end')->unsigned();
-            $table->date('date');
-            $table->timestamps();
+            $table->integer('book_id')->unsigned();
+            $table->integer('session_id')->unsigned();
         });
     }
 
@@ -29,6 +27,6 @@ class CreateReadingSessionsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('reading_sessions');
+        Schema::drop('book_session');
     }
 }

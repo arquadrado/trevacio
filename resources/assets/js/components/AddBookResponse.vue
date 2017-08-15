@@ -42,7 +42,7 @@
         computed: {},
         methods: {
             openBook() {
-                this.setSelectedBook(this.response.book)
+                this.setSelectedBook(this.response.book.id)
                 this.setModalComponent('get')
             },
             setBook(book) {

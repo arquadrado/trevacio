@@ -42,12 +42,14 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import CollectionHandler from './../mixins/CollectionHandler.js'
     import Response from './AddBookResponse.vue'
 
     export default {
         components: {
             'response': Response
         },
+        mixins: [CollectionHandler],
         data() {
             return {
                 book: {
@@ -101,62 +103,63 @@
                 })
             },
             addBookToLibrary(event, force = null) {
-                const books = []
-                for (let id in this.userCollection) {
-                    if (this.userCollection[id].title.includes(this.book.title)) {
-                        books.push(this.userCollection[id])
-                        break
-                    }
-
-                    let a = this.book.title.split(' ').filter((word) => {
-                        return word.length > 2
+                const self = this
+                if (force) {
+                    self.addToLibrary({
+                        book: {
+                            title: self.book.title,
+                            author: self.book.author
+                        },
+                        force: force,
+                        successCallback: (response, status, responseContent) => {
+                            self.response = responseContent
+                            if (response.books) {
+                                self.books = response.books
+                            }
+                            self.submitted = true
+                        },
+                        errorCallback: (response, status, responseContent) => {
+                            console.log('total failure')
+                        }
                     })
 
-                    let b = this.userCollection[id].title.split(' ')
-
-                    let matches = a.reduce((reduced, word) => {
-                        if (b.indexOf(word) > -1) {
-                            reduced++
-                        }
-                        return reduced
-                    }, 0)
-
-                    const matchPercentage = matches * 100 / a.length
-
-                    if (matches > 50) {
-                        books.push(this.userCollection[id])
-                    }
-
-                }
-
-                console.log(books, 'hey books')
-                if (books.length > 0) {
-                    console.log('entered')
-                    this.response = {
-                        responseJSON: {
-                            message: 'Found these fukers'
-                        },
-                        status: 201
-                    }
-                    this.books = books
-                    this.submitted = true
                     return
                 }
-
-                console.log('I will try')
-                const self = this
-                self.addToLibrary({
-                    book: {
-                        title: self.book.title,
-                        author: self.book.author
-                    },
-                    force: force,
+                
+                this.updateLibrary({
                     successCallback: (response, status, responseContent) => {
-                        self.response = responseContent
-                        if (response.books) {
-                            self.books = response.books
+
+                        const books = this.findMatches(this.book.title, this.library)
+
+                        if (books.length > 0) {
+                            this.response = {
+                                responseJSON: {
+                                    message: 'Found these fukers'
+                                },
+                                status: 201
+                            }
+                            this.books = books
+                            this.submitted = true
+                            return
                         }
-                        self.submitted = true
+
+                        self.addToLibrary({
+                            book: {
+                                title: self.book.title,
+                                author: self.book.author
+                            },
+                            force: force,
+                            successCallback: (response, status, responseContent) => {
+                                self.response = responseContent
+                                if (response.books) {
+                                    self.books = response.books
+                                }
+                                self.submitted = true
+                            },
+                            errorCallback: (response, status, responseContent) => {
+                                console.log('total failure')
+                            }
+                        })
                     },
                     errorCallback: (response, status, responseContent) => {
                         console.log('total failure')
@@ -166,7 +169,8 @@
             ...mapActions({
                 toggleModal: 'toggleModal',
                 addToLibrary: 'addToLibrary',
-                addToUserCollection: 'addToUserCollection'
+                addToUserCollection: 'addToUserCollection',
+                updateLibrary: 'updateLibrary'
             })
         }
     }

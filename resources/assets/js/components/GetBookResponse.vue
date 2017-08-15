@@ -3,10 +3,11 @@
         <div class="book-found" v-if="status == 201">
             <div class="modal-body">
                 <h3>{{ response.message }}</h3>
-                <button @click="setSelectedBook(book)" v-for="book in books">
+                <button @click="setSelectedBook(book.id)" v-for="book in books">
                     {{ book.title }} - {{ book.author.name }}
                 </button>
                 <br>
+                <button @click="searchAgain">Search again</button>
             </div>
         </div>
         <div class="book-owned" v-if="status == 404">
@@ -15,6 +16,7 @@
                 <button @click="setModalComponent('add')">
                     Add book
                 </button>
+                <button @click="searchAgain">Search again</button>
                 <button @click="toggleModal">Close</button>
             </div>
         </div>
@@ -33,10 +35,14 @@
         },
         computed: {},
         methods: {
+            searchAgain() {
+                console.log('gonna search')
+                this.$emit('searchAgain')
+            },
             ...mapActions({
                 toggleModal: 'toggleModal',
                 setSelectedBook: 'setSelectedBook',
-                setModalComponent: 'setModalComponent'
+                setModalComponent: 'setModalComponent',
             })
         }
     }

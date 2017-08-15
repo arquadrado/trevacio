@@ -16,11 +16,15 @@
     import { mapGetters, mapActions } from 'vuex'
     import Add from './AddBook.vue'
     import Get from './GetBook.vue'
+    import ReadingSession from './ReadingSession.vue'
+    import ReadingSessionList from './ReadingSessionList.vue'
 
     export default {
         components: {
             'add': Add,
-            'get': Get
+            'get': Get,
+            'reading-session': ReadingSession,
+            'reading-session-list': ReadingSessionList
         },
         computed: {
             style() {

@@ -1,12 +1,19 @@
 
 const state = {
     selectedBook: null,
+    selectedReadingSession: null,
     userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
     library: typeof handover.library !== 'undefined' ? handover.library : [],
 }
 
 const getters = {
-    getSelectedBook: state => state.selectedBook,
+    getSelectedBook: state => {
+        if (state.selectedBook) {
+            return state.library[state.selectedBook]
+        }
+        return null
+    },
+    getSelectedReadingSession: state => state.selectedReadingSession,
     getUserCollection: state => state.userCollection,
     getLibrary: state => state.library,
 }
@@ -46,14 +53,41 @@ const actions = {
         }, args.successCallback)
         .done((response, status, responseContent) => {
             if (responseContent.status == 200) {
-                dispatch('setSelectedBook', response.book)
+                dispatch('setSelectedBook', response.book.id)
             }
         })
         .fail(args.errorCallback)
     },
-    setSelectedBook({ commit, state }, book) {
-        commit('SET_SELECTED_BOOK', book)
+    setSelectedBook({ commit, state }, id) {
+        commit('SET_SELECTED_BOOK', id)
     },
+    setSelectedReadingSession({ commit }, session) {
+        commit('SET_SELECTED_READING_SESSION', session)
+    },
+    updateLibrary({ commit }, args) {
+        $.get('update-library', (response) => {
+            console.log(response)
+            commit('UPDATE_LIBRARY', {
+                userCollection: response.userCollection,
+                library: response.library
+            })
+        }).done(args.successCallback)
+        .fail(args.errorCallback)
+    },
+    saveReadingSession({ commit, dispatch, state }, args) {
+        $.post('save-reading-session', {
+            _token: window.handover._token,
+            session: args.session,
+            bookId: args.bookId
+        }, args.successCallback)
+        .done((response, status, responseContent) => {
+            if (responseContent.status == 200) {
+                dispatch('setSelectedReadingSession', response.session)
+                dispatch('updateLibrary', args)
+            }
+        })
+        .fail(args.errorCallback)
+    }
 }
 
 const mutations = {
@@ -62,10 +96,21 @@ const mutations = {
     },
     'ADD_TO_USER_COLLECTION': (state, book) => {
         state.userCollection[book.id] = book
+        if (state.selectedBook) {
+            state.userCollection[book.id].in_library = 1
+            state.library[book.id].in_library = 1
+        }
     },
     'SET_SELECTED_BOOK': (state, book) => {
         state.selectedBook = book
     },
+    'SET_SELECTED_READING_SESSION': (state, session) => {
+        state.selectedReadingSession = session
+    },
+    'UPDATE_LIBRARY': (state, data) => {
+        state.userCollection = data.userCollection
+        state.library = data.library
+    }
 }
 
 export default {

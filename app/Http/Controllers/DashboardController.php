@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Author;
+use App\Models\ReadingSession;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -143,5 +144,53 @@ class DashboardController extends Controller
                                 'message' => 'Found somebooks with the same title',
                                 'books' => $books
                             ], 201);
+    }
+
+    public function updateLibrary()
+    {
+        $user = Auth::user();
+
+        $userCollection = $user->books->reduce(function ($reduced, $book) {
+            $reduced[$book->id] = $book;
+            return $reduced;
+        }, []);
+
+        $library = Book::all()->reduce(function ($reduced, $book) {
+            $reduced[$book->id] = $book;
+            return $reduced;
+        }, []);
+
+        return response()->json([
+            'message' => 'All good',
+            'user' => $user,
+            'userCollection' => $userCollection,
+            'library' => $library
+        ], 200);
+    }
+
+    public function saveReadingSession()
+    {
+        $this->validate(request(), ['session' => 'required', 'bookId' => 'required']);
+
+        $user = Auth::user();
+        $book = Book::find(request('bookId'));
+
+        if (is_null($user) || is_null($book)) {
+            return response()->json(['message' => 'Critical error'], 404);
+        }
+
+        $readingSession = null;
+        try {
+            DB::transaction(function () use ($book, $user, &$readingSession) {
+                $readingSession = ReadingSession::create(request('session'));
+                $user->readingSessions()->attach($readingSession);
+                $book->readingSessions()->attach($readingSession);
+            });
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
+
+        return response()->json(['message' => 'Session Saved', 'session' => $readingSession], 200);
+
     }
 }

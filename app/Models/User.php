@@ -44,6 +44,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Book::class, 'user_book');
     }
 
+    public function readingSessions()
+    {
+        return $this->belongsToMany(ReadingSession::class, 'user_session', 'user_id', 'session_id');
+    }
 
     /*
      *

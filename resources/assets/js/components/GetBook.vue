@@ -13,12 +13,13 @@
                 <span><strong>Title:</strong> {{ selectedBook.title }} </span>
                 <span><strong>Author:</strong> {{ selectedBook.author.name }} </span>
                 <div class="book-actions" v-if="selectedBook.in_library">
-                    <h4>I can do stuff</h4>
+                    <h4 @click="showReadingSessionList">See reading sessions</h4>
+                    <h4 @click="addReadingSession">Add reading session</h4>
                 </div>
             </div>
             <div class="modal-footer" v-if="!selectedBook.in_library">
                 <h4>This book is not in your library. Add it to perform actions</h4>
-                <button class="modal-default-button" @click="setModalComponent('add')">
+                <button class="modal-default-button" @click="addBookToUserCollection">
                     Add book
                 </button>
             </div>
@@ -44,18 +45,21 @@
             :status="response.status"
             :books="books"
             v-if="response && !selectedBook"
+            @searchAgain="searchAgain"
         ></response>
     </div>
 </template>
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import CollectionHandler from './../mixins/CollectionHandler.js'
     import Response from './GetBookResponse.vue'
 
     export default {
         components: {
             'response': Response
         },
+        mixins: [CollectionHandler],
         data() {
             return {
                 bookToGet: '',
@@ -87,42 +91,93 @@
             },
             ...mapGetters({
                 colorScheme: 'getColorScheme',
-                selectedBook: 'getSelectedBook'
+                selectedBook: 'getSelectedBook',
+                userCollection: 'getUserCollection',
+                library: 'getLibrary'
             })
         },
         methods: {
+            showReadingSessionList() {
+                this.setModalComponent('reading-session-list')
+            },
+            addReadingSession() {
+                this.setSelectedReadingSession(null)
+                this.setModalComponent('reading-session')
+            },
+            addBookToUserCollection(book) {
+                const self = this
+                self.addToUserCollection({
+                    book: self.selectedBook,
+                    successCallback: (response, status, responseContent) => {
+                        console.log('success')
+                    },
+                    errorCallback: (response, status, responseContent) => {
+                        console.log('total failure')
+                    }
+                })
+            },
+            searchAgain() {
+                this.bookToGet = ''
+                this.response = false
+            },
             close() {
                 this.setSelectedBook(null)
                 this.toggleModal()
             },
             getBook() {
-                const self = this
-                self.fetchBook({
-                    book: self.bookToGet,
+                this.updateLibrary({
                     successCallback: (response, status, responseContent) => {
 
-                        if (responseContent.status == 200) {
-                            self.setSelectedBook(response.book)
+                        const books = this.findMatches(this.bookToGet, this.library)
+
+                        if (books.length > 0) {
+                            this.response = {
+                                responseJSON: {
+                                    message: 'Found these fukers'
+                                },
+                                status: 201
+                            }
+                            this.books = books
+                            this.submitted = true
                             return
                         }
 
-                        self.response = responseContent
-                        if (response.books) {
-                            self.books = response.books
-                        }
-                        self.submitted = true
+                        const self = this
+                        self.fetchBook({
+                            book: self.bookToGet,
+                            successCallback: (response, status, responseContent) => {
+
+                                if (responseContent.status == 200) {
+                                    self.setSelectedBook(response.book.id)
+                                    return
+                                }
+
+                                self.response = responseContent
+                                if (response.books) {
+                                    self.books = response.books
+                                }
+                                self.submitted = true
+                            },
+                            errorCallback: (response) => {
+                                self.response = response
+                                self.submitted = true
+                            }
+                        })
                     },
-                    errorCallback: (response) => {
-                        self.response = response
-                        self.submitted = true
+                    errorCallback: (response, status, responseContent) => {
+                        console.log('total failure')
                     }
                 })
+                        
             },
             ...mapActions({
                 toggleModal: 'toggleModal',
                 setSelectedBook: 'setSelectedBook',
+                setSelectedReadingSession: 'setSelectedReadingSession',
                 setModalComponent: 'setModalComponent',
-                fetchBook: 'fetchBook'
+                fetchBook: 'fetchBook',
+                updateLibrary: 'updateLibrary',
+                addToUserCollection: 'addToUserCollection',
             })
         }
     }
