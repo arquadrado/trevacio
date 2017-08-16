@@ -3,7 +3,7 @@
 
         <div class="modal-header">
             <h3 class="action">I will GET a fucking book!</h3>
-            <button @click="close">close</button>
+            <button class="modal-default-button" @click="close">close</button>
         </div>
 
         <div class="book" v-if="selectedBook">
@@ -17,11 +17,15 @@
                     <h4 @click="addReadingSession">Add reading session</h4>
                 </div>
             </div>
-            <div class="modal-footer" v-if="!selectedBook.in_library">
-                <h4>This book is not in your library. Add it to perform actions</h4>
-                <button class="modal-default-button" @click="addBookToUserCollection">
-                    Add book
-                </button>
+            <div class="modal-footer">
+                <button class="modal-default-button" @click="searchBook">Search book</button>
+                <button class="modal-default-button" @click="addBook">Add book</button>
+                <div class="book-not-owned" v-if="!selectedBook.in_library">
+                    <h4>This book is not in your library. Add it to perform actions</h4>
+                    <button class="modal-default-button" @click="addBookToUserCollection">
+                        Add book
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -38,6 +42,7 @@
                 <button class="modal-default-button" :disabled="!canSubmit" @click="getBook">
                     Get book
                 </button>
+                <button class="modal-default-button" @click="listBooks">List books</button>
             </div>
         </div>
         <response
@@ -97,6 +102,18 @@
             })
         },
         methods: {
+            listBooks() {
+                this.setSelectedList(null)
+                this.setModalComponent('list')
+            },
+            addBook() {
+                this.setSelectedBook(null)
+                this.setModalComponent('add')
+            },
+            searchBook() {
+                this.setSelectedBook(null)
+                this.setModalComponent('get')
+            },
             showReadingSessionList() {
                 this.setModalComponent('reading-session-list')
             },
@@ -168,7 +185,7 @@
                         console.log('total failure')
                     }
                 })
-                        
+
             },
             ...mapActions({
                 toggleModal: 'toggleModal',
@@ -178,6 +195,7 @@
                 fetchBook: 'fetchBook',
                 updateLibrary: 'updateLibrary',
                 addToUserCollection: 'addToUserCollection',
+                setSelectedList: 'setSelectedList'
             })
         }
     }

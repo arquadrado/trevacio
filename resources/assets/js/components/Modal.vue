@@ -3,9 +3,9 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container" :style="style">
-                    
+
                     <component :is="component"></component>
-                    
+
                 </div>
             </div>
         </div>
@@ -18,13 +18,17 @@
     import Get from './GetBook.vue'
     import ReadingSession from './ReadingSession.vue'
     import ReadingSessionList from './ReadingSessionList.vue'
+    import ListBooks from './ListBooks.vue'
+    import Settings from './Settings.vue'
 
     export default {
         components: {
             'add': Add,
             'get': Get,
             'reading-session': ReadingSession,
-            'reading-session-list': ReadingSessionList
+            'reading-session-list': ReadingSessionList,
+            'list': ListBooks,
+            'settings': Settings
         },
         computed: {
             style() {

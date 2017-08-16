@@ -20,7 +20,7 @@
                     add: 'playlist_add',
                     get: 'arrow_downward',
                     list: 'list',
-                    remove: 'remove'
+                    settings: 'settings'
                 },
                 hover: false
             }

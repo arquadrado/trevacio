@@ -11966,7 +11966,7 @@ module.exports = Vue$3;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(14);
-module.exports = __webpack_require__(82);
+module.exports = __webpack_require__(85);
 
 
 /***/ }),
@@ -42951,9 +42951,9 @@ var state = {
         add: 'Add book',
         get: 'Get book',
         list: 'List books',
-        remove: 'Remove this little fucker?',
-        joke: 'Wanna hear a joke?',
-        default: 'Ok, lets do this!'
+        settings: 'Remove this little fucker?'
+        //joke: 'Wanna hear a joke?',
+        //default: 'Ok, lets do this!',
     },
     selectedAction: 'get',
 
@@ -43135,14 +43135,17 @@ var mutations = {
 var state = {
     selectedBook: null,
     selectedReadingSession: null,
-    userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
-    library: typeof handover.library !== 'undefined' ? handover.library : []
+    selectedList: null,
+    lists: {
+        userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
+        library: typeof handover.library !== 'undefined' ? handover.library : []
+    }
 };
 
 var getters = {
     getSelectedBook: function getSelectedBook(state) {
         if (state.selectedBook) {
-            return state.library[state.selectedBook];
+            return state.lists.library[state.selectedBook];
         }
         return null;
     },
@@ -43150,10 +43153,19 @@ var getters = {
         return state.selectedReadingSession;
     },
     getUserCollection: function getUserCollection(state) {
-        return state.userCollection;
+        return state.lists.userCollection;
     },
     getLibrary: function getLibrary(state) {
-        return state.library;
+        return state.lists.library;
+    },
+    getSelectedList: function getSelectedList(state) {
+        return state.lists[state.selectedList];
+    },
+    getSelectedListName: function getSelectedListName(state) {
+        return state.selectedList;
+    },
+    getLists: function getLists(state) {
+        return state.lists;
     }
 };
 
@@ -43238,18 +43250,23 @@ var actions = {
                 dispatch('updateLibrary', args);
             }
         }).fail(args.errorCallback);
+    },
+    setSelectedList: function setSelectedList(_ref8, list) {
+        var commit = _ref8.commit;
+
+        commit('SET_SELECTED_LIST', list);
     }
 };
 
 var mutations = {
     'ADD_TO_LIBRARY': function ADD_TO_LIBRARY(state, book) {
-        state.library[book.id] = book;
+        state.lists.library[book.id] = book;
     },
     'ADD_TO_USER_COLLECTION': function ADD_TO_USER_COLLECTION(state, book) {
-        state.userCollection[book.id] = book;
+        state.lists.userCollection[book.id] = book;
         if (state.selectedBook) {
-            state.userCollection[book.id].in_library = 1;
-            state.library[book.id].in_library = 1;
+            state.lists.userCollection[book.id].in_library = 1;
+            state.lists.library[book.id].in_library = 1;
         }
     },
     'SET_SELECTED_BOOK': function SET_SELECTED_BOOK(state, book) {
@@ -43259,8 +43276,11 @@ var mutations = {
         state.selectedReadingSession = session;
     },
     'UPDATE_LIBRARY': function UPDATE_LIBRARY(state, data) {
-        state.userCollection = data.userCollection;
-        state.library = data.library;
+        state.lists.userCollection = data.userCollection;
+        state.lists.library = data.library;
+    },
+    'SET_SELECTED_LIST': function SET_SELECTED_LIST(state, list) {
+        state.selectedList = list;
     }
 };
 
@@ -43288,7 +43308,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/Trevacio.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Trevacio.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Trevacio.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43299,9 +43319,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-71dbe689", Component.options)
+    hotAPI.createRecord("data-v-9b8daf7c", Component.options)
   } else {
-    hotAPI.reload("data-v-71dbe689", Component.options)
+    hotAPI.reload("data-v-9b8daf7c", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43446,7 +43466,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/DefaultAction.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/DefaultAction.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] DefaultAction.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43457,9 +43477,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-067cdc84", Component.options)
+    hotAPI.createRecord("data-v-f74505aa", Component.options)
   } else {
-    hotAPI.reload("data-v-067cdc84", Component.options)
+    hotAPI.reload("data-v-f74505aa", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43554,7 +43574,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-067cdc84", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-f74505aa", module.exports)
   }
 }
 
@@ -43575,7 +43595,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/GetBook.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/GetBook.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GetBook.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43586,9 +43606,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cf4e7868", Component.options)
+    hotAPI.createRecord("data-v-30ccadb3", Component.options)
   } else {
-    hotAPI.reload("data-v-cf4e7868", Component.options)
+    hotAPI.reload("data-v-30ccadb3", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43732,7 +43752,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-cf4e7868", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-30ccadb3", module.exports)
   }
 }
 
@@ -43753,7 +43773,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/AddBook.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/AddBook.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] AddBook.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43764,9 +43784,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3b279bd2", Component.options)
+    hotAPI.createRecord("data-v-7ae01bfe", Component.options)
   } else {
-    hotAPI.reload("data-v-3b279bd2", Component.options)
+    hotAPI.reload("data-v-7ae01bfe", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43867,7 +43887,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-3b279bd2", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-7ae01bfe", module.exports)
   }
 }
 
@@ -43888,7 +43908,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/trevacio/actions/ListBooks.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/trevacio/actions/ListBooks.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] ListBooks.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43899,9 +43919,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0d42354e", Component.options)
+    hotAPI.createRecord("data-v-447ff180", Component.options)
   } else {
-    hotAPI.reload("data-v-0d42354e", Component.options)
+    hotAPI.reload("data-v-447ff180", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44026,7 +44046,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-0d42354e", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-447ff180", module.exports)
   }
 }
 
@@ -44079,7 +44099,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-71dbe689", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-9b8daf7c", module.exports)
   }
 }
 
@@ -44100,7 +44120,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/Gui.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Gui.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Gui.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44111,9 +44131,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-2e231f99", Component.options)
+    hotAPI.createRecord("data-v-96e02380", Component.options)
   } else {
-    hotAPI.reload("data-v-2e231f99", Component.options)
+    hotAPI.reload("data-v-96e02380", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44211,7 +44231,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/GuiAction.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/GuiAction.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GuiAction.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44222,9 +44242,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-d3622ba2", Component.options)
+    hotAPI.createRecord("data-v-6199df96", Component.options)
   } else {
-    hotAPI.reload("data-v-d3622ba2", Component.options)
+    hotAPI.reload("data-v-6199df96", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44265,7 +44285,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 add: 'playlist_add',
                 get: 'arrow_downward',
                 list: 'list',
-                remove: 'remove'
+                settings: 'settings'
             },
             hover: false
         };
@@ -44335,7 +44355,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-d3622ba2", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-6199df96", module.exports)
   }
 }
 
@@ -44368,7 +44388,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-2e231f99", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-96e02380", module.exports)
   }
 }
 
@@ -44381,7 +44401,7 @@ var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(65),
   /* template */
-  __webpack_require__(81),
+  __webpack_require__(84),
   /* styles */
   null,
   /* scopeId */
@@ -44389,7 +44409,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/Modal.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Modal.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Modal.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44400,9 +44420,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-ebef72ea", Component.options)
+    hotAPI.createRecord("data-v-287c0772", Component.options)
   } else {
-    hotAPI.reload("data-v-ebef72ea", Component.options)
+    hotAPI.reload("data-v-287c0772", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44425,8 +44445,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__GetBook_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__GetBook_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ReadingSession_vue__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ReadingSession_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__ReadingSession_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ReadingSessionList_vue__ = __webpack_require__(92);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ReadingSessionList_vue__ = __webpack_require__(81);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ReadingSessionList_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__ReadingSessionList_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ListBooks_vue__ = __webpack_require__(95);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ListBooks_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__ListBooks_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Settings_vue__ = __webpack_require__(98);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Settings_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__Settings_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -44450,12 +44474,16 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: {
         'add': __WEBPACK_IMPORTED_MODULE_1__AddBook_vue___default.a,
         'get': __WEBPACK_IMPORTED_MODULE_2__GetBook_vue___default.a,
         'reading-session': __WEBPACK_IMPORTED_MODULE_3__ReadingSession_vue___default.a,
-        'reading-session-list': __WEBPACK_IMPORTED_MODULE_4__ReadingSessionList_vue___default.a
+        'reading-session-list': __WEBPACK_IMPORTED_MODULE_4__ReadingSessionList_vue___default.a,
+        'list': __WEBPACK_IMPORTED_MODULE_5__ListBooks_vue___default.a,
+        'settings': __WEBPACK_IMPORTED_MODULE_6__Settings_vue___default.a
     },
     computed: _extends({
         style: function style() {
@@ -44491,7 +44519,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/AddBook.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/AddBook.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] AddBook.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44502,9 +44530,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-27cedb08", Component.options)
+    hotAPI.createRecord("data-v-0f5403a2", Component.options)
   } else {
-    hotAPI.reload("data-v-27cedb08", Component.options)
+    hotAPI.reload("data-v-0f5403a2", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44723,7 +44751,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/AddBookResponse.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/AddBookResponse.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] AddBookResponse.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -44734,9 +44762,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-42f86a2e", Component.options)
+    hotAPI.createRecord("data-v-29a4d710", Component.options)
   } else {
-    hotAPI.reload("data-v-42f86a2e", Component.options)
+    hotAPI.reload("data-v-29a4d710", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -44877,7 +44905,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-42f86a2e", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-29a4d710", module.exports)
   }
 }
 
@@ -44893,6 +44921,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('h3', {
     staticClass: "action"
   }, [_vm._v("I will ADD a fucking book!")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
     on: {
       "click": _vm.toggleModal
     }
@@ -44974,7 +45003,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-27cedb08", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-0f5403a2", module.exports)
   }
 }
 
@@ -44995,7 +45024,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/GetBook.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/GetBook.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GetBook.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -45006,9 +45035,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-44892686", Component.options)
+    hotAPI.createRecord("data-v-a37ae038", Component.options)
   } else {
-    hotAPI.reload("data-v-44892686", Component.options)
+    hotAPI.reload("data-v-a37ae038", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -45030,6 +45059,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__GetBookResponse_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__GetBookResponse_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+//
+//
+//
+//
+//
 //
 //
 //
@@ -45129,6 +45163,18 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         library: 'getLibrary'
     })),
     methods: _extends({
+        listBooks: function listBooks() {
+            this.setSelectedList(null);
+            this.setModalComponent('list');
+        },
+        addBook: function addBook() {
+            this.setSelectedBook(null);
+            this.setModalComponent('add');
+        },
+        searchBook: function searchBook() {
+            this.setSelectedBook(null);
+            this.setModalComponent('get');
+        },
         showReadingSessionList: function showReadingSessionList() {
             this.setModalComponent('reading-session-list');
         },
@@ -45210,7 +45256,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         setModalComponent: 'setModalComponent',
         fetchBook: 'fetchBook',
         updateLibrary: 'updateLibrary',
-        addToUserCollection: 'addToUserCollection'
+        addToUserCollection: 'addToUserCollection',
+        setSelectedList: 'setSelectedList'
     }))
 });
 
@@ -45231,7 +45278,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/GetBookResponse.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/GetBookResponse.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GetBookResponse.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -45242,9 +45289,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7fb1d79e", Component.options)
+    hotAPI.createRecord("data-v-6a5a3876", Component.options)
   } else {
-    hotAPI.reload("data-v-7fb1d79e", Component.options)
+    hotAPI.reload("data-v-6a5a3876", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -45359,7 +45406,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-7fb1d79e", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-6a5a3876", module.exports)
   }
 }
 
@@ -45375,6 +45422,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('h3', {
     staticClass: "action"
   }, [_vm._v("I will GET a fucking book!")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
     on: {
       "click": _vm.close
     }
@@ -45392,14 +45440,26 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.addReadingSession
     }
-  }, [_vm._v("Add reading session")])]) : _vm._e()]), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
+  }, [_vm._v("Add reading session")])]) : _vm._e()]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
+  }, [_c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.searchBook
+    }
+  }, [_vm._v("Search book")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.addBook
+    }
+  }, [_vm._v("Add book")]), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
+    staticClass: "book-not-owned"
   }, [_c('h4', [_vm._v("This book is not in your library. Add it to perform actions")]), _vm._v(" "), _c('button', {
     staticClass: "modal-default-button",
     on: {
       "click": _vm.addBookToUserCollection
     }
-  }, [_vm._v("\n                Add book\n            ")])]) : _vm._e()]) : _vm._e(), _vm._v(" "), (!_vm.selectedBook && !_vm.response) ? _c('div', {
+  }, [_vm._v("\n                    Add book\n                ")])]) : _vm._e()])]) : _vm._e(), _vm._v(" "), (!_vm.selectedBook && !_vm.response) ? _c('div', {
     staticClass: "getbook"
   }, [_c('div', {
     staticClass: "modal-body"
@@ -45440,7 +45500,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.getBook
     }
-  }, [_vm._v("\n                Get book\n            ")])])]) : _vm._e(), _vm._v(" "), (_vm.response && !_vm.selectedBook) ? _c('response', {
+  }, [_vm._v("\n                Get book\n            ")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.listBooks
+    }
+  }, [_vm._v("List books")])])]) : _vm._e(), _vm._v(" "), (_vm.response && !_vm.selectedBook) ? _c('response', {
     attrs: {
       "response": _vm.response.responseJSON,
       "status": _vm.response.status,
@@ -45455,7 +45520,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-44892686", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-a37ae038", module.exports)
   }
 }
 
@@ -45476,7 +45541,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/ReadingSession.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/ReadingSession.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] ReadingSession.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -45487,9 +45552,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-e5c7aa08", Component.options)
+    hotAPI.createRecord("data-v-03257df5", Component.options)
   } else {
-    hotAPI.reload("data-v-e5c7aa08", Component.options)
+    hotAPI.reload("data-v-03257df5", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -45728,7 +45793,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-e5c7aa08", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-03257df5", module.exports)
   }
 }
 
@@ -45736,55 +45801,12 @@ if (false) {
 /* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('transition', {
-    attrs: {
-      "name": "modal"
-    }
-  }, [_c('div', {
-    staticClass: "modal-mask"
-  }, [_c('div', {
-    staticClass: "modal-wrapper"
-  }, [_c('div', {
-    staticClass: "modal-container",
-    style: (_vm.style)
-  }, [_c(_vm.component, {
-    tag: "component"
-  })], 1)])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-ebef72ea", module.exports)
-  }
-}
-
-/***/ }),
-/* 82 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 83 */,
-/* 84 */,
-/* 85 */,
-/* 86 */,
-/* 87 */,
-/* 88 */,
-/* 89 */,
-/* 90 */,
-/* 91 */,
-/* 92 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(93),
+  __webpack_require__(82),
   /* template */
-  __webpack_require__(94),
+  __webpack_require__(83),
   /* styles */
   null,
   /* scopeId */
@@ -45792,7 +45814,7 @@ var Component = __webpack_require__(1)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/ReadingSessionList.vue"
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/ReadingSessionList.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] ReadingSessionList.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -45803,9 +45825,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7708eeba", Component.options)
+    hotAPI.createRecord("data-v-51ce1d33", Component.options)
   } else {
-    hotAPI.reload("data-v-7708eeba", Component.options)
+    hotAPI.reload("data-v-51ce1d33", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -45816,7 +45838,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 93 */
+/* 82 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -45876,7 +45898,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 94 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -45914,7 +45936,360 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-7708eeba", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-51ce1d33", module.exports)
+  }
+}
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('transition', {
+    attrs: {
+      "name": "modal"
+    }
+  }, [_c('div', {
+    staticClass: "modal-mask"
+  }, [_c('div', {
+    staticClass: "modal-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-container",
+    style: (_vm.style)
+  }, [_c(_vm.component, {
+    tag: "component"
+  })], 1)])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-287c0772", module.exports)
+  }
+}
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 86 */,
+/* 87 */,
+/* 88 */,
+/* 89 */,
+/* 90 */,
+/* 91 */,
+/* 92 */,
+/* 93 */,
+/* 94 */,
+/* 95 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(97),
+  /* template */
+  __webpack_require__(96),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/ListBooks.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ListBooks.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3c060b71", Component.options)
+  } else {
+    hotAPI.reload("data-v-3c060b71", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "content-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v("I will LIST these fuckers")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.toggleModal
+    }
+  }, [_vm._v("close")])]), _vm._v(" "), (_vm.showList) ? _c('div', {
+    staticClass: "modal-body"
+  }, [_c('h3', [_vm._v(_vm._s(_vm.message))]), _vm._v(" "), (_vm.hasBooks) ? _c('ul', {
+    staticClass: "book-list"
+  }, _vm._l((_vm.list), function(book) {
+    return _c('li', {
+      staticClass: "book",
+      on: {
+        "click": function($event) {
+          _vm.openBook(book)
+        }
+      }
+    }, [_c('span', [_vm._v(_vm._s(((book.title) + " - " + (book.author.name))))])])
+  })) : _c('h4', [_vm._v("No books to show")])]) : _c('div', {
+    staticClass: "modal-body"
+  }, [_c('h3', [_vm._v(_vm._s(_vm.message))]), _vm._v(" "), _vm._l((_vm.lists), function(list, name) {
+    return _c('button', {
+      on: {
+        "click": function($event) {
+          _vm.setSelectedList(name)
+        }
+      }
+    }, [_vm._v(_vm._s(name))])
+  })], 2), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  }, [(_vm.showList) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": function($event) {
+        _vm.setSelectedList(null)
+      }
+    }
+  }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.searchBook
+    }
+  }, [_vm._v("Search book")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.addBook
+    }
+  }, [_vm._v("Add book")])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-3c060b71", module.exports)
+  }
+}
+
+/***/ }),
+/* 97 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {};
+    },
+
+    computed: _extends({
+        message: function message() {
+            if (this.showList) {
+                switch (this.listName) {
+                    case 'userCollection':
+                        return 'Here are YOUR books';
+                    case 'library':
+                        return 'Here are ALL books';
+                    default:
+                        return 'Here are SOME books';
+                }
+            }
+
+            return 'Choose a list';
+        },
+        hasBooks: function hasBooks() {
+            return this.showList ? Object.keys(this.list).length : false;
+        },
+        showList: function showList() {
+            return this.list !== null && typeof this.list !== 'undefined';
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        list: 'getSelectedList',
+        listName: 'getSelectedListName',
+        lists: 'getLists'
+    })),
+    methods: _extends({
+        addBook: function addBook() {
+            this.setSelectedBook(null);
+            this.setModalComponent('add');
+        },
+        searchBook: function searchBook() {
+            this.setSelectedBook(null);
+            this.setModalComponent('get');
+        },
+        openBook: function openBook(book) {
+            this.setSelectedBook(book.id);
+            this.setModalComponent('get');
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        toggleModal: 'toggleModal',
+        setSelectedBook: 'setSelectedBook',
+        setModalComponent: 'setModalComponent',
+        setSelectedList: 'setSelectedList'
+    }))
+});
+
+/***/ }),
+/* 98 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(99),
+  /* template */
+  __webpack_require__(100),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Settings.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Settings.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-77285d24", Component.options)
+  } else {
+    hotAPI.reload("data-v-77285d24", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 99 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({})),
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        toggleModal: 'toggleModal'
+    }))
+});
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "content-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v("Soon to be SETTINGS")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.toggleModal
+    }
+  }, [_vm._v("Close")])]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  }, [_c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.toggleModal
+    }
+  }, [_vm._v("Close")])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "modal-body"
+  }, [_c('h4', [_vm._v("Ye ye ye")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-77285d24", module.exports)
   }
 }
 

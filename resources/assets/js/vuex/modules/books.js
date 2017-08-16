@@ -2,20 +2,26 @@
 const state = {
     selectedBook: null,
     selectedReadingSession: null,
-    userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
-    library: typeof handover.library !== 'undefined' ? handover.library : [],
+    selectedList: null,
+    lists: {
+        userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
+        library: typeof handover.library !== 'undefined' ? handover.library : [],
+    }
 }
 
 const getters = {
     getSelectedBook: state => {
         if (state.selectedBook) {
-            return state.library[state.selectedBook]
+            return state.lists.library[state.selectedBook]
         }
         return null
     },
     getSelectedReadingSession: state => state.selectedReadingSession,
-    getUserCollection: state => state.userCollection,
-    getLibrary: state => state.library,
+    getUserCollection: state => state.lists.userCollection,
+    getLibrary: state => state.lists.library,
+    getSelectedList: state => state.lists[state.selectedList],
+    getSelectedListName: state => state.selectedList,
+    getLists: state => state.lists
 }
 
 const actions = {
@@ -87,18 +93,21 @@ const actions = {
             }
         })
         .fail(args.errorCallback)
+    },
+    setSelectedList({ commit }, list) {
+        commit('SET_SELECTED_LIST', list)
     }
 }
 
 const mutations = {
     'ADD_TO_LIBRARY': (state, book) => {
-        state.library[book.id] = book
+        state.lists.library[book.id] = book
     },
     'ADD_TO_USER_COLLECTION': (state, book) => {
-        state.userCollection[book.id] = book
+        state.lists.userCollection[book.id] = book
         if (state.selectedBook) {
-            state.userCollection[book.id].in_library = 1
-            state.library[book.id].in_library = 1
+            state.lists.userCollection[book.id].in_library = 1
+            state.lists.library[book.id].in_library = 1
         }
     },
     'SET_SELECTED_BOOK': (state, book) => {
@@ -108,8 +117,11 @@ const mutations = {
         state.selectedReadingSession = session
     },
     'UPDATE_LIBRARY': (state, data) => {
-        state.userCollection = data.userCollection
-        state.library = data.library
+        state.lists.userCollection = data.userCollection
+        state.lists.library = data.library
+    },
+    'SET_SELECTED_LIST': (state, list) => {
+        state.selectedList = list
     }
 }
 

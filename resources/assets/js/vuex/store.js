@@ -14,9 +14,9 @@ const state = {
         add: 'Add book',
         get: 'Get book',
         list: 'List books',
-        remove: 'Remove this little fucker?',
-        joke: 'Wanna hear a joke?',
-        default: 'Ok, lets do this!',
+        settings: 'Remove this little fucker?',
+        //joke: 'Wanna hear a joke?',
+        //default: 'Ok, lets do this!',
     },
     selectedAction: 'get',
 

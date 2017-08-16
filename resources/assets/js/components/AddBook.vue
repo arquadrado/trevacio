@@ -3,7 +3,7 @@
 
         <div class="modal-header">
             <h3 class="action">I will ADD a fucking book!</h3>
-            <button @click="toggleModal">close</button>
+            <button class="modal-default-button" @click="toggleModal">close</button>
         </div>
         <div class="new-book" v-if="!submitted">
 
@@ -125,7 +125,7 @@
 
                     return
                 }
-                
+
                 this.updateLibrary({
                     successCallback: (response, status, responseContent) => {
 
