@@ -11966,7 +11966,7 @@ module.exports = Vue$3;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(14);
-module.exports = __webpack_require__(85);
+module.exports = __webpack_require__(91);
 
 
 /***/ }),
@@ -44401,7 +44401,7 @@ var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(65),
   /* template */
-  __webpack_require__(84),
+  __webpack_require__(90),
   /* styles */
   null,
   /* scopeId */
@@ -44447,9 +44447,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ReadingSession_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__ReadingSession_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ReadingSessionList_vue__ = __webpack_require__(81);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ReadingSessionList_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__ReadingSessionList_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ListBooks_vue__ = __webpack_require__(95);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ListBooks_vue__ = __webpack_require__(84);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ListBooks_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__ListBooks_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Settings_vue__ = __webpack_require__(98);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Settings_vue__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Settings_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__Settings_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -45452,7 +45452,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.addBook
     }
-  }, [_vm._v("Add book")]), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
+  }, [_vm._v("Add a new book")]), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
     staticClass: "book-not-owned"
   }, [_c('h4', [_vm._v("This book is not in your library. Add it to perform actions")]), _vm._v(" "), _c('button', {
     staticClass: "modal-default-button",
@@ -45761,7 +45761,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     style: (_vm.inputStyle),
     attrs: {
-      "type": "text",
+      "type": "date",
       "name": "date"
     },
     domProps: {
@@ -45944,55 +45944,12 @@ if (false) {
 /* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('transition', {
-    attrs: {
-      "name": "modal"
-    }
-  }, [_c('div', {
-    staticClass: "modal-mask"
-  }, [_c('div', {
-    staticClass: "modal-wrapper"
-  }, [_c('div', {
-    staticClass: "modal-container",
-    style: (_vm.style)
-  }, [_c(_vm.component, {
-    tag: "component"
-  })], 1)])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-287c0772", module.exports)
-  }
-}
-
-/***/ }),
-/* 85 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 86 */,
-/* 87 */,
-/* 88 */,
-/* 89 */,
-/* 90 */,
-/* 91 */,
-/* 92 */,
-/* 93 */,
-/* 94 */,
-/* 95 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(97),
+  __webpack_require__(85),
   /* template */
-  __webpack_require__(96),
+  __webpack_require__(86),
   /* styles */
   null,
   /* scopeId */
@@ -46024,75 +45981,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 96 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "content-wrapper"
-  }, [_c('div', {
-    staticClass: "modal-header"
-  }, [_c('h3', {
-    staticClass: "action"
-  }, [_vm._v("I will LIST these fuckers")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.toggleModal
-    }
-  }, [_vm._v("close")])]), _vm._v(" "), (_vm.showList) ? _c('div', {
-    staticClass: "modal-body"
-  }, [_c('h3', [_vm._v(_vm._s(_vm.message))]), _vm._v(" "), (_vm.hasBooks) ? _c('ul', {
-    staticClass: "book-list"
-  }, _vm._l((_vm.list), function(book) {
-    return _c('li', {
-      staticClass: "book",
-      on: {
-        "click": function($event) {
-          _vm.openBook(book)
-        }
-      }
-    }, [_c('span', [_vm._v(_vm._s(((book.title) + " - " + (book.author.name))))])])
-  })) : _c('h4', [_vm._v("No books to show")])]) : _c('div', {
-    staticClass: "modal-body"
-  }, [_c('h3', [_vm._v(_vm._s(_vm.message))]), _vm._v(" "), _vm._l((_vm.lists), function(list, name) {
-    return _c('button', {
-      on: {
-        "click": function($event) {
-          _vm.setSelectedList(name)
-        }
-      }
-    }, [_vm._v(_vm._s(name))])
-  })], 2), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
-  }, [(_vm.showList) ? _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": function($event) {
-        _vm.setSelectedList(null)
-      }
-    }
-  }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.searchBook
-    }
-  }, [_vm._v("Search book")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.addBook
-    }
-  }, [_vm._v("Add book")])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-3c060b71", module.exports)
-  }
-}
-
-/***/ }),
-/* 97 */
+/* 85 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -46183,15 +46072,83 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 98 */
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "content-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v("I will LIST these fuckers")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.toggleModal
+    }
+  }, [_vm._v("close")])]), _vm._v(" "), (_vm.showList) ? _c('div', {
+    staticClass: "modal-body"
+  }, [_c('h3', [_vm._v(_vm._s(_vm.message))]), _vm._v(" "), (_vm.hasBooks) ? _c('ul', {
+    staticClass: "book-list"
+  }, _vm._l((_vm.list), function(book) {
+    return _c('li', {
+      staticClass: "book",
+      on: {
+        "click": function($event) {
+          _vm.openBook(book)
+        }
+      }
+    }, [_c('span', [_vm._v(_vm._s(((book.title) + " - " + (book.author.name))))])])
+  })) : _c('h4', [_vm._v("No books to show")])]) : _c('div', {
+    staticClass: "modal-body"
+  }, [_c('h3', [_vm._v(_vm._s(_vm.message))]), _vm._v(" "), _vm._l((_vm.lists), function(list, name) {
+    return _c('button', {
+      on: {
+        "click": function($event) {
+          _vm.setSelectedList(name)
+        }
+      }
+    }, [_vm._v(_vm._s(name))])
+  })], 2), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  }, [(_vm.showList) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": function($event) {
+        _vm.setSelectedList(null)
+      }
+    }
+  }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.searchBook
+    }
+  }, [_vm._v("Search book")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.addBook
+    }
+  }, [_vm._v("Add book")])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-3c060b71", module.exports)
+  }
+}
+
+/***/ }),
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(99),
+  __webpack_require__(88),
   /* template */
-  __webpack_require__(100),
+  __webpack_require__(89),
   /* styles */
   null,
   /* scopeId */
@@ -46223,7 +46180,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 99 */
+/* 88 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -46257,7 +46214,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 100 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -46292,6 +46249,40 @@ if (false) {
      require("vue-hot-reload-api").rerender("data-v-77285d24", module.exports)
   }
 }
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('transition', {
+    attrs: {
+      "name": "modal"
+    }
+  }, [_c('div', {
+    staticClass: "modal-mask"
+  }, [_c('div', {
+    staticClass: "modal-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-container",
+    style: (_vm.style)
+  }, [_c(_vm.component, {
+    tag: "component"
+  })], 1)])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-287c0772", module.exports)
+  }
+}
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

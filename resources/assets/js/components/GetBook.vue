@@ -19,7 +19,7 @@
             </div>
             <div class="modal-footer">
                 <button class="modal-default-button" @click="searchBook">Search book</button>
-                <button class="modal-default-button" @click="addBook">Add book</button>
+                <button class="modal-default-button" @click="addBook">Add a new book</button>
                 <div class="book-not-owned" v-if="!selectedBook.in_library">
                     <h4>This book is not in your library. Add it to perform actions</h4>
                     <button class="modal-default-button" @click="addBookToUserCollection">

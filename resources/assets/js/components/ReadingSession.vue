@@ -18,7 +18,7 @@
                 </div>
                 <div class="input-text">
                     <label for="date">Date</label>
-                    <input type="text" name="date" :style="inputStyle" v-model="session.date">
+                    <input type="date" name="date" :style="inputStyle" v-model="session.date">
                 </div>
             </div>
             <div class="session" v-else>
@@ -83,7 +83,7 @@
                     errorCallback: (response, status, responseContent) => {
                         console.log('error')
 
-                    } 
+                    }
                 })
             },
             ...mapActions({
