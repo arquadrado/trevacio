@@ -44451,6 +44451,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ListBooks_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__ListBooks_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Settings_vue__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Settings_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__Settings_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Book_vue__ = __webpack_require__(101);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Book_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__Book_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Stats_vue__ = __webpack_require__(104);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Stats_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__Stats_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -44476,6 +44480,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: {
         'add': __WEBPACK_IMPORTED_MODULE_1__AddBook_vue___default.a,
@@ -44483,7 +44489,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         'reading-session': __WEBPACK_IMPORTED_MODULE_3__ReadingSession_vue___default.a,
         'reading-session-list': __WEBPACK_IMPORTED_MODULE_4__ReadingSessionList_vue___default.a,
         'list': __WEBPACK_IMPORTED_MODULE_5__ListBooks_vue___default.a,
-        'settings': __WEBPACK_IMPORTED_MODULE_6__Settings_vue___default.a
+        'settings': __WEBPACK_IMPORTED_MODULE_6__Settings_vue___default.a,
+        'book': __WEBPACK_IMPORTED_MODULE_7__Book_vue___default.a,
+        'stats': __WEBPACK_IMPORTED_MODULE_8__Stats_vue___default.a
     },
     computed: _extends({
         style: function style() {
@@ -44829,7 +44837,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     methods: _extends({
         openBook: function openBook() {
             this.setSelectedBook(this.response.book.id);
-            this.setModalComponent('get');
+            this.setModalComponent('book');
         },
         setBook: function setBook(book) {
             this.book = book;
@@ -45093,29 +45101,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -45159,6 +45144,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
         colorScheme: 'getColorScheme',
         selectedBook: 'getSelectedBook',
+        selectedList: 'getSelectedList',
         userCollection: 'getUserCollection',
         library: 'getLibrary'
     })),
@@ -45166,33 +45152,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         listBooks: function listBooks() {
             this.setSelectedList(null);
             this.setModalComponent('list');
-        },
-        addBook: function addBook() {
-            this.setSelectedBook(null);
-            this.setModalComponent('add');
-        },
-        searchBook: function searchBook() {
-            this.setSelectedBook(null);
-            this.setModalComponent('get');
-        },
-        showReadingSessionList: function showReadingSessionList() {
-            this.setModalComponent('reading-session-list');
-        },
-        addReadingSession: function addReadingSession() {
-            this.setSelectedReadingSession(null);
-            this.setModalComponent('reading-session');
-        },
-        addBookToUserCollection: function addBookToUserCollection(book) {
-            var self = this;
-            self.addToUserCollection({
-                book: self.selectedBook,
-                successCallback: function successCallback(response, status, responseContent) {
-                    console.log('success');
-                },
-                errorCallback: function errorCallback(response, status, responseContent) {
-                    console.log('total failure');
-                }
-            });
         },
         searchAgain: function searchAgain() {
             this.bookToGet = '';
@@ -45252,11 +45211,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
         toggleModal: 'toggleModal',
         setSelectedBook: 'setSelectedBook',
-        setSelectedReadingSession: 'setSelectedReadingSession',
         setModalComponent: 'setModalComponent',
         fetchBook: 'fetchBook',
         updateLibrary: 'updateLibrary',
-        addToUserCollection: 'addToUserCollection',
         setSelectedList: 'setSelectedList'
     }))
 });
@@ -45348,6 +45305,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     computed: {},
     methods: _extends({
+        selectBook: function selectBook(id) {
+            this.setSelectedBook(id);
+            this.setModalComponent('book');
+        },
         searchAgain: function searchAgain() {
             console.log('gonna search');
             this.$emit('searchAgain');
@@ -45374,7 +45335,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     return _c('button', {
       on: {
         "click": function($event) {
-          _vm.setSelectedBook(book.id)
+          _vm.selectBook(book.id)
         }
       }
     }, [_vm._v("\n                " + _vm._s(book.title) + " - " + _vm._s(book.author.name) + "\n            ")])
@@ -45426,40 +45387,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.close
     }
-  }, [_vm._v("close")])]), _vm._v(" "), (_vm.selectedBook) ? _c('div', {
-    staticClass: "book"
-  }, [_c('div', {
-    staticClass: "modal-body"
-  }, [_c('h3', [_vm._v("Here is the fuking book")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Title:")]), _vm._v(" " + _vm._s(_vm.selectedBook.title) + " ")]), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Author:")]), _vm._v(" " + _vm._s(_vm.selectedBook.author.name) + " ")]), _vm._v(" "), (_vm.selectedBook.in_library) ? _c('div', {
-    staticClass: "book-actions"
-  }, [_c('h4', {
-    on: {
-      "click": _vm.showReadingSessionList
-    }
-  }, [_vm._v("See reading sessions")]), _vm._v(" "), _c('h4', {
-    on: {
-      "click": _vm.addReadingSession
-    }
-  }, [_vm._v("Add reading session")])]) : _vm._e()]), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
-  }, [_c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.searchBook
-    }
-  }, [_vm._v("Search book")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.addBook
-    }
-  }, [_vm._v("Add a new book")]), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
-    staticClass: "book-not-owned"
-  }, [_c('h4', [_vm._v("This book is not in your library. Add it to perform actions")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.addBookToUserCollection
-    }
-  }, [_vm._v("\n                    Add book\n                ")])]) : _vm._e()])]) : _vm._e(), _vm._v(" "), (!_vm.selectedBook && !_vm.response) ? _c('div', {
+  }, [_vm._v("close")])]), _vm._v(" "), (!_vm.selectedBook && !_vm.response) ? _c('div', {
     staticClass: "getbook"
   }, [_c('div', {
     staticClass: "modal-body"
@@ -45613,6 +45541,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -45661,7 +45590,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
         toggleModal: 'toggleModal',
         setModalComponent: 'setModalComponent',
-        saveReadingSession: 'saveReadingSession'
+        saveReadingSession: 'saveReadingSession',
+        setSelectedReadingSession: 'setSelectedReadingSession'
     }))
 });
 
@@ -45679,7 +45609,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("I am a reading session")]), _vm._v(" "), _c('button', {
     on: {
       "click": function($event) {
-        _vm.setModalComponent('get')
+        _vm.setModalComponent('book')
       }
     }
   }, [_vm._v("Back to book")]), _vm._v(" "), _c('button', {
@@ -45777,7 +45707,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "session"
   }, [_c('h3', [_vm._v("Session of " + _vm._s(_vm.selectedSession.date))]), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Starting page:")]), _vm._v(" " + _vm._s(_vm.selectedSession.start))]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Ending page:")]), _vm._v(" " + _vm._s(_vm.selectedSession.end))]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Pages read:")]), _vm._v(" " + _vm._s(_vm.selectedSession.end - _vm.selectedSession.start))]), _c('br')])]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
-  }, [(_vm.adding) ? _c('button', {
+  }, [(!_vm.adding) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": function($event) {
+        _vm.setSelectedReadingSession(null)
+      }
+    }
+  }, [_vm._v("Add another session")]) : _vm._e(), _vm._v(" "), (_vm.adding) ? _c('button', {
     staticClass: "modal-default-button",
     attrs: {
       "disabled": !_vm.canSubmit
@@ -45886,6 +45823,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         colorScheme: 'getColorScheme'
     })),
     methods: _extends({
+        addReadingSession: function addReadingSession() {
+            this.setSelectedReadingSession(null);
+            this.setModalComponent('reading-session');
+        },
         selectSession: function selectSession(session) {
             this.setSelectedReadingSession(session);
             this.setModalComponent('reading-session');
@@ -45911,7 +45852,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("I am a reading session list")]), _vm._v(" "), _c('button', {
     on: {
       "click": function($event) {
-        _vm.setModalComponent('get')
+        _vm.setModalComponent('book')
       }
     }
   }, [_vm._v("Back")])]), _vm._v(" "), _c('div', {
@@ -45930,7 +45871,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_vm._v(_vm._s(session.date))])])
   }))]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
-  })])
+  }, [_c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.addReadingSession
+    }
+  }, [_vm._v("Add reading session")])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -46061,7 +46007,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         },
         openBook: function openBook(book) {
             this.setSelectedBook(book.id);
-            this.setModalComponent('get');
+            this.setModalComponent('book');
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
         toggleModal: 'toggleModal',
@@ -46283,6 +46229,406 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 92 */,
+/* 93 */,
+/* 94 */,
+/* 95 */,
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */,
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(102),
+  /* template */
+  __webpack_require__(103),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Book.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Book.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-b3cae298", Component.options)
+  } else {
+    hotAPI.reload("data-v-b3cae298", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 102 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        selectedBook: 'getSelectedBook',
+        selectedList: 'getSelectedList'
+    })),
+    methods: _extends({
+        close: function close() {
+            this.setSelectedBook(null);
+            this.toggleModal();
+        },
+        addBook: function addBook() {
+            this.setSelectedBook(null);
+            this.setModalComponent('add');
+        },
+        searchBook: function searchBook() {
+            this.setSelectedBook(null);
+            this.setModalComponent('get');
+        },
+        addBookToUserCollection: function addBookToUserCollection(book) {
+            var self = this;
+            self.addToUserCollection({
+                book: self.selectedBook,
+                successCallback: function successCallback(response, status, responseContent) {
+                    console.log('success');
+                },
+                errorCallback: function errorCallback(response, status, responseContent) {
+                    console.log('total failure');
+                }
+            });
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        setModalComponent: 'setModalComponent',
+        setSelectedReadingSession: 'setSelectedReadingSession',
+        addToUserCollection: 'addToUserCollection',
+        setSelectedBook: 'setSelectedBook',
+        toggleModal: 'toggleModal'
+    }))
+});
+
+/***/ }),
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return (_vm.selectedBook) ? _c('div', {
+    staticClass: "book"
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v("Book - " + _vm._s(_vm.selectedBook.title))]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.close
+    }
+  }, [_vm._v("close")])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, [_c('span', [_c('strong', [_vm._v("Title:")]), _vm._v(" " + _vm._s(_vm.selectedBook.title) + " ")]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Author:")]), _vm._v(" " + _vm._s(_vm.selectedBook.author.name) + " ")]), _c('br'), _c('br'), _vm._v(" "), (_vm.selectedBook.in_library) ? _c('div', {
+    staticClass: "book-actions"
+  }, [_c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setModalComponent('reading-session-list')
+      }
+    }
+  }, [_vm._v("Reading Sessions")]), _vm._v(" "), _c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setModalComponent('stats')
+      }
+    }
+  }, [_vm._v("Stats")])]) : _vm._e()]), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  }, [_c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.searchBook
+    }
+  }, [_vm._v("Search book")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.addBook
+    }
+  }, [_vm._v("Add a new book")]), _vm._v(" "), (_vm.selectedList) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": function($event) {
+        _vm.setModalComponent('list')
+      }
+    }
+  }, [_vm._v("Back to list")]) : _vm._e(), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
+    staticClass: "book-not-owned"
+  }, [_c('h4', [_vm._v("This book is not in your library. Add it to perform actions")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.addBookToUserCollection
+    }
+  }, [_vm._v("\n                Add book\n            ")])]) : _vm._e()])]) : _vm._e()
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-b3cae298", module.exports)
+  }
+}
+
+/***/ }),
+/* 104 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(105),
+  /* template */
+  __webpack_require__(106),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/wizdevelopers3/Tests/trevacio/resources/assets/js/components/Stats.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Stats.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2b988864", Component.options)
+  } else {
+    hotAPI.reload("data-v-2b988864", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 105 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            statsToShow: 'user'
+        };
+    },
+
+    computed: _extends({
+        hasStatsToShow: function hasStatsToShow() {
+            return this.selectedBook !== null && this.selectedBook.book_stats;
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        selectedBook: 'getSelectedBook',
+        colorScheme: 'getColorScheme'
+    })),
+    methods: _extends({
+        getDistributionRepresentation: function getDistributionRepresentation(value) {
+            return {
+                'border': '5px solid ' + this.colorScheme.details,
+                'width': value * 2 + 'px',
+                'display': 'inline-block'
+            };
+        },
+        toggleStatsToShow: function toggleStatsToShow() {
+            this.statsToShow = this.statsToShow === 'all' ? 'user' : 'all';
+        },
+        close: function close() {
+            this.setSelectedBook(null);
+            this.toggleModal();
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        setModalComponent: 'setModalComponent',
+        setSelectedBook: 'setSelectedBook',
+        toggleModal: 'toggleModal'
+    }))
+});
+
+/***/ }),
+/* 106 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return (_vm.hasStatsToShow) ? _c('div', {
+    staticClass: "content-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v("Stats - " + _vm._s(_vm.selectedBook.title))]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.close
+    }
+  }, [_vm._v("close")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": function($event) {
+        _vm.setModalComponent('book')
+      }
+    }
+  }, [_vm._v("back")])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, [(_vm.statsToShow === 'user') ? _c('div', {
+    staticClass: "stats book-user-stats"
+  }, [_c('span', [_vm._v("You read "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.page_average))]), _vm._v(" of this book")]), _c('br'), _vm._v(" "), _c('span', [_vm._v("You read an average of "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.page_per_day_average))]), _vm._v(" pages per day")]), _c('br'), _vm._v(" "), _vm._m(0), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.selectedBook.book_user_stats.distribution), function(count, day) {
+    return _c('li', [_c('span', [_vm._v(_vm._s(day) + " ")]), _c('span', {
+      style: (_vm.getDistributionRepresentation(count))
+    }), _c('span', [_vm._v(" " + _vm._s(count))])])
+  })), _vm._v(" "), _c('br')]) : _c('div', {
+    staticClass: "stats book-stats"
+  }, [_c('span', [_c('strong', [_vm._v("General page average:")]), _vm._v(" " + _vm._s(_vm.selectedBook.book_stats.page_average))]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("General page per day average:")]), _vm._v(" " + _vm._s(_vm.selectedBook.book_stats.page_per_day_average))]), _c('br'), _vm._v(" "), _c('br')]), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.toggleStatsToShow
+    }
+  }, [_vm._v(_vm._s(_vm.statsToShow === 'all' ? 'User stats' : 'General Book stats'))])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  })]) : _c('div', {
+    staticClass: "content-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v("Stats")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.close
+    }
+  }, [_vm._v("close")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": function($event) {
+        _vm.setModalComponent('book')
+      }
+    }
+  }, [_vm._v("back")])]), _vm._v(" "), _vm._m(1)])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('span', [_c('strong', [_vm._v("Distribution:")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "modal-body"
+  }, [_c('h3', [_vm._v("No stats to show")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-2b988864", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

@@ -70,7 +70,7 @@
             },
             openBook(book) {
                 this.setSelectedBook(book.id)
-                this.setModalComponent('get')
+                this.setModalComponent('book')
             },
             ...mapActions({
                 toggleModal: 'toggleModal',

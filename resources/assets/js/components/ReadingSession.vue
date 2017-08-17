@@ -3,7 +3,7 @@
 
         <div class="modal-header">
             <h3 class="action">I am a reading session</h3>
-            <button @click="setModalComponent('get')">Back to book</button>
+            <button @click="setModalComponent('book')">Back to book</button>
             <button @click="setModalComponent('reading-session-list')">Back to list</button>
         </div>
         <div class="modal-body">
@@ -29,6 +29,7 @@
             </div>
         </div>
         <div class="modal-footer">
+            <button v-if="!adding" class="modal-default-button" @click="setSelectedReadingSession(null)">Add another session</button>
             <button v-if="adding" class="modal-default-button" :disabled="!canSubmit" @click="saveSession">
                 Save
             </button>
@@ -89,7 +90,8 @@
             ...mapActions({
                 toggleModal: 'toggleModal',
                 setModalComponent: 'setModalComponent',
-                saveReadingSession: 'saveReadingSession'
+                saveReadingSession: 'saveReadingSession',
+                setSelectedReadingSession: 'setSelectedReadingSession'
             })
         }
     }

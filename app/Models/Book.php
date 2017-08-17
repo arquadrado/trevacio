@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Auth;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
@@ -14,7 +15,9 @@ class Book extends Model
     ];
 
     protected $appends = [
-        'in_library'
+        'in_library',
+        'book_stats',
+        'book_user_stats'
     ];
 
     /*
@@ -29,12 +32,17 @@ class Book extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'user_book');
     }
-    
+
     public function author()
     {
         return $this->belongsTo(Author::class);
+    }
+
+    public function allReadingSessions()
+    {
+        return $this->belongsToMany(ReadingSession::class, 'book_session', 'book_id', 'session_id');
     }
 
     public function readingSessions()
@@ -53,6 +61,69 @@ class Book extends Model
     public function getInLibraryAttribute()
     {
         return !is_null(Auth::user()->books()->where('book_id', $this->id)->first());
-        //return Auth::user()->books()->where('book_id', $this->id)->first();
+    }
+
+    public function getBookStatsAttribute()
+    {
+        //try {
+        $users = $this->users;
+        $readingSessions = $this->allReadingSessions()->orderBy('date')->get();
+
+        if ($readingSessions->isEmpty()) {
+            return null;
+        }
+
+        $data = $readingSessions->reduce(function ($reduced, $session) {
+            $reduced['pages'] += $session->end - $session->start;
+            if (!array_key_exists($session->date, $reduced['distribution'])) {
+                $reduced['distribution'][$session->date] = 0;
+            }
+            $reduced['distribution'][$session->date] += $session->end - $session->start;
+            return $reduced;
+        }, [
+            'pages' => 0,
+            'distribution' => []
+        ]);
+
+
+        $days = Carbon::parse($readingSessions->first()->date)->diffInDays(Carbon::parse($readingSessions->last()->date));
+
+        /*} catch (\Exception $e) {
+            dd($e);
+        }*/
+        return [
+            'page_average' => round($data['pages'] / $users->count(), 2),
+            'page_per_day_average' => $days > 0 ? round($data['pages'] / ($users->count() * $days), 2) : null,
+            'distribution' => $data['distribution']
+        ];
+    }
+
+    public function getBookUserStatsAttribute()
+    {
+        $readingSessions = $this->readingSessions()->orderBy('date')->get();
+
+        if ($readingSessions->isEmpty()) {
+            return null;
+        }
+
+        $data = $readingSessions->reduce(function ($reduced, $session) {
+            $reduced['pages'] += $session->end - $session->start;
+            if (!array_key_exists($session->date, $reduced['distribution'])) {
+                $reduced['distribution'][$session->date] = 0;
+            }
+            $reduced['distribution'][$session->date] += $session->end - $session->start;
+            return $reduced;
+        }, [
+            'pages' => 0,
+            'distribution' => []
+        ]);
+
+        $days = Carbon::parse($readingSessions->first()->date)->diffInDays(Carbon::parse($readingSessions->last()->date));
+
+        return [
+            'page_average' => round($data['pages'], 2),
+            'page_per_day_average' => $days > 0 ? round($data['pages'] / $days, 2) : null,
+            'distribution' => $data['distribution']
+        ];
     }
 }

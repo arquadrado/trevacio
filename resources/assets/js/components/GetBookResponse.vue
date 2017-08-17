@@ -3,7 +3,7 @@
         <div class="book-found" v-if="status == 201">
             <div class="modal-body">
                 <h3>{{ response.message }}</h3>
-                <button @click="setSelectedBook(book.id)" v-for="book in books">
+                <button @click="selectBook(book.id)" v-for="book in books">
                     {{ book.title }} - {{ book.author.name }}
                 </button>
                 <br>
@@ -35,6 +35,10 @@
         },
         computed: {},
         methods: {
+            selectBook(id) {
+                this.setSelectedBook(id)
+                this.setModalComponent('book')
+            },
             searchAgain() {
                 console.log('gonna search')
                 this.$emit('searchAgain')

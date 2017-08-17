@@ -3,7 +3,7 @@
 
         <div class="modal-header">
             <h3 class="action">I am a reading session list</h3>
-            <button @click="setModalComponent('get')">Back</button>
+            <button @click="setModalComponent('book')">Back</button>
         </div>
         <div class="modal-body">
             <ul class="session-list">
@@ -13,7 +13,7 @@
             </ul>
         </div>
         <div class="modal-footer">
-            
+            <button class="modal-default-button" @click="addReadingSession">Add reading session</button>
 
         </div>
     </div>
@@ -25,7 +25,7 @@
     export default {
         data() {
             return {
-                
+
             }
         },
         computed: {
@@ -34,13 +34,17 @@
                     'border-bottom': `3px solid ${this.colorScheme.details}`
                 }
             },
-            
+
             ...mapGetters({
                 selectedBook: 'getSelectedBook',
                 colorScheme: 'getColorScheme'
             })
         },
         methods: {
+            addReadingSession() {
+                this.setSelectedReadingSession(null)
+                this.setModalComponent('reading-session')
+            },
             selectSession(session) {
                 this.setSelectedReadingSession(session)
                 this.setModalComponent('reading-session')

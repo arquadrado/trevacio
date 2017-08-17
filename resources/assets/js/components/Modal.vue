@@ -20,6 +20,8 @@
     import ReadingSessionList from './ReadingSessionList.vue'
     import ListBooks from './ListBooks.vue'
     import Settings from './Settings.vue'
+    import Book from './Book.vue'
+    import Stats from './Stats.vue'
 
     export default {
         components: {
@@ -28,7 +30,9 @@
             'reading-session': ReadingSession,
             'reading-session-list': ReadingSessionList,
             'list': ListBooks,
-            'settings': Settings
+            'settings': Settings,
+            'book': Book,
+            'stats': Stats
         },
         computed: {
             style() {

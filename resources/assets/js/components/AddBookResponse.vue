@@ -43,7 +43,7 @@
         methods: {
             openBook() {
                 this.setSelectedBook(this.response.book.id)
-                this.setModalComponent('get')
+                this.setModalComponent('book')
             },
             setBook(book) {
                 this.book = book
