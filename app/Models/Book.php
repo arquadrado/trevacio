@@ -86,7 +86,7 @@ class Book extends Model
         ]);
 
 
-        $days = Carbon::parse($readingSessions->first()->date)->diffInDays(Carbon::parse($readingSessions->last()->date));
+        $days = Carbon::parse($readingSessions->first()->date)->diffInDays(Carbon::parse($readingSessions->last()->date)) + 1;
 
         /*} catch (\Exception $e) {
             dd($e);
@@ -118,7 +118,7 @@ class Book extends Model
             'distribution' => []
         ]);
 
-        $days = Carbon::parse($readingSessions->first()->date)->diffInDays(Carbon::parse($readingSessions->last()->date));
+        $days = Carbon::parse($readingSessions->first()->date)->diffInDays(Carbon::parse($readingSessions->last()->date)) + 1;
 
         return [
             'page_average' => round($data['pages'], 2),
