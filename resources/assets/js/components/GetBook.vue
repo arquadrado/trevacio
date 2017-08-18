@@ -3,7 +3,7 @@
 
         <div class="modal-header">
             <h3 class="action">I will GET a fucking book!</h3>
-            <button class="modal-default-button" @click="close">close</button>
+            <button class="modal-default-button" @click="setContent('trevacio')">close</button>
         </div>
 
         <div class="getbook" v-if="!selectedBook && !response">
@@ -82,7 +82,7 @@
         methods: {
             listBooks() {
                 this.setSelectedList(null)
-                this.setModalComponent('list')
+                this.setContent('list')
             },
             searchAgain() {
                 this.bookToGet = ''
@@ -141,7 +141,7 @@
             ...mapActions({
                 toggleModal: 'toggleModal',
                 setSelectedBook: 'setSelectedBook',
-                setModalComponent: 'setModalComponent',
+                setContent: 'setContent',
                 fetchBook: 'fetchBook',
                 updateLibrary: 'updateLibrary',
                 setSelectedList: 'setSelectedList'

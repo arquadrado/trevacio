@@ -3,7 +3,7 @@
         <div class="modal-header">
             <h3 class="action">Stats - {{ selectedBook.title }}</h3>
             <button class="modal-default-button" @click="close">close</button>
-            <button class="modal-default-button" @click="setModalComponent('book')">back</button>
+            <button class="modal-default-button" @click="setContent('book')">back</button>
         </div>
         <div class="modal-body">
             <div class="stats book-user-stats" v-if="statsToShow === 'user'">
@@ -32,7 +32,7 @@
         <div class="modal-header">
             <h3 class="action">Stats</h3>
             <button class="modal-default-button" @click="close">close</button>
-            <button class="modal-default-button" @click="setModalComponent('book')">back</button>
+            <button class="modal-default-button" @click="setContent('book')">back</button>
         </div>
         <div class="modal-body">
             <h3>No stats to show</h3>
@@ -75,7 +75,7 @@
             },
 
             ...mapActions({
-                setModalComponent: 'setModalComponent',
+                setContent: 'setContent',
                 setSelectedBook: 'setSelectedBook',
                 toggleModal: 'toggleModal'
             })

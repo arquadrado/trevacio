@@ -8,14 +8,14 @@
             <span><strong>Title:</strong> {{ selectedBook.title }} </span><br>
             <span><strong>Author:</strong> {{ selectedBook.author.name }} </span><br><br>
             <div class="book-actions" v-if="selectedBook.in_library">
-                <button @click="setModalComponent('reading-session-list')">Reading Sessions</button>
-                <button @click="setModalComponent('stats')">Stats</button>
+                <button @click="setContent('reading-session-list')">Reading Sessions</button>
+                <button @click="setContent('stats')">Stats</button>
             </div>
         </div>
         <div class="modal-footer">
             <button class="modal-default-button" @click="searchBook">Search book</button>
             <button class="modal-default-button" @click="addBook">Add a new book</button>
-            <button class="modal-default-button" v-if="selectedList" @click="setModalComponent('list')">Back to list</button>
+            <button class="modal-default-button" v-if="selectedList" @click="setContent('list')">Back to list</button>
             <div class="book-not-owned" v-if="!selectedBook.in_library">
                 <h4>This book is not in your library. Add it to perform actions</h4>
                 <button class="modal-default-button" @click="addBookToUserCollection">
@@ -43,11 +43,11 @@
             },
             addBook() {
                 this.setSelectedBook(null)
-                this.setModalComponent('add')
+                this.setContent('add')
             },
             searchBook() {
                 this.setSelectedBook(null)
-                this.setModalComponent('get')
+                this.setContent('get')
             },
             addBookToUserCollection(book) {
                 const self = this
@@ -62,7 +62,7 @@
                 })
             },
             ...mapActions({
-                setModalComponent: 'setModalComponent',
+                setContent: 'setContent',
                 setSelectedReadingSession: 'setSelectedReadingSession',
                 addToUserCollection: 'addToUserCollection',
                 setSelectedBook: 'setSelectedBook',

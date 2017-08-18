@@ -43,7 +43,7 @@
         methods: {
             openBook() {
                 this.setSelectedBook(this.response.book.id)
-                this.setModalComponent('book')
+                this.setContent('book')
             },
             setBook(book) {
                 this.book = book
@@ -57,7 +57,7 @@
             ...mapActions({
                 toggleModal: 'toggleModal',
                 setSelectedBook: 'setSelectedBook',
-                setModalComponent: 'setModalComponent'
+                setContent: 'setContent'
             })
         }
     }

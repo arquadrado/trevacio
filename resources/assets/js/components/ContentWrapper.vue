@@ -1,19 +1,12 @@
 <template>
-    <transition name="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" :style="style">
-
-                    <component :is="component"></component>
-
-                </div>
-            </div>
-        </div>
-  </transition>
+    <div class="content">
+        <component :is="content"></component>
+    </div>
 </template>
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import Trevacio from './Trevacio.vue'
     import Add from './AddBook.vue'
     import Get from './GetBook.vue'
     import ReadingSession from './ReadingSession.vue'
@@ -25,6 +18,7 @@
 
     export default {
         components: {
+            'trevacio': Trevacio,
             'add': Add,
             'get': Get,
             'reading-session': ReadingSession,
@@ -44,7 +38,7 @@
             },
             ...mapGetters({
                 colorScheme: 'getColorScheme',
-                component: 'getContent'
+                content: 'getContent'
             })
         },
         methods: {

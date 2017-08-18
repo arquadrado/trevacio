@@ -2,7 +2,7 @@
     <div class="content-wrapper">
         <div class="modal-header">
             <h3 class="action">I will LIST these fuckers</h3>
-            <button class="modal-default-button" @click="toggleModal">close</button>
+            <button class="modal-default-button" @click="setContent('trevacio')">close</button>
         </div>
         <div class="modal-body" v-if="showList">
             <h3>{{ message }}</h3>
@@ -62,20 +62,20 @@
         methods: {
             addBook() {
                 this.setSelectedBook(null)
-                this.setModalComponent('add')
+                this.setContent('add')
             },
             searchBook() {
                 this.setSelectedBook(null)
-                this.setModalComponent('get')
+                this.setContent('get')
             },
             openBook(book) {
                 this.setSelectedBook(book.id)
-                this.setModalComponent('book')
+                this.setContent('book')
             },
             ...mapActions({
-                toggleModal: 'toggleModal',
+                setContent: 'setContent',
                 setSelectedBook: 'setSelectedBook',
-                setModalComponent: 'setModalComponent',
+                setContent: 'setContent',
                 setSelectedList: 'setSelectedList'
             })
         }

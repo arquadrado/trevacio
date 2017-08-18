@@ -11,10 +11,36 @@ const state = {
     sessionInteractions: [],
 
     actions: {
-        add: 'Add book',
-        get: 'Get book',
-        list: 'List books',
-        settings: 'Remove this little fucker?',
+        add: {
+            label: 'Add',
+            name: 'add',
+            icon: 'view_array',
+            description: 'Add books to your personal library'
+        },
+        get: {
+            label: 'Get',
+            name: 'get',
+            icon: 'view_carousel',
+            description: 'Search for a specific book'
+        },
+        list: {
+            label: 'List',
+            name: 'list',
+            icon: 'view_column',
+            description: 'List books from the library or your personal collection'
+        },
+        settings: {
+            label: 'Settings',
+            name: 'settings',
+            icon: 'settings',
+            description: 'Personalize your experience and view your stats'
+        },
+        trevacio: {
+            label: 'Trevacio',
+            name: 'trevacio',
+            icon: 'close',
+            description: 'Close the menu and go back to home screen'
+        },
         //joke: 'Wanna hear a joke?',
         //default: 'Ok, lets do this!',
     },
@@ -22,8 +48,7 @@ const state = {
 
     showGui: false,
 
-    showModal: false,
-    modalComponent: null
+    content: 'trevacio'
 }
 
 const getters = {
@@ -36,8 +61,7 @@ const getters = {
 
     getShowGui: state => state.showGui,
 
-    getShowModal: state => state.showModal,
-    getModalComponent: state => state.modalComponent,
+    getContent: state => state.content,
 }
 
 const actions = {
@@ -56,8 +80,8 @@ const actions = {
     toggleModal({ commit, state }) {
         commit('TOGGLE_MODAL')
     },
-    setModalComponent({ commit, state }, component) {
-        commit('SET_MODAL_COMPONENT', component)
+    setContent({ commit, state }, component) {
+        commit('SET_CONTENT', component)
     },
 }
 
@@ -77,8 +101,8 @@ const mutations = {
     'TOGGLE_MODAL': state => {
         state.showModal = !state.showModal
     },
-    'SET_MODAL_COMPONENT': (state, component) => {
-        state.modalComponent = component
+    'SET_CONTENT': (state, component) => {
+        state.content = component
     },
 }
 

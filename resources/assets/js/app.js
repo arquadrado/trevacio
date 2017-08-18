@@ -21,16 +21,14 @@ Vue.devtools = true
 import store from './vuex/store'
 
 import { mapGetters, mapActions } from 'vuex'
-import Trevacio from './components/Trevacio.vue'
+import ContentWrapper from './components/ContentWrapper.vue'
 import Gui from './components/Gui.vue'
-import Modal from './components/Modal.vue'
 
 const app = new Vue({
     el: '#app',
     components: {
-        Trevacio,
-        Gui,
-        Modal
+        ContentWrapper,
+        Gui
     },
     data: {
     },
@@ -45,14 +43,14 @@ const app = new Vue({
     	},
         ...mapGetters({
             showGui: 'getShowGui',
-            showModal: 'getShowModal',
             colorScheme: 'getColorScheme'
         })
     },
 
     methods: {
         ...mapActions({
-            suitEyes: 'changeColorScheme'
+            suitEyes: 'changeColorScheme',
+            toggleGui: 'toggleGui'
         })
     },
     store

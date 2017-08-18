@@ -8413,13 +8413,16 @@ body #app .silent-book-keeper {
 body #app .silent-book-keeper .actions-list {
   position: relative;
   height: 100%;
+  width: 100vw;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
 body #app .silent-book-keeper .actions-list .action {
-  display: table;
+  position: relative;
+  display: inline-block;
+  height: 100vh;
   text-align: center;
   font-size: 49px;
   -webkit-transition: all 300ms ease-in;
@@ -8428,29 +8431,52 @@ body #app .silent-book-keeper .actions-list .action {
   cursor: pointer;
 }
 
-body #app .silent-book-keeper .actions-list .action i {
-  display: table-cell;
-  vertical-align: middle;
+body #app .silent-book-keeper .actions-list .action .zone {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: table;
+  padding: 7px;
 }
 
-body #app .book-keeper {
-  position: relative;
+body #app .silent-book-keeper .actions-list .action .zone .zone-content {
   display: table-cell;
+  text-align: center;
   vertical-align: middle;
+  min-height: 280px;
+}
+
+body #app .silent-book-keeper .actions-list .action .zone .zone-content .action-description {
+  min-height: 60px;
+  font-size: 14px;
+}
+
+@media (max-width: 794px) {
+  body #app .action-description {
+    display: none;
+  }
+}
+
+body #app .content {
+  padding: 21px;
+}
+
+body #app .content .book-keeper {
+  position: relative;
   text-align: center;
 }
 
-body #app .book-keeper .interaction {
+body #app .content .book-keeper .interaction {
   position: relative;
   display: inline-block;
 }
 
-body #app .book-keeper .interaction .prompt {
-  font-size: 49px;
+body #app .content .book-keeper .interaction .prompt {
+  font-size: 35px;
   font-weight: 900;
 }
 
-body #app .book-keeper .interaction .fake-input {
+body #app .content .book-keeper .interaction .fake-input {
   display: block;
   min-width: 105px;
   max-width: 100vw;
@@ -8458,14 +8484,14 @@ body #app .book-keeper .interaction .fake-input {
   font-size: 35px;
 }
 
-body #app .book-keeper .results,
-body #app .book-keeper .fallbacks {
+body #app .content .book-keeper .results,
+body #app .content .book-keeper .fallbacks {
   min-height: 200px;
   border: inherit;
 }
 
 body #app .eye-suit {
-  padding: 0 0 42px 0;
+  padding: 42px 0 0 0;
 }
 
 body #app .table {

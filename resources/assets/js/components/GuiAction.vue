@@ -5,7 +5,12 @@
         @mouseleave="hoverOff"
         @click="execute"
     >
-        <i class="material-icons">{{ icon }}</i>
+        <div class="zone">
+            <div class="zone-content">
+                <i class="material-icons">{{ action.icon }}</i>
+                <p class="action-description">{{ action.description }}</p>
+            </div>
+        </div>
     </li>
 </template>
 
@@ -16,24 +21,10 @@
         props: ['action'],
         data() {
             return {
-                icons: {
-                    add: 'playlist_add',
-                    get: 'arrow_downward',
-                    list: 'list',
-                    settings: 'settings'
-                },
                 hover: false
             }
         },
         computed: {
-            icon() {
-                if (this.icons.hasOwnProperty(this.action)) {
-
-                    return this.icons[this.action]
-                }
-
-                return 'bug_report'
-            },
             style() {
                 if (this.hover) {
                     return {
@@ -54,8 +45,8 @@
         },
         methods: {
             execute() {
-                this.setModalComponent(this.action)
-                this.toggleModal()
+                this.setContent(this.action.name)
+                this.toggleGui()
             },
             hoverOn() {
                 this.hover = true
@@ -64,8 +55,8 @@
                 this.hover = false
             },
             ...mapActions({
-                toggleModal: 'toggleModal',
-                setModalComponent: 'setModalComponent'
+                setContent: 'setContent',
+                toggleGui: 'toggleGui'
             })
         }
     }

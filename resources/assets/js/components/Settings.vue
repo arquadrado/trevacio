@@ -2,13 +2,13 @@
     <div class="content-wrapper">
         <div class="modal-header">
             <h3 class="action">Soon to be SETTINGS</h3>
-            <button class="modal-default-button" @click="toggleModal">Close</button>
+            <button class="modal-default-button" @click="setContent('trevacio')">Close</button>
         </div>
         <div class="modal-body">
             <h4>Ye ye ye</h4>
         </div>
         <div class="modal-footer">
-            <button class="modal-default-button" @click="toggleModal">Close</button>
+            <button class="modal-default-button" @click="setContent('trevacio')">Close</button>
         </div>
     </div>
 </template>
@@ -22,7 +22,7 @@
         },
         methods: {
             ...mapActions({
-                toggleModal: 'toggleModal'
+                setContent: 'setContent'
             })
         }
     }

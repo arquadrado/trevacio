@@ -11,9 +11,6 @@
             @prompt="__setLine"
             @input-processed="__toggleShouldProcess"
         ></component>
-        <div class="call-gui">
-            <button @click="toggleGui">{{ guiToggleMessage }}</button>
-        </div>
     </div>
 </template>
 
@@ -51,7 +48,6 @@
                 }
             },
             ...mapGetters({
-                showGui: 'getShowGui',
                 selectedAction: 'getSelectedAction',
                 colorScheme: 'getColorScheme'
             })
@@ -73,8 +69,7 @@
                 this.userInput = event.target.innerText
             },
             ...mapActions({
-                addUserInput: 'addUserInput',
-                toggleGui: 'toggleGui'
+                addUserInput: 'addUserInput'
             })
 
         },

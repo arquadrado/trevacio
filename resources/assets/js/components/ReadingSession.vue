@@ -3,8 +3,8 @@
 
         <div class="modal-header">
             <h3 class="action">I am a reading session</h3>
-            <button @click="setModalComponent('book')">Back to book</button>
-            <button @click="setModalComponent('reading-session-list')">Back to list</button>
+            <button @click="setContent('book')">Back to book</button>
+            <button @click="setContent('reading-session-list')">Back to list</button>
         </div>
         <div class="modal-body">
             <div class="add-session" v-if="adding">
@@ -89,7 +89,7 @@
             },
             ...mapActions({
                 toggleModal: 'toggleModal',
-                setModalComponent: 'setModalComponent',
+                setContent: 'setContent',
                 saveReadingSession: 'saveReadingSession',
                 setSelectedReadingSession: 'setSelectedReadingSession'
             })

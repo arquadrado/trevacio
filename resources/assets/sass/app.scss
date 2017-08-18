@@ -54,55 +54,76 @@ body {
 			.actions-list {
 				position: relative;
 				height: 100%;
+				width: 100vw;
 				list-style: none;
 				padding: 0;
 				margin: 0;
 				.action {
-					display: table;
+					position: relative;
+					display: inline-block;
+					height: 100vh;
 					text-align: center;
 					font-size: 49px;
 					transition: all 300ms ease-in;
 					opacity: 0.9;
 					cursor: pointer;
-					i {
-						display: table-cell;
-						vertical-align: middle;
-
+					.zone {
+						position: relative;
+						height: 100%;
+						width: 100%;
+						display: table;
+						padding: 7px;
+						.zone-content {
+							display: table-cell;
+							text-align: center;
+							vertical-align: middle;
+							min-height: 280px;
+							.action-description {
+								min-height: 60px;
+								font-size: 14px;
+							}
+						}
 					}
 				}
 			}
 		}
 
-		.book-keeper {
-			position: relative;
-			display: table-cell;
-			vertical-align: middle;
-			text-align: center;
-			.interaction {
-				position: relative;
-				display: inline-block;
-				.prompt {
-					font-size: 49px;
-					font-weight: 900;
-				}
-				.fake-input {
-					display: block;
-					min-width: 105px;
-					max-width: 100vw;
-					min-height: 63px;
-					font-size: 35px;
-				}
-
+		@media (max-width: 794px) {
+			.action-description {
+				display: none;
 			}
-			.results, .fallbacks {
-				min-height: 200px;
-				border: inherit;
-			}
-
 		}
 
+		.content {
+			padding: 21px;
+			.book-keeper {
+				position: relative;
+				text-align: center;
+				.interaction {
+					position: relative;
+					display: inline-block;
+					.prompt {
+						font-size: 35px;
+						font-weight: 900;
+					}
+					.fake-input {
+						display: block;
+						min-width: 105px;
+						max-width: 100vw;
+						min-height: 63px;
+						font-size: 35px;
+					}
+				}
+				.results, .fallbacks {
+					min-height: 200px;
+					border: inherit;
+				}
+			}
+		}
+
+
 		.eye-suit {
-			padding: 0 0 42px 0;
+			padding: 42px 0 0 0;
 		}
 
 		.table {

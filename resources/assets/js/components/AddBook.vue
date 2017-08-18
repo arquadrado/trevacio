@@ -3,7 +3,7 @@
 
         <div class="modal-header">
             <h3 class="action">I will ADD a fucking book!</h3>
-            <button class="modal-default-button" @click="toggleModal">close</button>
+            <button class="modal-default-button" @click="setContent('trevacio')">close</button>
         </div>
         <div class="new-book" v-if="!submitted">
 
@@ -167,7 +167,7 @@
                 })
             },
             ...mapActions({
-                toggleModal: 'toggleModal',
+                setContent: 'setContent',
                 addToLibrary: 'addToLibrary',
                 addToUserCollection: 'addToUserCollection',
                 updateLibrary: 'updateLibrary'

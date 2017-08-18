@@ -3,7 +3,7 @@
 
         <div class="modal-header">
             <h3 class="action">I am a reading session list</h3>
-            <button @click="setModalComponent('book')">Back</button>
+            <button @click="setContent('book')">Back</button>
         </div>
         <div class="modal-body">
             <ul class="session-list">
@@ -43,15 +43,15 @@
         methods: {
             addReadingSession() {
                 this.setSelectedReadingSession(null)
-                this.setModalComponent('reading-session')
+                this.setContent('reading-session')
             },
             selectSession(session) {
                 this.setSelectedReadingSession(session)
-                this.setModalComponent('reading-session')
+                this.setContent('reading-session')
             },
             ...mapActions({
                 toggleModal: 'toggleModal',
-                setModalComponent: 'setModalComponent',
+                setContent: 'setContent',
                 setSelectedReadingSession: 'setSelectedReadingSession'
             })
         }

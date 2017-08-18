@@ -1,6 +1,14 @@
 const state = {
     colorSchemes: [
         {
+            details: '#AECFD5',
+            background: '#0C515E'
+        },
+        {
+            details: '#ADDCDC',
+            background: '#163434'
+        },
+        {
             details: '#ffffff',
             background: '#10317C'
         },

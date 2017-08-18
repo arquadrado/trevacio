@@ -3,8 +3,8 @@
         <ul class="actions-list" v-dimension:actionsCount="actionsCount">
             <gui-action
                 :action="action"
-                :key="action"
-                v-for="(label, action) in availableActions"
+                :key="action.name"
+                v-for="action in availableActions"
             ></gui-action>
         </ul>
     </div>
@@ -31,9 +31,6 @@
             })
         },
         methods: {
-            test() {
-                console.log('pato')
-            },
             ...mapActions({
                 addUserInput: 'addUserInput'
             })
@@ -42,11 +39,8 @@
         directives: {
             dimension: {
                 inserted: function (el, binding, vnode) {
-                    console.log(binding)
                     $(el).find('.action').each((index, elem) => {
-                        $(elem).width(($(el).height() / binding.value) - 6)
-                        $(elem).height(($(el).height() / binding.value) - 6)
-                        //$(elem).css('border-radius', ($(el).height() / 8))
+                        $(elem).width(($(el).width() / binding.value) - 6)
                     })
                 },
                 updated: (el) => {
