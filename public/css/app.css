@@ -8399,7 +8399,21 @@ body #app .gui-leave-active {
 
 body #app .gui-enter,
 body #app .gui-leave-to {
-  left: -500px;
+  left: -2000px;
+}
+
+body #app .slide-enter-active,
+body #app .slide-leave-active {
+  left: 0;
+  -webkit-transition: left .5s .5s;
+  transition: left .5s .5s;
+}
+
+body #app .slide-enter,
+body #app .slide-leave-to {
+  left: -110%;
+  -webkit-transition: left .5s;
+  transition: left .5s;
 }
 
 body #app .silent-book-keeper {
@@ -8461,22 +8475,26 @@ body #app .content {
   padding: 21px;
 }
 
-body #app .content .book-keeper {
+body #app .content .content-wrapper {
+  position: relative;
+}
+
+body #app .content .content-wrapper .book-keeper {
   position: relative;
   text-align: center;
 }
 
-body #app .content .book-keeper .interaction {
+body #app .content .content-wrapper .book-keeper .interaction {
   position: relative;
   display: inline-block;
 }
 
-body #app .content .book-keeper .interaction .prompt {
+body #app .content .content-wrapper .book-keeper .interaction .prompt {
   font-size: 35px;
   font-weight: 900;
 }
 
-body #app .content .book-keeper .interaction .fake-input {
+body #app .content .content-wrapper .book-keeper .interaction .fake-input {
   display: block;
   min-width: 105px;
   max-width: 100vw;
@@ -8484,8 +8502,8 @@ body #app .content .book-keeper .interaction .fake-input {
   font-size: 35px;
 }
 
-body #app .content .book-keeper .results,
-body #app .content .book-keeper .fallbacks {
+body #app .content .content-wrapper .book-keeper .results,
+body #app .content .content-wrapper .book-keeper .fallbacks {
   min-height: 200px;
   border: inherit;
 }

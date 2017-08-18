@@ -1,16 +1,18 @@
 <template>
-    <div class="book-keeper">
-        <div class="interaction">
-            <span class="prompt">{{ trevacioLine }}</span>
-            <br>
-            <span class="fake-input" :style="fakeInputStyle" contenteditable="true" v-focus @keyup.enter="act" @input="processAnswer"></span>
+    <div class="content-wrapper">
+        <div class="book-keeper">
+            <div class="interaction">
+                <span class="prompt">{{ trevacioLine }}</span>
+                <br>
+                <span class="fake-input" :style="fakeInputStyle" contenteditable="true" v-focus @keyup.enter="act" @input="processAnswer"></span>
+            </div>
+            <component
+                :is="selectedAction"
+                :shouldProcess="shouldProcess"
+                @prompt="__setLine"
+                @input-processed="__toggleShouldProcess"
+            ></component>
         </div>
-        <component
-            :is="selectedAction"
-            :shouldProcess="shouldProcess"
-            @prompt="__setLine"
-            @input-processed="__toggleShouldProcess"
-        ></component>
     </div>
 </template>
 

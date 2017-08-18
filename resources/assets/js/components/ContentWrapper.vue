@@ -1,6 +1,8 @@
 <template>
     <div class="content">
-        <component :is="content"></component>
+        <transition name="slide">
+            <component :is="content"></component>
+        </transition>
     </div>
 </template>
 

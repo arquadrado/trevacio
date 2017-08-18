@@ -71,9 +71,8 @@
             },
             close() {
                 this.setSelectedBook(null)
-                this.toggleModal()
+                this.setContent('trevacio')
             },
-
             ...mapActions({
                 setContent: 'setContent',
                 setSelectedBook: 'setSelectedBook',

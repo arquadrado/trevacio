@@ -39,7 +39,7 @@
         methods: {
             close() {
                 this.setSelectedBook(null)
-                this.toggleModal()
+                this.setContent('trevacio')
             },
             addBook() {
                 this.setSelectedBook(null)
