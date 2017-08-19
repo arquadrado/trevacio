@@ -1,5 +1,7 @@
 <template>
-    <div class="content-wrapper" v-if="hasStatsToShow">
+    <div class="content-wrapper" 
+        v-if="hasStatsToShow" 
+    >
         <div class="modal-header">
             <h3 class="action">Stats - {{ selectedBook.title }}</h3>
             <button class="modal-default-button" @click="close">close</button>
@@ -29,7 +31,9 @@
             <button class="modal-default-button" @click="previousBook">PREVIOUS</button>
         </div>
     </div>
-    <div class="content-wrapper" v-else>
+    <div class="content-wrapper" 
+        v-else
+    >
         <div class="modal-header">
             <h3 class="action">Stats</h3>
             <button class="modal-default-button" @click="close">close</button>
@@ -84,6 +88,19 @@
                 toggleModal: 'toggleModal',
                 nextBook: 'nextBook',
                 previousBook: 'previousBook',
+            })
+        },
+        mounted() {
+            const self = this
+            window.addEventListener('keyup', (event) => {
+                switch (event.keyCode) {
+                    case 37:
+                        self.previousBook()
+                        break
+                    case 39:
+                        self.nextBook()
+                        break
+                }
             })
         }
     }

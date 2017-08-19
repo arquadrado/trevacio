@@ -46309,6 +46309,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -46348,7 +46352,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         toggleModal: 'toggleModal',
         nextBook: 'nextBook',
         previousBook: 'previousBook'
-    }))
+    })),
+    mounted: function mounted() {
+        var self = this;
+        window.addEventListener('keyup', function (event) {
+            switch (event.keyCode) {
+                case 37:
+                    self.previousBook();
+                    break;
+                case 39:
+                    self.nextBook();
+                    break;
+            }
+        });
+    }
 });
 
 /***/ }),
