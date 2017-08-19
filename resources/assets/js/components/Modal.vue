@@ -4,8 +4,11 @@
             <div class="modal-wrapper">
                 <div class="modal-container" :style="style">
 
-                    <component :is="component"></component>
-
+                    <h3>{{ message }}</h3>
+                    <div class="actions" v-if="actions">
+                        <button v-for="action in actions" @click="action.callback">{{ action.label }}</button>
+                    </div>
+                    <button v-else @click="toggleModal">close</button>
                 </div>
             </div>
         </div>
@@ -14,27 +17,19 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import Add from './AddBook.vue'
-    import Get from './GetBook.vue'
-    import ReadingSession from './ReadingSession.vue'
-    import ReadingSessionList from './ReadingSessionList.vue'
-    import ListBooks from './ListBooks.vue'
-    import Settings from './Settings.vue'
-    import Book from './Book.vue'
-    import Stats from './Stats.vue'
+    
 
     export default {
         components: {
-            'add': Add,
-            'get': Get,
-            'reading-session': ReadingSession,
-            'reading-session-list': ReadingSessionList,
-            'list': ListBooks,
-            'settings': Settings,
-            'book': Book,
-            'stats': Stats
+    
         },
         computed: {
+            message() {
+                return this.content.message ? this.content.message : 'Something must be wrong.' 
+            },
+            actions() {
+                return this.content.actions ? this.content.actions : null
+            },
             style() {
                 return {
                     'background-color': this.colorScheme.background,
@@ -43,8 +38,8 @@
                 }
             },
             ...mapGetters({
+                content: 'getModalContent',
                 colorScheme: 'getColorScheme',
-                component: 'getContent'
             })
         },
         methods: {

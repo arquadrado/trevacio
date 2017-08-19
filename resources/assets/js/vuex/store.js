@@ -48,6 +48,16 @@ const state = {
 
     showGui: false,
 
+    showModal: false,
+
+    modalContent: {
+        message: 'Are you sure?',
+        actions: [{
+                    label: 'Default',
+                    callback: null
+                }]
+    },
+
     content: 'trevacio'
 }
 
@@ -60,6 +70,9 @@ const getters = {
     getSelectedAction: state => state.selectedAction,
 
     getShowGui: state => state.showGui,
+
+    getShowModal: state => state.showModal,
+    getModalContent: state => state.modalContent,
 
     getContent: state => state.content,
 }
@@ -80,6 +93,10 @@ const actions = {
     toggleModal({ commit, state }) {
         commit('TOGGLE_MODAL')
     },
+    setModalContent({ commit, state }, content) {
+        commit('SET_MODAL_CONTENT', content)
+    },
+
     setContent({ commit, state }, component) {
         commit('SET_CONTENT', component)
     },
@@ -101,6 +118,10 @@ const mutations = {
     'TOGGLE_MODAL': state => {
         state.showModal = !state.showModal
     },
+    'SET_MODAL_CONTENT': (state, content) => {
+        state.modalContent = content
+    },
+
     'SET_CONTENT': (state, component) => {
         state.content = component
     },

@@ -33,7 +33,7 @@
             <button v-if="adding" class="modal-default-button" :disabled="!canSubmit" @click="saveSession">
                 Save
             </button>
-            <button v-else class="modal-default-button">Delete</button>
+            <button v-else class="modal-default-button" @click="deleteSession">Delete</button>
 
         </div>
     </div>
@@ -73,6 +73,27 @@
             })
         },
         methods: {
+            deleteSession() {
+                const self = this
+                this.setModalContent({
+                    message: 'Are you sure the want to delete this reading session?',
+                    actions: [
+                        {
+                            label: 'Yes',
+                            callback: () => {
+                                console.log('going to delete this fukker')
+                            }
+                        },
+                        {
+                            label: 'no',
+                            callback: () => {
+                                self.toggleModal()
+                            }
+                        }
+                    ]
+                })
+                this.toggleModal()
+            },
             saveSession() {
                 console.log(this.selectedBook, 'selectedBook')
                 this.saveReadingSession({
@@ -91,7 +112,8 @@
                 toggleModal: 'toggleModal',
                 setContent: 'setContent',
                 saveReadingSession: 'saveReadingSession',
-                setSelectedReadingSession: 'setSelectedReadingSession'
+                setSelectedReadingSession: 'setSelectedReadingSession',
+                setModalContent: 'setModalContent'
             })
         }
     }

@@ -23,12 +23,14 @@ import store from './vuex/store'
 import { mapGetters, mapActions } from 'vuex'
 import ContentWrapper from './components/ContentWrapper.vue'
 import Gui from './components/Gui.vue'
+import Modal from './components/Modal.vue'
 
 const app = new Vue({
     el: '#app',
     components: {
         ContentWrapper,
-        Gui
+        Gui,
+        Modal
     },
     data: {
     },
@@ -43,6 +45,7 @@ const app = new Vue({
     	},
         ...mapGetters({
             showGui: 'getShowGui',
+            showModal: 'getShowModal',
             colorScheme: 'getColorScheme'
         })
     },

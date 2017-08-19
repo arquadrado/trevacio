@@ -15,6 +15,7 @@
     <gui v-if="showGui"></gui>
 </transition>
 
+<modal v-if="showModal"></modal>
 @endsection
 
 @section('handover')
