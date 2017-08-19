@@ -25,6 +25,35 @@ const getters = {
 }
 
 const actions = {
+    nextBook({ commit, dispatch, state }) {
+        const ids = []
+        for (let id in state.lists.userCollection) {
+            ids.push(parseInt(id))
+        }
+
+        let currentIdIndex = ids.indexOf(state.selectedBook)
+
+        if (currentIdIndex > -1) {
+            let indexToSelect = ids.indexOf(state.selectedBook + 1)
+            dispatch('setSelectedBook', indexToSelect > -1 ? ids[indexToSelect] : ids[0])
+        }
+
+    },
+    previousBook({ commit, dispatch, state }) {
+        const ids = []
+        for (let id in state.lists.userCollection) {
+            ids.push(parseInt(id))
+        }
+
+        let currentIdIndex = ids.indexOf(state.selectedBook)
+
+        if (currentIdIndex > -1) {
+            let indexToSelect = ids.indexOf(state.selectedBook - 1)
+            dispatch('setSelectedBook', indexToSelect > -1 ? ids[indexToSelect] : ids[ids.length - 1])
+        }
+
+    },
+
     addToLibrary({ commit, state }, args) {
          $.post('save-book', {
             _token: window.handover._token,

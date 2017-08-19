@@ -30,13 +30,13 @@
                     return {
                         'background-color': this.colorScheme.details,
                         'color': this.colorScheme.background,
-                        'border': `3px solid ${this.colorScheme.background}`
+                        'border': `1px solid ${this.colorScheme.background}`
                     }
                 }
                 return {
                     'background-color': this.colorScheme.background,
                     'color': this.colorScheme.details,
-                    'border': `3px solid ${this.colorScheme.details}`
+                    'border': `1px solid ${this.colorScheme.details}`
                 }
             },
             ...mapGetters({

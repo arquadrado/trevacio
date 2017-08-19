@@ -8436,7 +8436,7 @@ body #app .silent-book-keeper .actions-list {
 body #app .silent-book-keeper .actions-list .action {
   position: relative;
   display: inline-block;
-  height: 100vh;
+  height: calc(100vh - 3px);
   text-align: center;
   font-size: 49px;
   -webkit-transition: all 300ms ease-in;
@@ -8466,7 +8466,11 @@ body #app .silent-book-keeper .actions-list .action .zone .zone-content .action-
 }
 
 @media (max-width: 794px) {
-  body #app .action-description {
+  body #app .silent-book-keeper .actions-list .action {
+    opacity: 1;
+  }
+
+  body #app .silent-book-keeper .actions-list .action .zone .zone-content .action-description {
     display: none;
   }
 }

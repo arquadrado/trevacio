@@ -25,7 +25,8 @@
             <button @click="toggleStatsToShow">{{ statsToShow === 'all' ? 'User stats' : 'General Book stats' }}</button>
         </div>
         <div class="modal-footer">
-
+            <button class="modal-default-button" @click="nextBook">NEXT</button>
+            <button class="modal-default-button" @click="previousBook">PREVIOUS</button>
         </div>
     </div>
     <div class="content-wrapper" v-else>
@@ -36,6 +37,10 @@
         </div>
         <div class="modal-body">
             <h3>No stats to show</h3>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-default-button" @click="nextBook">NEXT</button>
+            <button class="modal-default-button" @click="previousBook">PREVIOUS</button>
         </div>
     </div>
 </template>
@@ -76,7 +81,9 @@
             ...mapActions({
                 setContent: 'setContent',
                 setSelectedBook: 'setSelectedBook',
-                toggleModal: 'toggleModal'
+                toggleModal: 'toggleModal',
+                nextBook: 'nextBook',
+                previousBook: 'previousBook',
             })
         }
     }

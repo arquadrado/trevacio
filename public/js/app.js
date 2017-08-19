@@ -11966,7 +11966,7 @@ module.exports = Vue$3;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(14);
-module.exports = __webpack_require__(97);
+module.exports = __webpack_require__(100);
 
 
 /***/ }),
@@ -11981,7 +11981,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ContentWrapper_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_ContentWrapper_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__ = __webpack_require__(91);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__ = __webpack_require__(97);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -43226,9 +43226,43 @@ var getters = {
 };
 
 var actions = {
-    addToLibrary: function addToLibrary(_ref, args) {
+    nextBook: function nextBook(_ref) {
         var commit = _ref.commit,
+            dispatch = _ref.dispatch,
             state = _ref.state;
+
+        var ids = [];
+        for (var id in state.lists.userCollection) {
+            ids.push(parseInt(id));
+        }
+
+        var currentIdIndex = ids.indexOf(state.selectedBook);
+
+        if (currentIdIndex > -1) {
+            var indexToSelect = ids.indexOf(state.selectedBook + 1);
+            dispatch('setSelectedBook', indexToSelect > -1 ? ids[indexToSelect] : ids[0]);
+        }
+    },
+    previousBook: function previousBook(_ref2) {
+        var commit = _ref2.commit,
+            dispatch = _ref2.dispatch,
+            state = _ref2.state;
+
+        var ids = [];
+        for (var id in state.lists.userCollection) {
+            ids.push(parseInt(id));
+        }
+
+        var currentIdIndex = ids.indexOf(state.selectedBook);
+
+        if (currentIdIndex > -1) {
+            var indexToSelect = ids.indexOf(state.selectedBook - 1);
+            dispatch('setSelectedBook', indexToSelect > -1 ? ids[indexToSelect] : ids[ids.length - 1]);
+        }
+    },
+    addToLibrary: function addToLibrary(_ref3, args) {
+        var commit = _ref3.commit,
+            state = _ref3.state;
 
         $.post('save-book', {
             _token: window.handover._token,
@@ -43242,9 +43276,9 @@ var actions = {
             }
         });
     },
-    addToUserCollection: function addToUserCollection(_ref2, args) {
-        var commit = _ref2.commit,
-            state = _ref2.state;
+    addToUserCollection: function addToUserCollection(_ref4, args) {
+        var commit = _ref4.commit,
+            state = _ref4.state;
 
         $.post('add-to-user-collection', {
             _token: window.handover._token,
@@ -43255,10 +43289,10 @@ var actions = {
             }
         });
     },
-    fetchBook: function fetchBook(_ref3, args) {
-        var commit = _ref3.commit,
-            dispatch = _ref3.dispatch,
-            state = _ref3.state;
+    fetchBook: function fetchBook(_ref5, args) {
+        var commit = _ref5.commit,
+            dispatch = _ref5.dispatch,
+            state = _ref5.state;
 
         $.post('get-book', {
             _token: window.handover._token,
@@ -43269,19 +43303,19 @@ var actions = {
             }
         }).fail(args.errorCallback);
     },
-    setSelectedBook: function setSelectedBook(_ref4, id) {
-        var commit = _ref4.commit,
-            state = _ref4.state;
+    setSelectedBook: function setSelectedBook(_ref6, id) {
+        var commit = _ref6.commit,
+            state = _ref6.state;
 
         commit('SET_SELECTED_BOOK', id);
     },
-    setSelectedReadingSession: function setSelectedReadingSession(_ref5, session) {
-        var commit = _ref5.commit;
+    setSelectedReadingSession: function setSelectedReadingSession(_ref7, session) {
+        var commit = _ref7.commit;
 
         commit('SET_SELECTED_READING_SESSION', session);
     },
-    updateLibrary: function updateLibrary(_ref6, args) {
-        var commit = _ref6.commit;
+    updateLibrary: function updateLibrary(_ref8, args) {
+        var commit = _ref8.commit;
 
         $.get('update-library', function (response) {
             console.log(response);
@@ -43291,10 +43325,10 @@ var actions = {
             });
         }).done(args.successCallback).fail(args.errorCallback);
     },
-    saveReadingSession: function saveReadingSession(_ref7, args) {
-        var commit = _ref7.commit,
-            dispatch = _ref7.dispatch,
-            state = _ref7.state;
+    saveReadingSession: function saveReadingSession(_ref9, args) {
+        var commit = _ref9.commit,
+            dispatch = _ref9.dispatch,
+            state = _ref9.state;
 
         $.post('save-reading-session', {
             _token: window.handover._token,
@@ -43307,8 +43341,8 @@ var actions = {
             }
         }).fail(args.errorCallback);
     },
-    setSelectedList: function setSelectedList(_ref8, list) {
-        var commit = _ref8.commit;
+    setSelectedList: function setSelectedList(_ref10, list) {
+        var commit = _ref10.commit;
 
         commit('SET_SELECTED_LIST', list);
     }
@@ -46270,6 +46304,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -46306,7 +46345,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
         setContent: 'setContent',
         setSelectedBook: 'setSelectedBook',
-        toggleModal: 'toggleModal'
+        toggleModal: 'toggleModal',
+        nextBook: 'nextBook',
+        previousBook: 'previousBook'
     }))
 });
 
@@ -46349,7 +46390,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v(_vm._s(_vm.statsToShow === 'all' ? 'User stats' : 'General Book stats'))])]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
-  })]) : _c('div', {
+  }, [_c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.nextBook
+    }
+  }, [_vm._v("NEXT")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.previousBook
+    }
+  }, [_vm._v("PREVIOUS")])])]) : _c('div', {
     staticClass: "content-wrapper"
   }, [_c('div', {
     staticClass: "modal-header"
@@ -46367,7 +46418,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.setContent('book')
       }
     }
-  }, [_vm._v("back")])]), _vm._v(" "), _vm._m(1)])
+  }, [_vm._v("back")])]), _vm._v(" "), _vm._m(1), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  }, [_c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.nextBook
+    }
+  }, [_vm._v("NEXT")]), _vm._v(" "), _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.previousBook
+    }
+  }, [_vm._v("PREVIOUS")])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('span', [_c('strong', [_vm._v("Distribution:")])])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -46496,7 +46559,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         dimension: {
             inserted: function inserted(el, binding, vnode) {
                 $(el).find('.action').each(function (index, elem) {
-                    $(elem).width($(el).width() / binding.value - 6);
+                    $(elem).width($(el).width() / binding.value - 2);
                 });
             },
             updated: function updated(el) {
@@ -46592,13 +46655,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 return {
                     'background-color': this.colorScheme.details,
                     'color': this.colorScheme.background,
-                    'border': '3px solid ' + this.colorScheme.background
+                    'border': '1px solid ' + this.colorScheme.background
                 };
             }
             return {
                 'background-color': this.colorScheme.background,
                 'color': this.colorScheme.details,
-                'border': '3px solid ' + this.colorScheme.details
+                'border': '1px solid ' + this.colorScheme.details
             };
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
@@ -46687,29 +46750,14 @@ if (false) {
 
 /***/ }),
 /* 97 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 98 */,
-/* 99 */,
-/* 100 */,
-/* 101 */,
-/* 102 */,
-/* 103 */,
-/* 104 */,
-/* 105 */,
-/* 106 */,
-/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(108),
+  __webpack_require__(98),
   /* template */
-  __webpack_require__(109),
+  __webpack_require__(99),
   /* styles */
   null,
   /* scopeId */
@@ -46741,7 +46789,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 108 */
+/* 98 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -46795,7 +46843,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 109 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -46831,6 +46879,12 @@ if (false) {
      require("vue-hot-reload-api").rerender("data-v-ebef72ea", module.exports)
   }
 }
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

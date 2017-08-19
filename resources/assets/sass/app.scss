@@ -63,6 +63,7 @@ body {
 			.actions-list {
 				position: relative;
 				height: 100%;
+				//width: 330px;
 				width: 100vw;
 				list-style: none;
 				padding: 0;
@@ -70,7 +71,7 @@ body {
 				.action {
 					position: relative;
 					display: inline-block;
-					height: 100vh;
+					height: calc(100vh - 3px);
 					text-align: center;
 					font-size: 49px;
 					transition: all 300ms ease-in;
@@ -98,8 +99,19 @@ body {
 		}
 
 		@media (max-width: 794px) {
-			.action-description {
-				display: none;
+			.silent-book-keeper {
+				.actions-list {
+					.action {
+						opacity: 1;
+						.zone {
+							.zone-content {
+								.action-description {
+									display: none;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 

@@ -40,7 +40,7 @@
             dimension: {
                 inserted: function (el, binding, vnode) {
                     $(el).find('.action').each((index, elem) => {
-                        $(elem).width(($(el).width() / binding.value) - 6)
+                        $(elem).width(($(el).width() / binding.value) - 2)
                     })
                 },
                 updated: (el) => {
