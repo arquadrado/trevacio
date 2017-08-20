@@ -25,6 +25,44 @@ const getters = {
 }
 
 const actions = {
+    deleteBook({ commit, dispatch, state }) {
+        let bookId = state.lists.library[state.selectedBook].id 
+        dispatch('setSelectedBook', null)
+        dispatch('setContent', 'list')
+        $.post('delete-book', {
+            _token: window.handover._token,
+            bookId: bookId,
+        }, () => {
+            dispatch('updateLibrary', {
+                successCallback: null,
+                errorCallback: null,
+            })
+            console.log('book deleted')
+        })
+         .fail(() => {
+            dispatch('updateLibrary', {
+                successCallback: null,
+                errorCallback: null,
+            })
+         })
+    },
+    deleteReadingSession({ commit, dispatch, state }) {
+        dispatch('setContent', 'reading-session-list')
+        commit('DELETE_READING_SESSION', state.selectedReadingSession)
+        $.post('delete-session', {
+            _token: window.handover._token,
+            sessionId: state.selectedReadingSession.id,
+        }, () => {
+            dispatch('setSelectedReadingSession', null)
+            console.log('session deleted')
+        })
+         .fail(() => {
+            dispatch('updateLibrary', {
+                successCallback: null,
+                errorCallback: null,
+            })
+         })
+    },
     nextBook({ commit, dispatch, state }) {
         const ids = []
         for (let id in state.lists.userCollection) {
@@ -129,6 +167,14 @@ const actions = {
 }
 
 const mutations = {
+    'DELETE_READING_SESSION': (state, session) => {
+        if (state.selectedBook) {
+            let index = state.lists.library[state.selectedBook].reading_sessions.indexOf(session)
+            if (index > -1) {
+                state.lists.library[state.selectedBook].reading_sessions.splice(index, 1)
+            }
+        }
+    },
     'ADD_TO_LIBRARY': (state, book) => {
         state.lists.library[book.id] = book
     },

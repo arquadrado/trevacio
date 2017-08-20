@@ -81,7 +81,8 @@
                         {
                             label: 'Yes',
                             callback: () => {
-                                console.log('going to delete this fukker')
+                                self.deleteReadingSession()
+                                self.toggleModal()
                             }
                         },
                         {
@@ -113,7 +114,8 @@
                 setContent: 'setContent',
                 saveReadingSession: 'saveReadingSession',
                 setSelectedReadingSession: 'setSelectedReadingSession',
-                setModalContent: 'setModalContent'
+                setModalContent: 'setModalContent',
+                deleteReadingSession: 'deleteReadingSession'
             })
         }
     }

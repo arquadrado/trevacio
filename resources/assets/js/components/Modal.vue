@@ -34,7 +34,7 @@
                 return {
                     'background-color': this.colorScheme.background,
                     'color': this.colorScheme.details,
-                    'border': `3px solid ${this.colorScheme.details}`
+                    'border': `2px solid ${this.colorScheme.details}`
                 }
             },
             ...mapGetters({

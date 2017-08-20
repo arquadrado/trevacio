@@ -17,7 +17,8 @@ class Book extends Model
     protected $appends = [
         'in_library',
         'book_stats',
-        'book_user_stats'
+        'book_user_stats',
+        'can_delete'
     ];
 
     /*
@@ -125,5 +126,10 @@ class Book extends Model
             'page_per_day_average' => $days > 0 ? round($data['pages'] / $days, 2) : null,
             'distribution' => $data['distribution']
         ];
+    }
+
+    public function getCanDeleteAttribute()
+    {
+        return $this->users()->count() == 1 && $this->users()->first()->id == Auth::user()->id;
     }
 }

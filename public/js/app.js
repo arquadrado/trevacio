@@ -43226,10 +43226,54 @@ var getters = {
 };
 
 var actions = {
-    nextBook: function nextBook(_ref) {
+    deleteBook: function deleteBook(_ref) {
         var commit = _ref.commit,
             dispatch = _ref.dispatch,
             state = _ref.state;
+
+        var bookId = state.lists.library[state.selectedBook].id;
+        dispatch('setSelectedBook', null);
+        dispatch('setContent', 'list');
+        $.post('delete-book', {
+            _token: window.handover._token,
+            bookId: bookId
+        }, function () {
+            dispatch('updateLibrary', {
+                successCallback: null,
+                errorCallback: null
+            });
+            console.log('book deleted');
+        }).fail(function () {
+            dispatch('updateLibrary', {
+                successCallback: null,
+                errorCallback: null
+            });
+        });
+    },
+    deleteReadingSession: function deleteReadingSession(_ref2) {
+        var commit = _ref2.commit,
+            dispatch = _ref2.dispatch,
+            state = _ref2.state;
+
+        dispatch('setContent', 'reading-session-list');
+        commit('DELETE_READING_SESSION', state.selectedReadingSession);
+        $.post('delete-session', {
+            _token: window.handover._token,
+            sessionId: state.selectedReadingSession.id
+        }, function () {
+            dispatch('setSelectedReadingSession', null);
+            console.log('session deleted');
+        }).fail(function () {
+            dispatch('updateLibrary', {
+                successCallback: null,
+                errorCallback: null
+            });
+        });
+    },
+    nextBook: function nextBook(_ref3) {
+        var commit = _ref3.commit,
+            dispatch = _ref3.dispatch,
+            state = _ref3.state;
 
         var ids = [];
         for (var id in state.lists.userCollection) {
@@ -43243,10 +43287,10 @@ var actions = {
             dispatch('setSelectedBook', indexToSelect > -1 ? ids[indexToSelect] : ids[0]);
         }
     },
-    previousBook: function previousBook(_ref2) {
-        var commit = _ref2.commit,
-            dispatch = _ref2.dispatch,
-            state = _ref2.state;
+    previousBook: function previousBook(_ref4) {
+        var commit = _ref4.commit,
+            dispatch = _ref4.dispatch,
+            state = _ref4.state;
 
         var ids = [];
         for (var id in state.lists.userCollection) {
@@ -43260,9 +43304,9 @@ var actions = {
             dispatch('setSelectedBook', indexToSelect > -1 ? ids[indexToSelect] : ids[ids.length - 1]);
         }
     },
-    addToLibrary: function addToLibrary(_ref3, args) {
-        var commit = _ref3.commit,
-            state = _ref3.state;
+    addToLibrary: function addToLibrary(_ref5, args) {
+        var commit = _ref5.commit,
+            state = _ref5.state;
 
         $.post('save-book', {
             _token: window.handover._token,
@@ -43276,9 +43320,9 @@ var actions = {
             }
         });
     },
-    addToUserCollection: function addToUserCollection(_ref4, args) {
-        var commit = _ref4.commit,
-            state = _ref4.state;
+    addToUserCollection: function addToUserCollection(_ref6, args) {
+        var commit = _ref6.commit,
+            state = _ref6.state;
 
         $.post('add-to-user-collection', {
             _token: window.handover._token,
@@ -43289,10 +43333,10 @@ var actions = {
             }
         });
     },
-    fetchBook: function fetchBook(_ref5, args) {
-        var commit = _ref5.commit,
-            dispatch = _ref5.dispatch,
-            state = _ref5.state;
+    fetchBook: function fetchBook(_ref7, args) {
+        var commit = _ref7.commit,
+            dispatch = _ref7.dispatch,
+            state = _ref7.state;
 
         $.post('get-book', {
             _token: window.handover._token,
@@ -43303,19 +43347,19 @@ var actions = {
             }
         }).fail(args.errorCallback);
     },
-    setSelectedBook: function setSelectedBook(_ref6, id) {
-        var commit = _ref6.commit,
-            state = _ref6.state;
+    setSelectedBook: function setSelectedBook(_ref8, id) {
+        var commit = _ref8.commit,
+            state = _ref8.state;
 
         commit('SET_SELECTED_BOOK', id);
     },
-    setSelectedReadingSession: function setSelectedReadingSession(_ref7, session) {
-        var commit = _ref7.commit;
+    setSelectedReadingSession: function setSelectedReadingSession(_ref9, session) {
+        var commit = _ref9.commit;
 
         commit('SET_SELECTED_READING_SESSION', session);
     },
-    updateLibrary: function updateLibrary(_ref8, args) {
-        var commit = _ref8.commit;
+    updateLibrary: function updateLibrary(_ref10, args) {
+        var commit = _ref10.commit;
 
         $.get('update-library', function (response) {
             console.log(response);
@@ -43325,10 +43369,10 @@ var actions = {
             });
         }).done(args.successCallback).fail(args.errorCallback);
     },
-    saveReadingSession: function saveReadingSession(_ref9, args) {
-        var commit = _ref9.commit,
-            dispatch = _ref9.dispatch,
-            state = _ref9.state;
+    saveReadingSession: function saveReadingSession(_ref11, args) {
+        var commit = _ref11.commit,
+            dispatch = _ref11.dispatch,
+            state = _ref11.state;
 
         $.post('save-reading-session', {
             _token: window.handover._token,
@@ -43341,14 +43385,22 @@ var actions = {
             }
         }).fail(args.errorCallback);
     },
-    setSelectedList: function setSelectedList(_ref10, list) {
-        var commit = _ref10.commit;
+    setSelectedList: function setSelectedList(_ref12, list) {
+        var commit = _ref12.commit;
 
         commit('SET_SELECTED_LIST', list);
     }
 };
 
 var mutations = {
+    'DELETE_READING_SESSION': function DELETE_READING_SESSION(state, session) {
+        if (state.selectedBook) {
+            var index = state.lists.library[state.selectedBook].reading_sessions.indexOf(session);
+            if (index > -1) {
+                state.lists.library[state.selectedBook].reading_sessions.splice(index, 1);
+            }
+        }
+    },
     'ADD_TO_LIBRARY': function ADD_TO_LIBRARY(state, book) {
         state.lists.library[book.id] = book;
     },
@@ -45377,7 +45429,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 actions: [{
                     label: 'Yes',
                     callback: function callback() {
-                        console.log('going to delete this fukker');
+                        self.deleteReadingSession();
+                        self.toggleModal();
                     }
                 }, {
                     label: 'no',
@@ -45406,7 +45459,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         setContent: 'setContent',
         saveReadingSession: 'saveReadingSession',
         setSelectedReadingSession: 'setSelectedReadingSession',
-        setModalContent: 'setModalContent'
+        setModalContent: 'setModalContent',
+        deleteReadingSession: 'deleteReadingSession'
     }))
 });
 
@@ -46101,15 +46155,39 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+    computed: _extends({
+        canDeleteBook: function canDeleteBook() {
+            return this.selectedBook.can_delete == 1;
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
         selectedBook: 'getSelectedBook',
         selectedList: 'getSelectedList'
     })),
     methods: _extends({
+        deleteBook: function deleteBook() {
+            var self = this;
+            this.setModalContent({
+                message: 'Are you sure the want to delete this book?',
+                actions: [{
+                    label: 'Yes',
+                    callback: function callback() {
+                        self.deleteBookFromLibrary();
+                        self.toggleModal();
+                    }
+                }, {
+                    label: 'no',
+                    callback: function callback() {
+                        self.toggleModal();
+                    }
+                }]
+            });
+            this.toggleModal();
+        },
         close: function close() {
             this.setSelectedBook(null);
             this.setContent('trevacio');
@@ -46139,7 +46217,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         setSelectedReadingSession: 'setSelectedReadingSession',
         addToUserCollection: 'addToUserCollection',
         setSelectedBook: 'setSelectedBook',
-        toggleModal: 'toggleModal'
+        toggleModal: 'toggleModal',
+        deleteBookFromLibrary: 'deleteBook',
+        setModalContent: 'setModalContent'
     }))
 });
 
@@ -46179,7 +46259,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Stats")])]) : _vm._e()]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
-  }, [_c('button', {
+  }, [(_vm.canDeleteBook) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.deleteBook
+    }
+  }, [_vm._v("Delete")]) : _vm._e(), _vm._v(" "), _c('button', {
     staticClass: "modal-default-button",
     on: {
       "click": _vm.searchBook
@@ -46847,7 +46932,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             return {
                 'background-color': this.colorScheme.background,
                 'color': this.colorScheme.details,
-                'border': '3px solid ' + this.colorScheme.details
+                'border': '2px solid ' + this.colorScheme.details
             };
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({

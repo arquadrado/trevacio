@@ -14,6 +14,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button class="modal-default-button" v-if="canDeleteBook" @click="deleteBook">Delete</button>
                 <button class="modal-default-button" @click="searchBook">Search book</button>
                 <button class="modal-default-button" @click="addBook">Add a new book</button>
                 <button class="modal-default-button" v-if="selectedList" @click="setContent('list')">Back to list</button>
@@ -33,12 +34,37 @@
 
     export default {
         computed: {
+            canDeleteBook() {
+                return this.selectedBook.can_delete == 1
+            },
             ...mapGetters({
                 selectedBook: 'getSelectedBook',
                 selectedList: 'getSelectedList'
             })
         },
         methods: {
+            deleteBook() {
+                const self = this
+                this.setModalContent({
+                    message: 'Are you sure the want to delete this book?',
+                    actions: [
+                        {
+                            label: 'Yes',
+                            callback: () => {
+                                self.deleteBookFromLibrary()
+                                self.toggleModal()
+                            }
+                        },
+                        {
+                            label: 'no',
+                            callback: () => {
+                                self.toggleModal()
+                            }
+                        }
+                    ]
+                })
+                this.toggleModal()
+            },
             close() {
                 this.setSelectedBook(null)
                 this.setContent('trevacio')
@@ -68,7 +94,9 @@
                 setSelectedReadingSession: 'setSelectedReadingSession',
                 addToUserCollection: 'addToUserCollection',
                 setSelectedBook: 'setSelectedBook',
-                toggleModal: 'toggleModal'
+                toggleModal: 'toggleModal',
+                deleteBookFromLibrary: 'deleteBook',
+                setModalContent: 'setModalContent'
             })
         }
     }

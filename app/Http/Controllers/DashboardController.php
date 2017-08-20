@@ -146,6 +146,32 @@ class DashboardController extends Controller
                             ], 201);
     }
 
+    public function deleteBook()
+    {
+        $this->validate(request(), ['bookId' => 'required']);
+
+        $book = Book::find(request('bookId'));
+
+        if (is_null($book)) {
+            return response()->json(['message' => 'Book not found'], 404);
+        }
+
+        if (count($book->users) > 1 || $book->users()->first()->id != Auth::user()->id) {
+            return response()->json(['message' => 'You do not have permission to delete this book'], 403);
+        }
+
+        try {
+            DB::transaction(function () use ($book) {
+                $book->delete();
+            });
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getStatus());
+        }
+
+        return response()->json(['message' => 'Book deleted'], 200);
+    }
+
     public function updateLibrary()
     {
         $user = Auth::user();
@@ -192,5 +218,22 @@ class DashboardController extends Controller
 
         return response()->json(['message' => 'Session Saved', 'session' => $readingSession], 200);
 
+    }
+
+    public function deleteReadingSession()
+    {
+        $this->validate(request(), ['sessionId' => 'required']);
+
+        try {
+            DB::transaction(function () {
+                $readingSession = ReadingSession::find(request('sessionId'));
+                $readingSession->delete();
+            });
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getStatus());
+        }
+
+        return response()->json(['message' => 'Session deleted'], 200);
     }
 }
