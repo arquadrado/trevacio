@@ -3,9 +3,16 @@
         <div class="book" v-if="selectedBook">
             <div class="modal-header">
                 <h3 class="action">Book - {{ selectedBook.title }}</h3>
+                <button class="" v-if="canDeleteBook" @click="deleteBook">Delete</button>
+                <button class="" @click="searchBook">Search</button>
+                <button class="" @click="addBook">Add</button>
+                <button class="" v-if="selectedList" @click="setContent('list')">List</button>
                 <button class="modal-default-button" @click="close">close</button>
             </div>
             <div class="modal-body">
+                <div class="body-controls">
+                
+                </div>
                 <span><strong>Title:</strong> {{ selectedBook.title }} </span><br>
                 <span><strong>Author:</strong> {{ selectedBook.author.name }} </span><br><br>
                 <div class="book-actions" v-if="selectedBook.in_library">
@@ -13,12 +20,8 @@
                     <button @click="setContent('stats')">Stats</button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="modal-default-button" v-if="canDeleteBook" @click="deleteBook">Delete</button>
-                <button class="modal-default-button" @click="searchBook">Search book</button>
-                <button class="modal-default-button" @click="addBook">Add a new book</button>
-                <button class="modal-default-button" v-if="selectedList" @click="setContent('list')">Back to list</button>
-                <div class="book-not-owned" v-if="!selectedBook.in_library">
+            <div class="modal-footer"  v-if="!selectedBook.in_library">
+                <div class="book-not-owned">
                     <h4>This book is not in your library. Add it to perform actions</h4>
                     <button class="modal-default-button" @click="addBookToUserCollection">
                         Add book

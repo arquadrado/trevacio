@@ -43191,7 +43191,7 @@ var mutations = {
 var state = {
     selectedBook: null,
     selectedReadingSession: null,
-    selectedList: null,
+    selectedList: 'userCollection',
     lists: {
         userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
         library: typeof handover.library !== 'undefined' ? handover.library : []
@@ -44448,6 +44448,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -44772,7 +44773,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-header"
   }, [_c('h3', {
     staticClass: "action"
-  }, [_vm._v("I will ADD a fucking book!")]), _vm._v(" "), _c('button', {
+  }, [_vm._v("Add a book")]), _vm._v(" "), _c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setContent('list')
+      }
+    }
+  }, [_vm._v("List")]), _vm._v(" "), _c('button', {
     staticClass: "modal-default-button",
     on: {
       "click": function($event) {
@@ -44996,7 +45003,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     })),
     methods: _extends({
         listBooks: function listBooks() {
-            this.setSelectedList(null);
             this.setContent('list');
         },
         searchAgain: function searchAgain() {
@@ -45228,7 +45234,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-header"
   }, [_c('h3', {
     staticClass: "action"
-  }, [_vm._v("I will GET a fucking book!")]), _vm._v(" "), _c('button', {
+  }, [_vm._v("Search for a book")]), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.listBooks
+    }
+  }, [_vm._v("List")]), _vm._v(" "), _c('button', {
     staticClass: "modal-default-button",
     on: {
       "click": function($event) {
@@ -45276,12 +45286,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.getBook
     }
-  }, [_vm._v("\n                Get book\n            ")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.listBooks
-    }
-  }, [_vm._v("List books")])])]) : _vm._e(), _vm._v(" "), (_vm.response && !_vm.selectedBook) ? _c('response', {
+  }, [_vm._v("\n                Get book\n            ")])])]) : _vm._e(), _vm._v(" "), (_vm.response && !_vm.selectedBook) ? _c('response', {
     attrs: {
       "response": _vm.response.responseJSON,
       "status": _vm.response.status,
@@ -45833,11 +45838,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
 
 
 
@@ -45873,6 +45873,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         lists: 'getLists'
     })),
     methods: _extends({
+        listIsSelected: function listIsSelected(name) {
+            return this.listName === name;
+        },
         addBook: function addBook() {
             this.setSelectedBook(null);
             this.setContent('add');
@@ -45902,7 +45905,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-header"
   }, [_c('h3', {
     staticClass: "action"
-  }, [_vm._v("I will LIST these fuckers")]), _vm._v(" "), _c('button', {
+  }, [_vm._v("Library")]), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.searchBook
+    }
+  }, [_vm._v("Search")]), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.addBook
+    }
+  }, [_vm._v("Add")]), _vm._v(" "), _c('button', {
     staticClass: "modal-default-button",
     on: {
       "click": function($event) {
@@ -45911,7 +45922,20 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("close")])]), _vm._v(" "), (_vm.showList) ? _c('div', {
     staticClass: "modal-body"
-  }, [_c('h3', [_vm._v(_vm._s(_vm.message))]), _vm._v(" "), (_vm.hasBooks) ? _c('ul', {
+  }, [_c('div', {
+    staticClass: "body-controls"
+  }, _vm._l((_vm.lists), function(list, name) {
+    return _c('button', {
+      attrs: {
+        "disabled": _vm.listIsSelected(name)
+      },
+      on: {
+        "click": function($event) {
+          _vm.setSelectedList(name)
+        }
+      }
+    }, [_vm._v(_vm._s(name))])
+  })), _vm._v(" "), (_vm.hasBooks) ? _c('ul', {
     staticClass: "book-list"
   }, _vm._l((_vm.list), function(book) {
     return _c('li', {
@@ -45922,36 +45946,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         }
       }
     }, [_c('span', [_vm._v(_vm._s(((book.title) + " - " + (book.author.name))))])])
-  })) : _c('h4', [_vm._v("No books to show")])]) : _c('div', {
-    staticClass: "modal-body"
-  }, [_c('h3', [_vm._v(_vm._s(_vm.message))]), _vm._v(" "), _vm._l((_vm.lists), function(list, name) {
-    return _c('button', {
-      on: {
-        "click": function($event) {
-          _vm.setSelectedList(name)
-        }
-      }
-    }, [_vm._v(_vm._s(name))])
-  })], 2), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
-  }, [(_vm.showList) ? _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": function($event) {
-        _vm.setSelectedList(null)
-      }
-    }
-  }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.searchBook
-    }
-  }, [_vm._v("Search book")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.addBook
-    }
-  }, [_vm._v("Add book")])])])
+  })) : _c('h4', [_vm._v("No books to show")])]) : _vm._e()])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -46156,6 +46151,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
 
 
 
@@ -46236,14 +46234,34 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-header"
   }, [_c('h3', {
     staticClass: "action"
-  }, [_vm._v("Book - " + _vm._s(_vm.selectedBook.title))]), _vm._v(" "), _c('button', {
+  }, [_vm._v("Book - " + _vm._s(_vm.selectedBook.title))]), _vm._v(" "), (_vm.canDeleteBook) ? _c('button', {
+    on: {
+      "click": _vm.deleteBook
+    }
+  }, [_vm._v("Delete")]) : _vm._e(), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.searchBook
+    }
+  }, [_vm._v("Search")]), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.addBook
+    }
+  }, [_vm._v("Add")]), _vm._v(" "), (_vm.selectedList) ? _c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setContent('list')
+      }
+    }
+  }, [_vm._v("List")]) : _vm._e(), _vm._v(" "), _c('button', {
     staticClass: "modal-default-button",
     on: {
       "click": _vm.close
     }
   }, [_vm._v("close")])]), _vm._v(" "), _c('div', {
     staticClass: "modal-body"
-  }, [_c('span', [_c('strong', [_vm._v("Title:")]), _vm._v(" " + _vm._s(_vm.selectedBook.title) + " ")]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Author:")]), _vm._v(" " + _vm._s(_vm.selectedBook.author.name) + " ")]), _c('br'), _c('br'), _vm._v(" "), (_vm.selectedBook.in_library) ? _c('div', {
+  }, [_c('div', {
+    staticClass: "body-controls"
+  }), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Title:")]), _vm._v(" " + _vm._s(_vm.selectedBook.title) + " ")]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Author:")]), _vm._v(" " + _vm._s(_vm.selectedBook.author.name) + " ")]), _c('br'), _c('br'), _vm._v(" "), (_vm.selectedBook.in_library) ? _c('div', {
     staticClass: "book-actions"
   }, [_c('button', {
     on: {
@@ -46257,38 +46275,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.setContent('stats')
       }
     }
-  }, [_vm._v("Stats")])]) : _vm._e()]), _vm._v(" "), _c('div', {
+  }, [_vm._v("Stats")])]) : _vm._e()]), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
     staticClass: "modal-footer"
-  }, [(_vm.canDeleteBook) ? _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.deleteBook
-    }
-  }, [_vm._v("Delete")]) : _vm._e(), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.searchBook
-    }
-  }, [_vm._v("Search book")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.addBook
-    }
-  }, [_vm._v("Add a new book")]), _vm._v(" "), (_vm.selectedList) ? _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": function($event) {
-        _vm.setContent('list')
-      }
-    }
-  }, [_vm._v("Back to list")]) : _vm._e(), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
+  }, [_c('div', {
     staticClass: "book-not-owned"
   }, [_c('h4', [_vm._v("This book is not in your library. Add it to perform actions")]), _vm._v(" "), _c('button', {
     staticClass: "modal-default-button",
     on: {
       "click": _vm.addBookToUserCollection
     }
-  }, [_vm._v("\n                    Add book\n                ")])]) : _vm._e()])]) : _vm._e()])
+  }, [_vm._v("\n                    Add book\n                ")])])]) : _vm._e()]) : _vm._e()])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -46347,18 +46343,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -46458,13 +46442,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return (_vm.hasStatsToShow) ? _c('div', {
+  return _c('div', {
     staticClass: "content-wrapper"
   }, [_c('div', {
     staticClass: "modal-header"
   }, [_c('h3', {
     staticClass: "action"
   }, [_vm._v("Stats - " + _vm._s(_vm.selectedBook.title))]), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.previousBook
+    }
+  }, [_vm._v("PREVIOUS")]), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.nextBook
+    }
+  }, [_vm._v("NEXT")]), _vm._v(" "), _c('button', {
     staticClass: "modal-default-button",
     on: {
       "click": _vm.close
@@ -46476,9 +46468,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.setContent('book')
       }
     }
-  }, [_vm._v("back")])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("back")])]), _vm._v(" "), (_vm.hasStatsToShow) ? _c('div', {
     staticClass: "modal-body"
-  }, [(_vm.statsToShow === 'user') ? _c('div', {
+  }, [_c('div', {
+    staticClass: "body-controls"
+  }, [_c('button', {
+    staticClass: "second-order-button",
+    attrs: {
+      "disabled": _vm.statsToShow !== 'all'
+    },
+    on: {
+      "click": _vm.toggleStatsToShow
+    }
+  }, [_vm._v("User Stats")]), _vm._v(" "), _c('button', {
+    staticClass: "second-order-button",
+    attrs: {
+      "disabled": _vm.statsToShow === 'all'
+    },
+    on: {
+      "click": _vm.toggleStatsToShow
+    }
+  }, [_vm._v("Book stats")])]), _vm._v(" "), (_vm.statsToShow === 'user') ? _c('div', {
     staticClass: "stats book-user-stats"
   }, [_c('span', [_vm._v("You read "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.page_average))]), _vm._v(" of this book")]), _c('br'), _vm._v(" "), _c('span', [_vm._v("You read an average of "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.page_per_day_average))]), _vm._v(" pages per day")]), _c('br'), _vm._v(" "), _vm._m(0), _c('br'), _vm._v(" "), _c('ul', _vm._l((_vm.selectedBook.book_user_stats.distribution), function(count, day) {
     return _c('li', [_c('span', [_vm._v(_vm._s(day) + " ")]), _c('span', {
@@ -46486,59 +46496,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }), _c('span', [_vm._v(" " + _vm._s(count))])])
   })), _vm._v(" "), _c('br')]) : _c('div', {
     staticClass: "stats book-stats"
-  }, [_c('span', [_c('strong', [_vm._v("General page average:")]), _vm._v(" " + _vm._s(_vm.selectedBook.book_stats.page_average))]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("General page per day average:")]), _vm._v(" " + _vm._s(_vm.selectedBook.book_stats.page_per_day_average))]), _c('br'), _vm._v(" "), _c('br')]), _vm._v(" "), _c('button', {
-    on: {
-      "click": _vm.toggleStatsToShow
-    }
-  }, [_vm._v(_vm._s(_vm.statsToShow === 'all' ? 'User stats' : 'General Book stats'))])]), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
-  }, [_c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.nextBook
-    }
-  }, [_vm._v("NEXT")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.previousBook
-    }
-  }, [_vm._v("PREVIOUS")])])]) : _c('div', {
-    staticClass: "content-wrapper"
-  }, [_c('div', {
-    staticClass: "modal-header"
-  }, [_c('h3', {
-    staticClass: "action"
-  }, [_vm._v("Stats")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.close
-    }
-  }, [_vm._v("close")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": function($event) {
-        _vm.setContent('book')
-      }
-    }
-  }, [_vm._v("back")])]), _vm._v(" "), _vm._m(1), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
-  }, [_c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.nextBook
-    }
-  }, [_vm._v("NEXT")]), _vm._v(" "), _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.previousBook
-    }
-  }, [_vm._v("PREVIOUS")])])])
+  }, [_c('span', [_c('strong', [_vm._v("General page average:")]), _vm._v(" " + _vm._s(_vm.selectedBook.book_stats.page_average))]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("General page per day average:")]), _vm._v(" " + _vm._s(_vm.selectedBook.book_stats.page_per_day_average))]), _c('br'), _vm._v(" "), _c('br')])]) : _c('div', {
+    staticClass: "modal-body"
+  }, [_c('h3', [_vm._v("No stats to show")])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('span', [_c('strong', [_vm._v("Distribution:")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "modal-body"
-  }, [_c('h3', [_vm._v("No stats to show")])])
 }]}
 module.exports.render._withStripped = true
 if (false) {

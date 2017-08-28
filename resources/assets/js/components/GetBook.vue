@@ -2,24 +2,24 @@
     <div class="content-wrapper">
 
         <div class="modal-header">
-            <h3 class="action">I will GET a fucking book!</h3>
+            <h3 class="action">Search for a book</h3>
+            <button class="" @click="listBooks">List</button>
             <button class="modal-default-button" @click="setContent('trevacio')">close</button>
         </div>
 
         <div class="getbook" v-if="!selectedBook && !response">
 
             <div class="modal-body">
-                    <div class="input-text">
-                        <label for="book">What is the name of the book?</label>
-                        <input type="text" name="book" :style="inputStyle" v-model="bookToGet">
-                    </div>
+                <div class="input-text">
+                    <label for="book">What is the name of the book?</label>
+                    <input type="text" name="book" :style="inputStyle" v-model="bookToGet">
+                </div>
             </div>
 
             <div class="modal-footer">
                 <button class="modal-default-button" :disabled="!canSubmit" @click="getBook">
                     Get book
                 </button>
-                <button class="modal-default-button" @click="listBooks">List books</button>
             </div>
         </div>
         <response
@@ -81,7 +81,6 @@
         },
         methods: {
             listBooks() {
-                this.setSelectedList(null)
                 this.setContent('list')
             },
             searchAgain() {

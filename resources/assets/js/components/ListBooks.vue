@@ -1,26 +1,21 @@
 <template>
     <div class="content-wrapper">
         <div class="modal-header">
-            <h3 class="action">I will LIST these fuckers</h3>
+            <h3 class="action">Library</h3>
+            <button class="" @click="searchBook">Search</button>
+            <button class="" @click="addBook">Add</button>
             <button class="modal-default-button" @click="setContent('trevacio')">close</button>
         </div>
         <div class="modal-body" v-if="showList">
-            <h3>{{ message }}</h3>
+            <div class="body-controls">
+                <button v-for="(list, name) in lists" :disabled="listIsSelected(name)" @click="setSelectedList(name)">{{ name }}</button>
+            </div>
             <ul class="book-list" v-if="hasBooks">
                 <li class="book" v-for="book in list" @click="openBook(book)">
                     <span>{{ `${book.title} - ${book.author.name}` }}</span>
                 </li>
             </ul>
             <h4 v-else>No books to show</h4>
-        </div>
-        <div class="modal-body" v-else>
-            <h3>{{ message }}</h3>
-            <button v-for="(list, name) in lists" @click="setSelectedList(name)">{{ name }}</button>
-        </div>
-        <div class="modal-footer">
-            <button class="modal-default-button" @click="setSelectedList(null)" v-if="showList">Back</button>
-            <button class="modal-default-button" @click="searchBook">Search book</button>
-            <button class="modal-default-button" @click="addBook">Add book</button>
         </div>
     </div>
 </template>
@@ -60,6 +55,9 @@
             })
         },
         methods: {
+            listIsSelected(name) {
+                return this.listName === name
+            },
             addBook() {
                 this.setSelectedBook(null)
                 this.setContent('add')

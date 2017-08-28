@@ -8378,6 +8378,7 @@ body #app h1 {
 }
 
 body #app button {
+  font-size: 12px;
   border: none;
   background-color: transparent;
   cursor: pointer;
@@ -8388,6 +8389,10 @@ body #app button {
 body #app button[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+body #app .body-controls {
+  margin-bottom: 20px;
 }
 
 body #app .gui-enter-active,

@@ -26,6 +26,7 @@ body {
 		}
 
 		button {
+			font-size: 12px;
 			border: none;
 			background-color: transparent;
 			cursor: pointer;
@@ -36,6 +37,14 @@ body {
 		button[disabled] {
 			opacity: 0.5;
 			cursor: not-allowed;
+		}
+
+		.body-controls {
+			button {
+				//padding: 0;
+			}
+
+			margin-bottom: 20px;
 		}
 
 		.gui-enter-active, .gui-leave-active {

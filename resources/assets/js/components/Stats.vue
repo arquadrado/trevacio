@@ -1,13 +1,18 @@
 <template>
-    <div class="content-wrapper" 
-        v-if="hasStatsToShow" 
-    >
+    <div class="content-wrapper">
         <div class="modal-header">
             <h3 class="action">Stats - {{ selectedBook.title }}</h3>
+            <button class="" @click="previousBook">PREVIOUS</button>
+            <button class="" @click="nextBook">NEXT</button>
             <button class="modal-default-button" @click="close">close</button>
             <button class="modal-default-button" @click="setContent('book')">back</button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" v-if="hasStatsToShow">
+            <div class="body-controls">
+                <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow !== 'all'">User Stats</button>
+                <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow === 'all'">Book stats</button>
+                
+            </div>
             <div class="stats book-user-stats" v-if="statsToShow === 'user'">
                 <span>You read <strong>{{ selectedBook.book_user_stats.page_average }}</strong> of this book</span><br>
                 <span>You read an average of <strong>{{ selectedBook.book_user_stats.page_per_day_average }}</strong> pages per day</span><br>
@@ -24,28 +29,11 @@
                 <span><strong>General page per day average:</strong> {{ selectedBook.book_stats.page_per_day_average }}</span><br>
                 <br>
             </div>
-            <button @click="toggleStatsToShow">{{ statsToShow === 'all' ? 'User stats' : 'General Book stats' }}</button>
         </div>
-        <div class="modal-footer">
-            <button class="modal-default-button" @click="nextBook">NEXT</button>
-            <button class="modal-default-button" @click="previousBook">PREVIOUS</button>
-        </div>
-    </div>
-    <div class="content-wrapper" 
-        v-else
-    >
-        <div class="modal-header">
-            <h3 class="action">Stats</h3>
-            <button class="modal-default-button" @click="close">close</button>
-            <button class="modal-default-button" @click="setContent('book')">back</button>
-        </div>
-        <div class="modal-body">
+        <div class="modal-body" v-else>
             <h3>No stats to show</h3>
         </div>
-        <div class="modal-footer">
-            <button class="modal-default-button" @click="nextBook">NEXT</button>
-            <button class="modal-default-button" @click="previousBook">PREVIOUS</button>
-        </div>
+        
     </div>
 </template>
 

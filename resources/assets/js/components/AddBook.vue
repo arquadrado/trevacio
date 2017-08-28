@@ -2,21 +2,22 @@
     <div class="content-wrapper">
 
         <div class="modal-header">
-            <h3 class="action">I will ADD a fucking book!</h3>
+            <h3 class="action">Add a book</h3>
+            <button class="" @click="setContent('list')">List</button>
             <button class="modal-default-button" @click="setContent('trevacio')">close</button>
         </div>
         <div class="new-book" v-if="!submitted">
 
             <div class="modal-body">
-                    <div class="input-text">
-                        <label for="book">What is the name of the book?</label>
-                        <input type="text" name="book" :style="inputStyle" v-model="book.title">
-                    </div>
-                    <br>
-                    <div class="input-text">
-                        <label>Who wrote it?</label>
-                        <input :style="inputStyle" v-model="book.author"></input>
-                    </div>
+                <div class="input-text">
+                    <label for="book">What is the name of the book?</label>
+                    <input type="text" name="book" :style="inputStyle" v-model="book.title">
+                </div>
+                <br>
+                <div class="input-text">
+                    <label>Who wrote it?</label>
+                    <input :style="inputStyle" v-model="book.author"></input>
+                </div>
                     <!-- <div class="input-text">
                         <label>Note</label>
                         <textarea :style="textareaStyle" name="" id="" cols="30" rows="7"></textarea>

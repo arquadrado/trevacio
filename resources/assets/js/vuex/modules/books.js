@@ -2,7 +2,7 @@
 const state = {
     selectedBook: null,
     selectedReadingSession: null,
-    selectedList: null,
+    selectedList: 'userCollection',
     lists: {
         userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
         library: typeof handover.library !== 'undefined' ? handover.library : [],
