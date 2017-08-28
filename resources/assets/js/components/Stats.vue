@@ -5,7 +5,7 @@
             <button class="" @click="previousBook">PREVIOUS</button>
             <button class="" @click="nextBook">NEXT</button>
             <button class="modal-default-button" @click="close">close</button>
-            <button class="modal-default-button" @click="setContent('book')">back</button>
+            <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
         </div>
         <div class="modal-body" v-if="hasStatsToShow">
             <div class="body-controls">
@@ -39,8 +39,10 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import Navigation from './../mixins/Navigation.js'
 
     export default {
+        mixins: [Navigation],
         data() {
             return {
                 statsToShow: 'user'

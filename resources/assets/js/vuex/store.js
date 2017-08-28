@@ -10,6 +10,8 @@ const state = {
     userInputs: [],
     sessionInteractions: [],
 
+    navigationHistory: [],
+
     actions: {
         add: {
             label: 'Add',
@@ -66,6 +68,8 @@ const getters = {
     getUserInput: state => state.userInputs[0],
     getSessionInteractionsCount: state => state.userInputs.length,
 
+    hasNavigationHistory: state => state.navigationHistory.length > 1,
+
     getActions: state => state.actions,
     getSelectedAction: state => state.selectedAction,
 
@@ -99,10 +103,23 @@ const actions = {
 
     setContent({ commit, state }, component) {
         commit('SET_CONTENT', component)
+        commit('ADD_NAVIGATION_ENTRY', component)
     },
+
+    back({ commit, state }) {
+        commit('SHIFT_NAVIGATION_HISTORY')
+        commit('SET_CONTENT', state.navigationHistory[0])
+    }
 }
 
 const mutations = {
+    'SHIFT_NAVIGATION_HISTORY': (state) => {
+        state.navigationHistory.shift()
+    },
+    'ADD_NAVIGATION_ENTRY': (state, content) => {
+        state.navigationHistory.unshift(content)
+    },
+
     'ADD_USER_INPUT': (state, input) => {
         state.userInputs.unshift(input)
     },

@@ -8,6 +8,7 @@
                 <button class="" @click="addBook">Add</button>
                 <button class="" v-if="selectedList" @click="setContent('list')">List</button>
                 <button class="modal-default-button" @click="close">close</button>
+                <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
             </div>
             <div class="modal-body">
                 <div class="body-controls">
@@ -34,15 +35,17 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import Navigation from './../mixins/Navigation.js'
 
     export default {
+        mixins: [Navigation],
         computed: {
             canDeleteBook() {
                 return this.selectedBook.can_delete == 1
             },
             ...mapGetters({
                 selectedBook: 'getSelectedBook',
-                selectedList: 'getSelectedList'
+                selectedList: 'getSelectedList',
             })
         },
         methods: {

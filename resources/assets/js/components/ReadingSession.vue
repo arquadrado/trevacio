@@ -4,7 +4,7 @@
         <div class="modal-header">
             <h3 class="action">I am a reading session</h3>
             <button @click="setContent('book')">Back to book</button>
-            <button @click="setContent('reading-session-list')">Back to list</button>
+            <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
         </div>
         <div class="modal-body">
             <div class="add-session" v-if="adding">
@@ -41,8 +41,10 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import Navigation from './../mixins/Navigation.js'
 
     export default {
+        mixins: [Navigation],
         data() {
             return {
                 session: {

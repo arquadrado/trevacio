@@ -5,6 +5,7 @@
             <h3 class="action">Add a book</h3>
             <button class="" @click="setContent('list')">List</button>
             <button class="modal-default-button" @click="setContent('trevacio')">close</button>
+            <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
         </div>
         <div class="new-book" v-if="!submitted">
 
@@ -44,13 +45,14 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import CollectionHandler from './../mixins/CollectionHandler.js'
+    import Navigation from './../mixins/Navigation.js'
     import Response from './AddBookResponse.vue'
 
     export default {
         components: {
             'response': Response
         },
-        mixins: [CollectionHandler],
+        mixins: [CollectionHandler, Navigation],
         data() {
             return {
                 book: {
@@ -86,7 +88,7 @@
             ...mapGetters({
                 colorScheme: 'getColorScheme',
                 userCollection: 'getUserCollection',
-                library: 'getLibrary'
+                library: 'getLibrary',
             })
         },
         methods: {

@@ -42948,6 +42948,8 @@ var state = {
     userInputs: [],
     sessionInteractions: [],
 
+    navigationHistory: [],
+
     actions: {
         add: {
             label: 'Add',
@@ -43010,6 +43012,10 @@ var getters = {
         return state.userInputs.length;
     },
 
+    hasNavigationHistory: function hasNavigationHistory(state) {
+        return state.navigationHistory.length > 1;
+    },
+
     getActions: function getActions(state) {
         return state.actions;
     },
@@ -43069,10 +43075,25 @@ var actions = {
             state = _ref6.state;
 
         commit('SET_CONTENT', component);
+        commit('ADD_NAVIGATION_ENTRY', component);
+    },
+    back: function back(_ref7) {
+        var commit = _ref7.commit,
+            state = _ref7.state;
+
+        commit('SHIFT_NAVIGATION_HISTORY');
+        commit('SET_CONTENT', state.navigationHistory[0]);
     }
 };
 
 var mutations = {
+    'SHIFT_NAVIGATION_HISTORY': function SHIFT_NAVIGATION_HISTORY(state) {
+        state.navigationHistory.shift();
+    },
+    'ADD_NAVIGATION_ENTRY': function ADD_NAVIGATION_ENTRY(state, content) {
+        state.navigationHistory.unshift(content);
+    },
+
     'ADD_USER_INPUT': function ADD_USER_INPUT(state, input) {
         state.userInputs.unshift(input);
     },
@@ -44402,8 +44423,9 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_CollectionHandler_js__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__AddBookResponse_vue__ = __webpack_require__(62);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__AddBookResponse_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__AddBookResponse_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mixins_Navigation_js__ = __webpack_require__(110);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__AddBookResponse_vue__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__AddBookResponse_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__AddBookResponse_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -44449,6 +44471,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+
 
 
 
@@ -44456,9 +44480,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: {
-        'response': __WEBPACK_IMPORTED_MODULE_2__AddBookResponse_vue___default.a
+        'response': __WEBPACK_IMPORTED_MODULE_3__AddBookResponse_vue___default.a
     },
-    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_CollectionHandler_js__["a" /* default */]],
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_CollectionHandler_js__["a" /* default */], __WEBPACK_IMPORTED_MODULE_2__mixins_Navigation_js__["a" /* default */]],
     data: function data() {
         return {
             book: {
@@ -44786,7 +44810,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.setContent('trevacio')
       }
     }
-  }, [_vm._v("close")])]), _vm._v(" "), (!_vm.submitted) ? _c('div', {
+  }, [_vm._v("close")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.back
+    }
+  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), (!_vm.submitted) ? _c('div', {
     staticClass: "new-book"
   }, [_c('div', {
     staticClass: "modal-body"
@@ -44916,8 +44945,9 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_CollectionHandler_js__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__GetBookResponse_vue__ = __webpack_require__(68);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__GetBookResponse_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__GetBookResponse_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mixins_Navigation_js__ = __webpack_require__(110);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__GetBookResponse_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__GetBookResponse_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__GetBookResponse_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -44954,6 +44984,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+
 
 
 
@@ -44961,9 +44993,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: {
-        'response': __WEBPACK_IMPORTED_MODULE_2__GetBookResponse_vue___default.a
+        'response': __WEBPACK_IMPORTED_MODULE_3__GetBookResponse_vue___default.a
     },
-    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_CollectionHandler_js__["a" /* default */]],
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_CollectionHandler_js__["a" /* default */], __WEBPACK_IMPORTED_MODULE_2__mixins_Navigation_js__["a" /* default */]],
     data: function data() {
         return {
             bookToGet: '',
@@ -45245,7 +45277,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.setContent('trevacio')
       }
     }
-  }, [_vm._v("close")])]), _vm._v(" "), (!_vm.selectedBook && !_vm.response) ? _c('div', {
+  }, [_vm._v("close")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.back
+    }
+  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), (!_vm.selectedBook && !_vm.response) ? _c('div', {
     staticClass: "getbook"
   }, [_c('div', {
     staticClass: "modal-body"
@@ -45352,6 +45389,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(110);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -45398,7 +45436,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
     data: function data() {
         return {
             session: {
@@ -45486,13 +45526,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.setContent('book')
       }
     }
-  }, [_vm._v("Back to book")]), _vm._v(" "), _c('button', {
+  }, [_vm._v("Back to book")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    staticClass: "modal-default-button",
     on: {
-      "click": function($event) {
-        _vm.setContent('reading-session-list')
-      }
+      "click": _vm.back
     }
-  }, [_vm._v("Back to list")])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), _c('div', {
     staticClass: "modal-body"
   }, [(_vm.adding) ? _c('div', {
     staticClass: "add-session"
@@ -45658,6 +45697,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(110);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -45684,7 +45724,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
     data: function data() {
         return {};
     },
@@ -45726,13 +45768,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-header"
   }, [_c('h3', {
     staticClass: "action"
-  }, [_vm._v("I am a reading session list")]), _vm._v(" "), _c('button', {
+  }, [_vm._v("I am a reading session list")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    staticClass: "modal-default-button",
     on: {
-      "click": function($event) {
-        _vm.setContent('book')
-      }
+      "click": _vm.back
     }
-  }, [_vm._v("Back")])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), _c('div', {
     staticClass: "modal-body"
   }, [_c('ul', {
     staticClass: "session-list"
@@ -45810,6 +45851,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(110);
 var _mapActions;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -45838,10 +45880,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
     data: function data() {
         return {};
     },
@@ -45920,7 +45965,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.setContent('trevacio')
       }
     }
-  }, [_vm._v("close")])]), _vm._v(" "), (_vm.showList) ? _c('div', {
+  }, [_vm._v("close")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.back
+    }
+  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), (_vm.showList) ? _c('div', {
     staticClass: "modal-body"
   }, [_c('div', {
     staticClass: "body-controls"
@@ -46003,6 +46053,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(110);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -46020,10 +46071,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({})),
     methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
         setContent: 'setContent'
@@ -46048,7 +46102,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.setContent('trevacio')
       }
     }
-  }, [_vm._v("Close")])]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c('div', {
+  }, [_vm._v("Close")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.back
+    }
+  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
   }, [_c('button', {
     staticClass: "modal-default-button",
@@ -46118,6 +46177,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(110);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -46154,10 +46214,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
     computed: _extends({
         canDeleteBook: function canDeleteBook() {
             return this.selectedBook.can_delete == 1;
@@ -46257,7 +46320,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.close
     }
-  }, [_vm._v("close")])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("close")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.back
+    }
+  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), _c('div', {
     staticClass: "modal-body"
   }, [_c('div', {
     staticClass: "body-controls"
@@ -46341,6 +46409,7 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(110);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -46385,7 +46454,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
     data: function data() {
         return {
             statsToShow: 'user'
@@ -46461,14 +46532,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.close
     }
-  }, [_vm._v("close")]), _vm._v(" "), _c('button', {
+  }, [_vm._v("close")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
     staticClass: "modal-default-button",
     on: {
-      "click": function($event) {
-        _vm.setContent('book')
-      }
+      "click": _vm.back
     }
-  }, [_vm._v("back")])]), _vm._v(" "), (_vm.hasStatsToShow) ? _c('div', {
+  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), (_vm.hasStatsToShow) ? _c('div', {
     staticClass: "modal-body"
   }, [_c('div', {
     staticClass: "body-controls"
@@ -46949,6 +47018,34 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 101 */,
+/* 102 */,
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */,
+/* 107 */,
+/* 108 */,
+/* 109 */,
+/* 110 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+		hasHistory: 'hasNavigationHistory'
+	})),
+	methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+		back: 'back'
+	}))
+});
 
 /***/ })
 /******/ ]);

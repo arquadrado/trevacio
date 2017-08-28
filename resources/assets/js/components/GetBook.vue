@@ -5,6 +5,7 @@
             <h3 class="action">Search for a book</h3>
             <button class="" @click="listBooks">List</button>
             <button class="modal-default-button" @click="setContent('trevacio')">close</button>
+            <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
         </div>
 
         <div class="getbook" v-if="!selectedBook && !response">
@@ -35,13 +36,14 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import CollectionHandler from './../mixins/CollectionHandler.js'
+    import Navigation from './../mixins/Navigation.js'
     import Response from './GetBookResponse.vue'
 
     export default {
         components: {
             'response': Response
         },
-        mixins: [CollectionHandler],
+        mixins: [CollectionHandler, Navigation],
         data() {
             return {
                 bookToGet: '',
