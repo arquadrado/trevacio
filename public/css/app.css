@@ -8416,7 +8416,7 @@ body #app .slide-leave-active {
 
 body #app .slide-enter,
 body #app .slide-leave-to {
-  left: -110%;
+  left: -200%;
   -webkit-transition: left .5s;
   transition: left .5s;
 }
@@ -8482,6 +8482,9 @@ body #app .silent-book-keeper .actions-list .action .zone .zone-content .action-
 
 body #app .content {
   padding: 21px;
+  text-align: center;
+  max-width: 1024px;
+  margin: auto;
 }
 
 body #app .content .content-wrapper {
@@ -8553,21 +8556,22 @@ body #app .input-text label {
 }
 
 body #app .input-text input {
+  text-align: center;
   background-color: transparent;
   border: 0;
-  width: calc(100vw - 90px);
+  width: 100%;
 }
 
 body #app .input-text span {
   display: block;
   min-width: 105px;
-  max-width: calc(100vw - 90px);
+  max-width: 100%;
   min-height: 63px;
   font-size: 35px;
 }
 
 body #app .input-text textarea {
-  width: calc(100vw - 90px);
+  width: 100%;
   border: 0;
   background-color: transparent;
 }
@@ -8601,12 +8605,63 @@ body .modal-container {
   width: 300px;
 }
 
+body .modal-header {
+  border: 0;
+}
+
 body .modal-header h3 {
   margin-top: 0;
 }
 
+body .modal-footer {
+  border: 0;
+}
+
 body .modal-body {
   margin: 20px 0;
+}
+
+body .modal-body .book-info {
+  margin-bottom: 21px;
+}
+
+body .modal-body .book-list,
+body .modal-body .session-list {
+  list-style: none;
+  padding: 0;
+}
+
+body .modal-body .book-list .book span,
+body .modal-body .book-list .session span,
+body .modal-body .session-list .book span,
+body .modal-body .session-list .session span {
+  cursor: pointer;
+  font-weight: 900;
+}
+
+body .modal-body .stats .distribution {
+  list-style: none;
+  padding: 0;
+}
+
+body .modal-body .stats .distribution li {
+  text-align: left;
+  width: 100%;
+}
+
+body .modal-body .stats .distribution li .day {
+  width: 77px;
+  display: inline-block;
+}
+
+body .modal-body .stats .distribution li .bar {
+  display: inline-block;
+  width: calc(100% - 109px);
+}
+
+body .modal-body .stats .distribution li .bar span {
+  display: inline-block;
+  height: 7px;
 }
 
 body .modal-default-button {

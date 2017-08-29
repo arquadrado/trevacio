@@ -7,15 +7,14 @@
                 <button class="" @click="searchBook">Search</button>
                 <button class="" @click="addBook">Add</button>
                 <button class="" v-if="selectedList" @click="setContent('list')">List</button>
-                <button class="modal-default-button" @click="close">close</button>
-                <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
+                <button class="" @click="close">close</button>
+                <button class="" v-if="hasHistory" @click="back">Back</button>
             </div>
             <div class="modal-body">
-                <div class="body-controls">
-                
+                <div class="book-info">
+                    <span><strong>Title:</strong> {{ selectedBook.title }} </span><br>
+                    <span><strong>Author:</strong> {{ selectedBook.author.name }} </span><br>
                 </div>
-                <span><strong>Title:</strong> {{ selectedBook.title }} </span><br>
-                <span><strong>Author:</strong> {{ selectedBook.author.name }} </span><br><br>
                 <div class="book-actions" v-if="selectedBook.in_library">
                     <button @click="setContent('reading-session-list')">Reading Sessions</button>
                     <button @click="setContent('stats')">Stats</button>

@@ -3,18 +3,19 @@
 
         <div class="modal-header">
             <h3 class="action">I am a reading session</h3>
-            <button @click="setContent('book')">Back to book</button>
-            <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
+            <button @click="setContent('book')">Book</button>
+            <button class="" v-if="hasHistory" @click="back">Back</button>
         </div>
         <div class="modal-body">
+            <div class="body-controls"></div>
             <div class="add-session" v-if="adding">
                 <div class="input-text">
                     <label for="start">Starting page</label>
-                    <input type="text" name="start" :style="inputStyle" v-model="session.start">
+                    <input type="number" min="1" name="start" :style="inputStyle" v-model="session.start">
                 </div>
                 <div class="input-text">
                     <label for="end">Ending page</label>
-                    <input type="text" name="end" :style="inputStyle" v-model="session.end">
+                    <input type="number" name="end" :style="inputStyle" v-model="session.end">
                 </div>
                 <div class="input-text">
                     <label for="date">Date</label>
@@ -57,7 +58,7 @@
         computed: {
             inputStyle() {
                 return {
-                    'border-bottom': `3px solid ${this.colorScheme.details}`
+                    'border-bottom': `2px solid ${this.colorScheme.details}`
                 }
             },
             adding() {

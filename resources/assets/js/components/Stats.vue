@@ -2,10 +2,10 @@
     <div class="content-wrapper">
         <div class="modal-header">
             <h3 class="action">Stats - {{ selectedBook.title }}</h3>
-            <button class="" @click="previousBook">PREVIOUS</button>
-            <button class="" @click="nextBook">NEXT</button>
-            <button class="modal-default-button" @click="close">close</button>
-            <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
+            <button class="" @click="prev">PREVIOUS</button>
+            <button class="" @click="next">NEXT</button>
+            <button class="" @click="back" v-if="hasHistory">Back</button>
+            <button class="" @click="close">close</button>
         </div>
         <div class="modal-body" v-if="hasStatsToShow">
             <div class="body-controls">
@@ -15,11 +15,15 @@
             </div>
             <div class="stats book-user-stats" v-if="statsToShow === 'user'">
                 <span>You read <strong>{{ selectedBook.book_user_stats.page_average }}</strong> of this book</span><br>
-                <span>You read an average of <strong>{{ selectedBook.book_user_stats.page_per_day_average }}</strong> pages per day</span><br>
-                <span><strong>Distribution:</strong></span><br>
-                <ul>
+                <span>You read an average of <strong>{{ selectedBook.book_user_stats.page_per_day_average }}</strong> pages per day</span><br><br>
+                <span><strong>Distribution:</strong></span><br><br>
+                <ul class="distribution">
                     <li v-for="(count, day) in selectedBook.book_user_stats.distribution">
-                        <span>{{ day }} </span><span :style="getDistributionRepresentation(count)"></span><span> {{ count }}</span>
+                        <div class="day">{{ day }} </div>
+                        <div class="bar" v-bar:data="getDistributionRepresentation(count)">
+                            <span :style="barStyle"></span>
+                        </div>
+                        <span>{{ count }}</span>
                     </li>
                 </ul>
                 <br>
@@ -52,17 +56,30 @@
             hasStatsToShow() {
                 return this.selectedBook !== null && this.selectedBook.book_stats
             },
+            barStyle() {
+                return {
+                    'background-color': this.colorScheme.details
+                }
+            },
             ...mapGetters({
                 selectedBook: 'getSelectedBook',
-                colorScheme: 'getColorScheme'
+                colorScheme: 'getColorScheme',
+                user: 'getUser'
             })
         },
         methods: {
+            prev() {
+                this.previousBook()
+                this.$forceUpdate()
+            },
+            next() {
+                this.nextBook()
+                this.$forceUpdate()
+            },
             getDistributionRepresentation(value) {
                 return {
-                    'border': `5px solid ${this.colorScheme.details}`,
-                    'width': `${value * 2}px`,
-                    'display': 'inline-block'
+                    'longest': this.user.longest_session,
+                    'count': value
                 }
             },
             toggleStatsToShow() {
@@ -80,15 +97,32 @@
                 previousBook: 'previousBook',
             })
         },
+        directives: {
+            bar: {
+                inserted: function (el, binding, vnode) {
+                    let barWidth = ($(el).width() * binding.value.count) / binding.value.longest 
+                    let $span = $(el).find('span')
+                    $span.width(barWidth)
+                },
+                updated: (el) => {
+                    console.log('updated', 'xis')
+                },
+                componentUpdated: (el, binding) => {
+                    let barWidth = ($(el).width() * binding.value.count) / binding.value.longest 
+                    let $span = $(el).find('span')
+                    $span.width(barWidth)
+                }
+            }
+        },
         mounted() {
             const self = this
             window.addEventListener('keyup', (event) => {
                 switch (event.keyCode) {
                     case 37:
-                        self.previousBook()
+                        self.prev()
                         break
                     case 39:
-                        self.nextBook()
+                        self.next()
                         break
                 }
             })

@@ -4,8 +4,8 @@
         <div class="modal-header">
             <h3 class="action">Add a book</h3>
             <button class="" @click="setContent('list')">List</button>
-            <button class="modal-default-button" @click="setContent('trevacio')">close</button>
-            <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
+            <button class="" v-if="hasHistory" @click="back">Back</button>
+            <button class="" @click="setContent('trevacio')">close</button>
         </div>
         <div class="new-book" v-if="!submitted">
 
@@ -26,7 +26,7 @@
             </div>
 
             <div class="modal-footer">
-                <button class="modal-default-button" :disabled="!canSubmit" @click="addBookToLibrary">
+                <button class="" :disabled="!canSubmit" @click="addBookToLibrary">
                     Save
                 </button>
             </div>
@@ -70,19 +70,19 @@
             },
             textareaStyle() {
                 return {
-                    'border': `3px solid ${this.colorScheme.details}`
+                    'border': `2px solid ${this.colorScheme.details}`
                 }
             },
             inputStyle() {
                 return {
-                    'border-bottom': `3px solid ${this.colorScheme.details}`
+                    'border-bottom': `2px solid ${this.colorScheme.details}`
                 }
             },
             style() {
                 return {
                     'background-color': this.colorScheme.background,
                     'color': this.colorScheme.details,
-                    'border': `3px solid ${this.colorScheme.details}`
+                    'border': `2px solid ${this.colorScheme.details}`
                 }
             },
             ...mapGetters({

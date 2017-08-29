@@ -28,7 +28,8 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'friendly_name'
+        'friendly_name',
+        'longest_session'
     ];
 
     /*
@@ -60,5 +61,21 @@ class User extends Authenticatable
     public function getFriendlyNameAttribute()
     {
         return explode(' ', $this->name)[0];
+    }
+
+    public function getLongestSessionAttribute()
+    {
+
+        return $this->readingSessions->reduce(function ($reduced, $session) {
+            if (!array_key_exists($session->date, $reduced['distribution'])) {
+                $reduced['distribution'][$session->date] = 0;
+            }
+            $reduced['distribution'][$session->date] += $session->end - $session->start;
+            if ($reduced['distribution'][$session->date] > $reduced['count']) {
+                $reduced['count'] = $reduced['distribution'][$session->date];
+            }
+            
+            return $reduced;
+        }, ['distribution' => [], 'count' => 0])['count'];
     }
 }

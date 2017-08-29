@@ -4,8 +4,8 @@
             <h3 class="action">Library</h3>
             <button class="" @click="searchBook">Search</button>
             <button class="" @click="addBook">Add</button>
-            <button class="modal-default-button" @click="setContent('trevacio')">close</button>
-            <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
+            <button class="" @click="setContent('trevacio')">close</button>
+            <button class="" v-if="hasHistory" @click="back">Back</button>
         </div>
         <div class="modal-body" v-if="showList">
             <div class="body-controls">

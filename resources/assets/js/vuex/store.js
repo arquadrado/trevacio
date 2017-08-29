@@ -16,19 +16,19 @@ const state = {
         add: {
             label: 'Add',
             name: 'add',
-            icon: 'view_array',
+            icon: 'library_add',
             description: 'Add books to your personal library'
         },
         get: {
             label: 'Get',
             name: 'get',
-            icon: 'view_carousel',
+            icon: 'search',
             description: 'Search for a specific book'
         },
         list: {
             label: 'List',
             name: 'list',
-            icon: 'view_column',
+            icon: 'list',
             description: 'List books from the library or your personal collection'
         },
         settings: {

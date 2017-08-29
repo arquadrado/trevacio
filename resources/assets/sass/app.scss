@@ -60,7 +60,7 @@ body {
 		  	transition: left .5s .5s;
 		}
 		.slide-enter, .slide-leave-to /* .fade-leave-active in <2.1.8 */ {
-			left: -110%;
+			left: -200%;
 		  	transition: left .5s;
 		}
 
@@ -126,6 +126,9 @@ body {
 
 		.content {
 			padding: 21px;
+			text-align: center;
+			max-width: 1024px;
+			margin: auto; 
 			.content-wrapper {
 				position: relative;
 				.book-keeper {
@@ -189,19 +192,20 @@ body {
 			}
 
 			input {
+				text-align: center;
 				background-color: transparent;
 				border: 0;
-				width: calc(100vw - 90px);
+				width: 100%;
 			}
 			span {
 				display: block;
 				min-width: 105px;
-				max-width: calc(100vw - 90px);
+				max-width: 100%;
 				min-height: 63px;
 				font-size: 35px;
 			}
 			textarea {
-				width: calc(100vw - 90px);
+				width: 100%;
 				border: 0;
 				background-color: transparent;
 			}
@@ -235,12 +239,54 @@ body {
 	  width: 300px;
 	}
 
-	.modal-header h3 {
-	  margin-top: 0;
+	.modal-header {
+		border: 0;
+		h3 {
+	  		margin-top: 0;
+		}
+	}
+
+	.modal-footer {
+		border: 0;
 	}
 
 	.modal-body {
 	  margin: 20px 0;
+	  .book-info {
+	  	margin-bottom: 21px;
+	  }
+	  .book-list, .session-list {
+	  	list-style: none;
+	  	padding: 0;
+	  	.book, .session {
+	  		span {
+	  			cursor: pointer;
+	  			font-weight: 900;
+	  		}
+	  	}
+	  }
+	  .stats {
+	  	.distribution {
+	  		list-style: none;
+	  		padding: 0;
+	  		li {
+	  			text-align: left;
+	  			width: 100%;
+	  			.day {
+	  				width: 77px;
+	  				display: inline-block;
+	  			}
+	  			.bar {
+	  				display: inline-block;
+	  				width: calc(100% - 109px);
+	  				span {
+	  					display: inline-block;
+	  					height: 7px;
+	  				}
+	  			}
+	  		}
+	  	}
+	  }
 	}
 
 	.modal-default-button {

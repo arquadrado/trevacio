@@ -2,14 +2,13 @@
     <div class="content-wrapper">
         <div class="modal-header">
             <h3 class="action">Soon to be SETTINGS</h3>
-            <button class="modal-default-button" @click="setContent('trevacio')">Close</button>
-            <button class="modal-default-button" v-if="hasHistory" @click="back">Back</button>
+            <button class="" @click="setContent('trevacio')">Close</button>
+            <button class="" v-if="hasHistory" @click="back">Back</button>
         </div>
         <div class="modal-body">
-            <h4>Ye ye ye</h4>
+            <h4>A lot of settings...</h4>
         </div>
         <div class="modal-footer">
-            <button class="modal-default-button" @click="setContent('trevacio')">Close</button>
         </div>
     </div>
 </template>
