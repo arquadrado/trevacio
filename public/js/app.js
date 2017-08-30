@@ -43106,6 +43106,9 @@ var actions = {
 };
 
 var mutations = {
+    'UPDATE_USER_INFO': function UPDATE_USER_INFO(state, user) {
+        state.user = user;
+    },
     'SHIFT_NAVIGATION_HISTORY': function SHIFT_NAVIGATION_HISTORY(state) {
         state.navigationHistory.shift();
     },
@@ -43302,6 +43305,7 @@ var actions = {
             sessionId: state.selectedReadingSession.id
         }, function () {
             dispatch('setSelectedReadingSession', null);
+            dispatch('updateUserInfo');
             console.log('session deleted');
         }).fail(function () {
             dispatch('updateLibrary', {
@@ -43373,10 +43377,23 @@ var actions = {
             }
         });
     },
-    fetchBook: function fetchBook(_ref7, args) {
+    removeFromUserCollection: function removeFromUserCollection(_ref7, args) {
         var commit = _ref7.commit,
-            dispatch = _ref7.dispatch,
             state = _ref7.state;
+
+        $.post('remove-from-user-collection', {
+            _token: window.handover._token,
+            bookId: args.bookId
+        }, args.successCallback).fail(args.errorCallback).done(function (response, status, responseContent) {
+            if (responseContent.status == 200) {
+                commit('REMOVE_FROM_USER_COLLECTION', response.book);
+            }
+        });
+    },
+    fetchBook: function fetchBook(_ref8, args) {
+        var commit = _ref8.commit,
+            dispatch = _ref8.dispatch,
+            state = _ref8.state;
 
         $.post('get-book', {
             _token: window.handover._token,
@@ -43387,19 +43404,19 @@ var actions = {
             }
         }).fail(args.errorCallback);
     },
-    setSelectedBook: function setSelectedBook(_ref8, id) {
-        var commit = _ref8.commit,
-            state = _ref8.state;
+    setSelectedBook: function setSelectedBook(_ref9, id) {
+        var commit = _ref9.commit,
+            state = _ref9.state;
 
         commit('SET_SELECTED_BOOK', id);
     },
-    setSelectedReadingSession: function setSelectedReadingSession(_ref9, session) {
-        var commit = _ref9.commit;
+    setSelectedReadingSession: function setSelectedReadingSession(_ref10, session) {
+        var commit = _ref10.commit;
 
         commit('SET_SELECTED_READING_SESSION', session);
     },
-    updateLibrary: function updateLibrary(_ref10, args) {
-        var commit = _ref10.commit;
+    updateLibrary: function updateLibrary(_ref11, args) {
+        var commit = _ref11.commit;
 
         $.get('update-library', function (response) {
             console.log(response);
@@ -43409,10 +43426,21 @@ var actions = {
             });
         }).done(args.successCallback).fail(args.errorCallback);
     },
-    saveReadingSession: function saveReadingSession(_ref11, args) {
-        var commit = _ref11.commit,
-            dispatch = _ref11.dispatch,
-            state = _ref11.state;
+    updateUserInfo: function updateUserInfo(_ref12) {
+        var commit = _ref12.commit;
+
+        $.get('update-user-info', function (response) {
+            console.log(response);
+            commit('UPDATE_USER_INFO', response.user);
+        }).fail(function () {
+            console.log('failed to update user info');
+        });
+    },
+    saveReadingSession: function saveReadingSession(_ref13, args) {
+        var commit = _ref13.commit,
+            dispatch = _ref13.dispatch,
+            rootState = _ref13.rootState,
+            state = _ref13.state;
 
         $.post('save-reading-session', {
             _token: window.handover._token,
@@ -43422,11 +43450,12 @@ var actions = {
             if (responseContent.status == 200) {
                 dispatch('setSelectedReadingSession', response.session);
                 dispatch('updateLibrary', args);
+                dispatch('updateUserInfo');
             }
         }).fail(args.errorCallback);
     },
-    setSelectedList: function setSelectedList(_ref12, list) {
-        var commit = _ref12.commit;
+    setSelectedList: function setSelectedList(_ref14, list) {
+        var commit = _ref14.commit;
 
         commit('SET_SELECTED_LIST', list);
     }
@@ -43450,6 +43479,11 @@ var mutations = {
             state.lists.userCollection[book.id].in_library = 1;
             state.lists.library[book.id].in_library = 1;
         }
+    },
+    'REMOVE_FROM_USER_COLLECTION': function REMOVE_FROM_USER_COLLECTION(state, book) {
+        delete state.lists.userCollection[book.id];
+        state.lists.library[book.id].in_library = 0;
+        state.lists.library[book.id].can_delete = 0;
     },
     'SET_SELECTED_BOOK': function SET_SELECTED_BOOK(state, book) {
         state.selectedBook = book;
@@ -46216,6 +46250,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -46273,11 +46308,24 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     console.log('total failure');
                 }
             });
+        },
+        removeBookFromUserCollection: function removeBookFromUserCollection(book) {
+            var self = this;
+            self.removeFromUserCollection({
+                bookId: self.selectedBook.id,
+                successCallback: function successCallback(response, status, responseContent) {
+                    console.log('success');
+                },
+                errorCallback: function errorCallback(response, status, responseContent) {
+                    console.log('total failure');
+                }
+            });
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
         setContent: 'setContent',
         setSelectedReadingSession: 'setSelectedReadingSession',
         addToUserCollection: 'addToUserCollection',
+        removeFromUserCollection: 'removeFromUserCollection',
         setSelectedBook: 'setSelectedBook',
         toggleModal: 'toggleModal',
         deleteBookFromLibrary: 'deleteBook',
@@ -46342,16 +46390,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.setContent('stats')
       }
     }
-  }, [_vm._v("Stats")])]) : _vm._e()]), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
+  }, [_vm._v("Stats")])]) : _vm._e()]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
-  }, [_c('div', {
+  }, [(_vm.selectedBook.in_library) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.removeBookFromUserCollection
+    }
+  }, [_vm._v("Remove from collection")]) : _vm._e(), _vm._v(" "), (!_vm.selectedBook.in_library) ? _c('div', {
     staticClass: "book-not-owned"
   }, [_c('h4', [_vm._v("This book is not in your library. Add it to perform actions")]), _vm._v(" "), _c('button', {
     staticClass: "modal-default-button",
     on: {
       "click": _vm.addBookToUserCollection
     }
-  }, [_vm._v("\n                    Add book\n                ")])])]) : _vm._e()]) : _vm._e()])
+  }, [_vm._v("\n                    Add book\n                ")])]) : _vm._e()])]) : _vm._e()])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -46512,6 +46565,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     directives: {
         bar: {
             inserted: function inserted(el, binding, vnode) {
+                console.log($(el).width(), binding.value.count, binding.value.longest);
                 var barWidth = $(el).width() * binding.value.count / binding.value.longest;
                 var $span = $(el).find('span');
                 $span.width(barWidth);
@@ -46590,7 +46644,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Book stats")])]), _vm._v(" "), (_vm.statsToShow === 'user') ? _c('div', {
     staticClass: "stats book-user-stats"
-  }, [_c('span', [_vm._v("You read "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.page_average))]), _vm._v(" of this book")]), _c('br'), _vm._v(" "), _c('span', [_vm._v("You read an average of "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.page_per_day_average))]), _vm._v(" pages per day")]), _c('br'), _c('br'), _vm._v(" "), _vm._m(0), _c('br'), _c('br'), _vm._v(" "), _c('ul', {
+  }, [_c('span', [_vm._v("You read "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.page_average))]), _vm._v(" of this book in "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.timespan))]), _vm._v(" days in "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.session_count))]), _vm._v(" sessions")]), _c('br'), _vm._v(" "), _c('span', [_vm._v("You read an average of "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.page_per_day_average))]), _vm._v(" pages per day")]), _c('br'), _c('br'), _vm._v(" "), _vm._m(0), _c('br'), _c('br'), _vm._v(" "), _c('ul', {
     staticClass: "distribution"
   }, _vm._l((_vm.selectedBook.book_user_stats.distribution), function(count, day) {
     return _c('li', [_c('div', {

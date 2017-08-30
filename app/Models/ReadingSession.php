@@ -9,6 +9,8 @@ class ReadingSession extends Model
 {
 
     protected $fillable = [
+        'user_id',
+        'book_id',
         'start',
         'end',
         'date'
@@ -36,6 +38,7 @@ class ReadingSession extends Model
     {
         return $this->belongsTo(Book::class);
     }
+
      /*
     }
     ==========================================================================

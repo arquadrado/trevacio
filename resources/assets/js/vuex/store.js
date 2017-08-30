@@ -113,6 +113,9 @@ const actions = {
 }
 
 const mutations = {
+    'UPDATE_USER_INFO': (state, user) => {
+        state.user = user
+    },
     'SHIFT_NAVIGATION_HISTORY': (state) => {
         state.navigationHistory.shift()
     },

@@ -14,7 +14,7 @@
                 
             </div>
             <div class="stats book-user-stats" v-if="statsToShow === 'user'">
-                <span>You read <strong>{{ selectedBook.book_user_stats.page_average }}</strong> of this book</span><br>
+                <span>You read <strong>{{ selectedBook.book_user_stats.page_average }}</strong> of this book in <strong>{{selectedBook.book_user_stats.timespan}}</strong> days in <strong>{{selectedBook.book_user_stats.session_count}}</strong> sessions</span><br>
                 <span>You read an average of <strong>{{ selectedBook.book_user_stats.page_per_day_average }}</strong> pages per day</span><br><br>
                 <span><strong>Distribution:</strong></span><br><br>
                 <ul class="distribution">
@@ -100,6 +100,7 @@
         directives: {
             bar: {
                 inserted: function (el, binding, vnode) {
+                    console.log($(el).width(), binding.value.count, binding.value.longest)
                     let barWidth = ($(el).width() * binding.value.count) / binding.value.longest 
                     let $span = $(el).find('span')
                     $span.width(barWidth)

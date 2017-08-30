@@ -26,8 +26,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
     Route::post('/save-book', 'DashboardController@saveBook')->name('save-book');
     Route::post('/add-to-user-collection', 'DashboardController@addToUserCollection')->name('add-to-user-collection');
+    Route::post('/remove-from-user-collection', 'DashboardController@removeFromUserCollection')->name('remove-from-user-collection');
     Route::post('/get-book', 'DashboardController@getBook')->name('get-book');
     Route::get('/update-library', 'DashboardController@updateLibrary')->name('update-library');
+    Route::get('/update-user-info', 'DashboardController@updateUserInfo')->name('update-user-info');
     Route::post('/save-reading-session', 'DashboardController@saveReadingSession')->name('save-reading-session');
     Route::post('/delete-session', 'DashboardController@deleteReadingSession')->name('delete-session');
     Route::post('/delete-book', 'DashboardController@deleteBook')->name('delete-book');

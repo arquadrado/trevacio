@@ -47,6 +47,11 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function updateUserInfo()
+    {
+        return response()->json(['user' => Auth::user()], 200);
+    }
+
     public function getBook()
     {
         $this->validate(request(), ['title' => 'required']);
@@ -97,6 +102,28 @@ class DashboardController extends Controller
         }
 
         return response()->json(['message' => 'Book not found'], 404);
+    }
+
+    public function removeFromUserCollection()
+    {
+        $this->validate(request(), ['bookId' => 'required']);
+        $book = Book::find(request('bookId'));
+
+        $owned = Auth::user()->books()->where('book_id', $book->id)->first();
+
+        if ($owned) {
+            Auth::user()->books()->detach($book->id);
+
+            return response()->json([
+                'message' => 'Book removed from collection',
+                'book' => $book
+                ], 200);
+        }
+
+        return response()->json([
+                'message' => 'You can remove a book that is not in your collection.',
+                'book' => $book
+                ], 202);
     }
 
     public function saveBook()
@@ -162,6 +189,7 @@ class DashboardController extends Controller
 
         try {
             DB::transaction(function () use ($book) {
+                Auth::user()->books()->detach($book->id);
                 $book->delete();
             });
 
@@ -208,9 +236,7 @@ class DashboardController extends Controller
         $readingSession = null;
         try {
             DB::transaction(function () use ($book, $user, &$readingSession) {
-                $readingSession = ReadingSession::create(request('session'));
-                $user->readingSessions()->attach($readingSession);
-                $book->readingSessions()->attach($readingSession);
+                $readingSession = ReadingSession::create(array_merge(request('session'), ['book_id' => $book->id, 'user_id' => $user->id]));
             });
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 404);
@@ -231,7 +257,7 @@ class DashboardController extends Controller
             });
 
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], $e->getStatus());
+            return response()->json(['message' => $e->getMessage()], 500);
         }
 
         return response()->json(['message' => 'Session deleted'], 200);

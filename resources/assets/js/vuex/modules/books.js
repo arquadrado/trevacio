@@ -54,6 +54,7 @@ const actions = {
             sessionId: state.selectedReadingSession.id,
         }, () => {
             dispatch('setSelectedReadingSession', null)
+            dispatch('updateUserInfo')
             console.log('session deleted')
         })
          .fail(() => {
@@ -119,6 +120,18 @@ const actions = {
             }
          })
     },
+    removeFromUserCollection({ commit, state }, args) {
+        $.post('remove-from-user-collection', {
+            _token: window.handover._token,
+            bookId: args.bookId
+        }, args.successCallback)
+        .fail(args.errorCallback)
+        .done((response, status, responseContent) => {
+            if (responseContent.status == 200) {
+                commit('REMOVE_FROM_USER_COLLECTION', response.book)
+            }
+         })
+    },
     fetchBook({ commit, dispatch, state }, args) {
         $.post('get-book', {
             _token: window.handover._token,
@@ -147,7 +160,14 @@ const actions = {
         }).done(args.successCallback)
         .fail(args.errorCallback)
     },
-    saveReadingSession({ commit, dispatch, state }, args) {
+    updateUserInfo({ commit }) {
+        $.get('update-user-info', (response) => {
+            console.log(response)
+            commit('UPDATE_USER_INFO', response.user)
+        })
+        .fail(() => {console.log('failed to update user info')})
+    },
+    saveReadingSession({ commit, dispatch, rootState, state }, args) {
         $.post('save-reading-session', {
             _token: window.handover._token,
             session: args.session,
@@ -157,6 +177,7 @@ const actions = {
             if (responseContent.status == 200) {
                 dispatch('setSelectedReadingSession', response.session)
                 dispatch('updateLibrary', args)
+                dispatch('updateUserInfo')
             }
         })
         .fail(args.errorCallback)
@@ -184,6 +205,11 @@ const mutations = {
             state.lists.userCollection[book.id].in_library = 1
             state.lists.library[book.id].in_library = 1
         }
+    },
+    'REMOVE_FROM_USER_COLLECTION': (state, book) => {
+        delete state.lists.userCollection[book.id]
+        state.lists.library[book.id].in_library = 0
+        state.lists.library[book.id].can_delete = 0
     },
     'SET_SELECTED_BOOK': (state, book) => {
         state.selectedBook = book

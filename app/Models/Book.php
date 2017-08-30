@@ -43,13 +43,12 @@ class Book extends Model
 
     public function allReadingSessions()
     {
-        return $this->belongsToMany(ReadingSession::class, 'book_session', 'book_id', 'session_id');
+        return $this->hasMany(ReadingSession::class);
     }
 
     public function readingSessions()
     {
-        return $this->belongsToMany(ReadingSession::class, 'book_session', 'book_id', 'session_id')
-                    ->join('user_session', 'user_session.session_id', '=', 'book_session.session_id')
+        return $this->hasMany(ReadingSession::class)
                     ->where('user_id', Auth::user()->id);
     }
 
@@ -92,9 +91,10 @@ class Book extends Model
         /*} catch (\Exception $e) {
             dd($e);
         }*/
+        //dd($this->users->count());
         return [
-            'page_average' => round($data['pages'] / $users->count(), 2),
-            'page_per_day_average' => $days > 0 ? round($data['pages'] / ($users->count() * $days), 2) : null,
+            'page_average' => $users->count() > 0 ? round($data['pages'] / $users->count(), 2) : null,
+            'page_per_day_average' => $days > 0 && $users->count() > 0 ? round($data['pages'] / ($users->count() * $days), 2) : null,
             'distribution' => $data['distribution']
         ];
     }
@@ -122,6 +122,8 @@ class Book extends Model
         $days = Carbon::parse($readingSessions->first()->date)->diffInDays(Carbon::parse($readingSessions->last()->date)) + 1;
 
         return [
+            'session_count' => $readingSessions->count(),
+            'timespan' => $days,
             'page_average' => round($data['pages'], 2),
             'page_per_day_average' => $days > 0 ? round($data['pages'] / $days, 2) : null,
             'distribution' => $data['distribution']

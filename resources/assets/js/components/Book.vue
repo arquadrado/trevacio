@@ -20,8 +20,9 @@
                     <button @click="setContent('stats')">Stats</button>
                 </div>
             </div>
-            <div class="modal-footer"  v-if="!selectedBook.in_library">
-                <div class="book-not-owned">
+            <div class="modal-footer">
+                <button class="modal-default-button" @click="removeBookFromUserCollection" v-if="selectedBook.in_library">Remove from collection</button>
+                <div class="book-not-owned" v-if="!selectedBook.in_library">
                     <h4>This book is not in your library. Add it to perform actions</h4>
                     <button class="modal-default-button" @click="addBookToUserCollection">
                         Add book
@@ -94,10 +95,23 @@
                     }
                 })
             },
+            removeBookFromUserCollection(book) {
+                const self = this
+                self.removeFromUserCollection({
+                    bookId: self.selectedBook.id,
+                    successCallback: (response, status, responseContent) => {
+                        console.log('success')
+                    },
+                    errorCallback: (response, status, responseContent) => {
+                        console.log('total failure')
+                    }
+                })
+            },
             ...mapActions({
                 setContent: 'setContent',
                 setSelectedReadingSession: 'setSelectedReadingSession',
                 addToUserCollection: 'addToUserCollection',
+                removeFromUserCollection: 'removeFromUserCollection',
                 setSelectedBook: 'setSelectedBook',
                 toggleModal: 'toggleModal',
                 deleteBookFromLibrary: 'deleteBook',
