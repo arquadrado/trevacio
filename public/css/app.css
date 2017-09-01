@@ -8617,12 +8617,39 @@ body .modal-footer {
   border: 0;
 }
 
-body .modal-body {
-  margin: 20px 0;
-}
-
 body .modal-body .book-info {
   margin-bottom: 21px;
+}
+
+body .modal-body .book-info .ratings .overall {
+  width: 77px;
+  height: 77px;
+  margin: auto;
+}
+
+body .modal-body .book-info .ratings .overall span {
+  position: absolute;
+  display: block;
+  left: 0;
+  font-size: 19px;
+  right: 0;
+  padding-top: 23px;
+}
+
+body .modal-body .book-info .ratings .overall .material-icons {
+  font-size: 77px;
+  display: block;
+}
+
+body .modal-body .book-info .ratings .user-rating {
+  width: 140px;
+  height: 35px;
+  margin: auto;
+}
+
+body .modal-body .book-info .ratings .user-rating .material-icons {
+  display: block;
+  cursor: pointer;
 }
 
 body .modal-body .book-list,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Author;
 use App\Models\ReadingSession;
+use App\Models\Rating;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -45,6 +46,43 @@ class DashboardController extends Controller
             'userCollection' => $userCollection,
             'library' => $library
         ]);
+    }
+
+    public function rateBook()
+    {
+        $this->validate(request(), [
+                    'bookId' => 'required',
+                    'rating' => 'required'
+                ]);
+
+        $book = Book::find(request('bookId'));
+
+        if (is_null($book)) {
+            return response()->json([
+                    'message' => 'Book not found'
+                ], 404);
+        }
+
+        $rating = $book->userRating->first();
+
+        if (is_null($rating)) {
+            $rating = Rating::create([
+                                'book_id' => request('bookId'),
+                                'user_id' => Auth::user()->id,
+                                'rating' => request('rating')
+                            ]);
+
+            return response()->json([
+                    'message' => 'added rating'
+                ], 200);
+        }
+
+        $rating->rating = request('rating');
+        $rating->save();
+
+        return response()->json([
+                    'message' => 'updated rating'
+                ], 200);
     }
 
     public function updateUserInfo()
@@ -108,11 +146,13 @@ class DashboardController extends Controller
     {
         $this->validate(request(), ['bookId' => 'required']);
         $book = Book::find(request('bookId'));
+        $user = Auth::user();
+        $owned = $user->books()->where('book_id', $book->id)->first();
 
-        $owned = Auth::user()->books()->where('book_id', $book->id)->first();
 
         if ($owned) {
-            Auth::user()->books()->detach($book->id);
+            $user->books()->detach($book->id);
+            $user->ratings()->where('book_id', $book->id)->delete();
 
             return response()->json([
                 'message' => 'Book removed from collection',
@@ -121,7 +161,7 @@ class DashboardController extends Controller
         }
 
         return response()->json([
-                'message' => 'You can remove a book that is not in your collection.',
+                'message' => 'You cannot remove a book that is not in your collection.',
                 'book' => $book
                 ], 202);
     }

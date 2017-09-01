@@ -4,7 +4,7 @@ namespace App\Contracts;
 
 use use Illuminate\Http\Request;
 
-interface BookServiceContract
+interface LibraryServiceContract
 {
     public function addBook(Request $request);
     public function getBook(Request $request);

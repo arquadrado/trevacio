@@ -2,7 +2,7 @@
     <div class="content-wrapper">
         <div class="book" v-if="selectedBook">
             <div class="modal-header">
-                <h3 class="action">Book - {{ selectedBook.title }}</h3>
+                <h3 class="action">Book</h3>
                 <button class="" v-if="canDeleteBook" @click="deleteBook">Delete</button>
                 <button class="" @click="searchBook">Search</button>
                 <button class="" @click="addBook">Add</button>
@@ -12,8 +12,19 @@
             </div>
             <div class="modal-body">
                 <div class="book-info">
-                    <span><strong>Title:</strong> {{ selectedBook.title }} </span><br>
-                    <span><strong>Author:</strong> {{ selectedBook.author.name }} </span><br>
+                    <h3><strong>{{ selectedBook.title }}</strong></h3>
+                    <span>by<strong> {{ selectedBook.author.name }} </strong></span><br><br>
+                    <div class="ratings">
+                        <span>overall rating</span>
+                        <div class="overall">
+                            <span :style="{'color': colorScheme.background}"><strong>{{ selectedBook.overall_rating }}</strong></span>
+                            <i class="material-icons">star</i>
+                        </div>
+                        <span v-if="selectedBook.in_library">your rating</span>
+                        <div class="user" v-if="selectedBook.in_library">
+                            <i class="material-icons" @click="rateBook(n)" v-for="n in 10">{{selectedBook.user_rating.length &&selectedBook.user_rating[0].rating >= n ? 'star' : 'star_border' }}</i>
+                        </div>
+                    </div>
                 </div>
                 <div class="book-actions" v-if="selectedBook.in_library">
                     <button @click="setContent('reading-session-list')">Reading Sessions</button>
@@ -39,6 +50,11 @@
 
     export default {
         mixins: [Navigation],
+        data() {
+            return {
+                
+            }
+        },
         computed: {
             canDeleteBook() {
                 return this.selectedBook.can_delete == 1
@@ -46,6 +62,7 @@
             ...mapGetters({
                 selectedBook: 'getSelectedBook',
                 selectedList: 'getSelectedList',
+                colorScheme: 'getColorScheme'
             })
         },
         methods: {
@@ -115,7 +132,8 @@
                 setSelectedBook: 'setSelectedBook',
                 toggleModal: 'toggleModal',
                 deleteBookFromLibrary: 'deleteBook',
-                setModalContent: 'setModalContent'
+                setModalContent: 'setModalContent',
+                rateBook: 'rateBook'
             })
         }
     }

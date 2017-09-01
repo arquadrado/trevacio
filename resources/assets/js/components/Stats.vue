@@ -7,36 +7,38 @@
             <button class="" @click="back" v-if="hasHistory">Back</button>
             <button class="" @click="close">close</button>
         </div>
-        <div class="modal-body" v-if="hasStatsToShow">
-            <div class="body-controls">
-                <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow !== 'all'">User Stats</button>
-                <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow === 'all'">Book stats</button>
-                
+        <v-touch @swiperight="prev" @swipeleft="next">
+            <div class="modal-body" v-if="hasStatsToShow">
+                <div class="body-controls">
+                    <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow !== 'all'">User Stats</button>
+                    <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow === 'all'">Book stats</button>
+                    
+                </div>
+                <div class="stats book-user-stats" v-if="statsToShow === 'user'">
+                    <span>You read <strong>{{ selectedBook.book_user_stats.page_average }}</strong> of this book in <strong>{{selectedBook.book_user_stats.timespan}}</strong> days in <strong>{{selectedBook.book_user_stats.session_count}}</strong> sessions</span><br>
+                    <span>You read an average of <strong>{{ selectedBook.book_user_stats.page_per_day_average }}</strong> pages per day</span><br><br>
+                    <span><strong>Distribution:</strong></span><br><br>
+                    <ul class="distribution">
+                        <li v-for="(count, day) in selectedBook.book_user_stats.distribution">
+                            <div class="day">{{ day }} </div>
+                            <div class="bar" v-bar:data="getDistributionRepresentation(count)">
+                                <span :style="barStyle"></span>
+                            </div>
+                            <span>{{ count }}</span>
+                        </li>
+                    </ul>
+                    <br>
+                </div>
+                <div class="stats book-stats" v-else>
+                    <span><strong>General page average:</strong> {{ selectedBook.book_stats.page_average }}</span><br>
+                    <span><strong>General page per day average:</strong> {{ selectedBook.book_stats.page_per_day_average }}</span><br>
+                    <br>
+                </div>
             </div>
-            <div class="stats book-user-stats" v-if="statsToShow === 'user'">
-                <span>You read <strong>{{ selectedBook.book_user_stats.page_average }}</strong> of this book in <strong>{{selectedBook.book_user_stats.timespan}}</strong> days in <strong>{{selectedBook.book_user_stats.session_count}}</strong> sessions</span><br>
-                <span>You read an average of <strong>{{ selectedBook.book_user_stats.page_per_day_average }}</strong> pages per day</span><br><br>
-                <span><strong>Distribution:</strong></span><br><br>
-                <ul class="distribution">
-                    <li v-for="(count, day) in selectedBook.book_user_stats.distribution">
-                        <div class="day">{{ day }} </div>
-                        <div class="bar" v-bar:data="getDistributionRepresentation(count)">
-                            <span :style="barStyle"></span>
-                        </div>
-                        <span>{{ count }}</span>
-                    </li>
-                </ul>
-                <br>
+            <div class="modal-body" v-else>
+                <h3>No stats to show</h3>
             </div>
-            <div class="stats book-stats" v-else>
-                <span><strong>General page average:</strong> {{ selectedBook.book_stats.page_average }}</span><br>
-                <span><strong>General page per day average:</strong> {{ selectedBook.book_stats.page_per_day_average }}</span><br>
-                <br>
-            </div>
-        </div>
-        <div class="modal-body" v-else>
-            <h3>No stats to show</h3>
-        </div>
+        </v-touch>
         
     </div>
 </template>

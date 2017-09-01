@@ -25,6 +25,25 @@ const getters = {
 }
 
 const actions = {
+    rateBook({ commit, dispatch, state }, rating) {
+        const previousRating = state.lists.library[state.selectedBook].user_rating
+        const bookId = state.lists.library[state.selectedBook].id 
+        commit('RATE_BOOK', rating)
+        $.post('rate-book', {
+            _token: window.handover._token,
+            bookId: bookId,
+            rating: rating,
+        }, () => {
+            dispatch('updateLibrary', {
+                successCallback: null,
+                errorCallback: null,
+            })
+            console.log('book rated')
+        })
+         .fail(() => {
+            commit('RATE_BOOK', previousRating)
+         })
+    },
     deleteBook({ commit, dispatch, state }) {
         let bookId = state.lists.library[state.selectedBook].id 
         dispatch('setSelectedBook', null)
@@ -120,7 +139,7 @@ const actions = {
             }
          })
     },
-    removeFromUserCollection({ commit, state }, args) {
+    removeFromUserCollection({ commit, dispatch, state }, args) {
         $.post('remove-from-user-collection', {
             _token: window.handover._token,
             bookId: args.bookId
@@ -129,6 +148,10 @@ const actions = {
         .done((response, status, responseContent) => {
             if (responseContent.status == 200) {
                 commit('REMOVE_FROM_USER_COLLECTION', response.book)
+                dispatch('updateLibrary', {
+                    successCallback: null,
+                    errorCallback: null,
+                })
             }
          })
     },
@@ -188,6 +211,9 @@ const actions = {
 }
 
 const mutations = {
+    'RATE_BOOK': (state, rating) => {
+        state.lists.library[state.selectedBook].user_rating = rating
+    },
     'DELETE_READING_SESSION': (state, session) => {
         if (state.selectedBook) {
             let index = state.lists.library[state.selectedBook].reading_sessions.indexOf(session)

@@ -9,6 +9,10 @@ require('./bootstrap')
 
 window.Vue = require('vue')
 
+const VueTouch = require('vue-touch')
+
+Vue.use(VueTouch, {name: 'v-touch'})
+
 Vue.debug = true
 Vue.devtools = true
 

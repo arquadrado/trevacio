@@ -251,9 +251,37 @@ body {
 	}
 
 	.modal-body {
-	  margin: 20px 0;
+	  //margin: 20px 0;
 	  .book-info {
 	  	margin-bottom: 21px;
+	  	.ratings {
+	  		.overall {
+	  			width: 77px;
+			    height: 77px;
+			    margin: auto;
+			    span {
+			    	position: absolute;
+				    display: block;
+				    left: 0;
+				    font-size: 19px;
+				    right: 0;
+				    padding-top: 23px;
+			    }
+			    .material-icons {
+			    	font-size: 77px;
+			    	display: block;
+			    }
+	  		}
+	  		.user-rating {
+	  			width: 140px;
+			    height: 35px;
+			    margin: auto;
+	  			.material-icons {
+			    	display: block;
+			    	cursor: pointer;
+			    }
+	  		}
+	  	}
 	  }
 	  .book-list, .session-list {
 	  	list-style: none;

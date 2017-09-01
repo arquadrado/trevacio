@@ -18,8 +18,10 @@ class Book extends Model
         'in_library',
         'book_stats',
         'book_user_stats',
-        'can_delete'
+        'can_delete',
+        'overall_rating'
     ];
+
 
     /*
      *
@@ -29,7 +31,12 @@ class Book extends Model
      *
      **/
 
-    protected $with = ['author', 'readingSessions'];
+    protected $with = [
+        'author',
+        'readingSessions',
+        'userRating',
+        'ratings'
+    ];
 
     public function users()
     {
@@ -52,11 +59,34 @@ class Book extends Model
                     ->where('user_id', Auth::user()->id);
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function userRating()
+    {
+        return $this->hasMany(Rating::class)
+                    ->where('user_id', Auth::user()->id);
+    }
+
      /*
     ==========================================================================
        Mutators
     ==========================================================================
     */
+
+    public function getOverallRatingAttribute()
+    {
+        $ratings = $this->ratings;
+        if (count($ratings) <= 0) {
+            return 0;
+        }
+        return $ratings->reduce(function ($reduced, $rating) {
+            $reduced += $rating->rating;
+            return $reduced;
+        }, 0)/count($ratings);
+    }
 
     public function getInLibraryAttribute()
     {
