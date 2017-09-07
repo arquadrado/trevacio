@@ -17,6 +17,9 @@
     import Settings from './Settings.vue'
     import Book from './Book.vue'
     import Stats from './Stats.vue'
+    import CommentList from './CommentList.vue'
+    import AddComment from './AddComment.vue'
+    import Comment from './Comment.vue'
 
     export default {
         components: {
@@ -28,7 +31,10 @@
             'list': ListBooks,
             'settings': Settings,
             'book': Book,
-            'stats': Stats
+            'stats': Stats,
+            'comment-list': CommentList,
+            'add-comment': AddComment,
+            'comment': Comment,
         },
         computed: {
             style() {

@@ -10,6 +10,10 @@
                 <button class="" @click="close">close</button>
                 <button class="" v-if="hasHistory" @click="back">Back</button>
             </div>
+            <div class="nav-arrows">
+                <span class="prev" @click="previousBook"><i class="material-icons">arrow_back</i></span>
+                <span class="next" @click="nextBook"><i class="material-icons">arrow_forward</i></span>
+            </div>
             <div class="modal-body">
                 <div class="book-info">
                     <h3><strong>{{ selectedBook.title }}</strong></h3>
@@ -26,15 +30,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="book-actions" v-if="selectedBook.in_library">
-                    <button @click="setContent('reading-session-list')">Reading Sessions</button>
+                <div class="book-actions">
+                    <button v-if="selectedBook.in_library" @click="setContent('reading-session-list')">Reading Sessions</button>
+                    <button @click="setContent('comment-list')">Comments</button>
                     <button @click="setContent('stats')">Stats</button>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="modal-default-button" @click="removeBookFromUserCollection" v-if="selectedBook.in_library">Remove from collection</button>
                 <div class="book-not-owned" v-if="!selectedBook.in_library">
-                    <h4>This book is not in your library. Add it to perform actions</h4>
+                    <h4>This book is not in your library. Add it to perform additional actions</h4>
                     <button class="modal-default-button" @click="addBookToUserCollection">
                         Add book
                     </button>
@@ -56,6 +61,9 @@
             }
         },
         computed: {
+            userRating() {
+                return this.selectedBook.user_rating[0].rating
+            },
             canDeleteBook() {
                 return this.selectedBook.can_delete == 1
             },
@@ -133,7 +141,9 @@
                 toggleModal: 'toggleModal',
                 deleteBookFromLibrary: 'deleteBook',
                 setModalContent: 'setModalContent',
-                rateBook: 'rateBook'
+                rateBook: 'rateBook',
+                nextBook: 'nextBook',
+                previousBook: 'previousBook',
             })
         }
     }

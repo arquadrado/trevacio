@@ -8404,7 +8404,7 @@ body #app .gui-leave-active {
 
 body #app .gui-enter,
 body #app .gui-leave-to {
-  left: -2000px;
+  left: -200%;
 }
 
 body #app .slide-enter-active,
@@ -8421,12 +8421,38 @@ body #app .slide-leave-to {
   transition: left .5s;
 }
 
+body #app .nav-arrows {
+  position: absolute;
+  margin: auto;
+  top: 177px;
+  left: 0;
+  right: 0;
+  display: table;
+  width: 100%;
+  z-index: 100;
+}
+
+body #app .nav-arrows .prev,
+body #app .nav-arrows .next {
+  cursor: pointer;
+  display: inline-block;
+}
+
+body #app .nav-arrows .prev {
+  float: left;
+}
+
+body #app .nav-arrows .next {
+  float: right;
+}
+
 body #app .silent-book-keeper {
   position: absolute;
   top: 0;
   height: 100vh;
   -webkit-transition: all 300ms ease-in;
   transition: all 300ms ease-in;
+  z-index: 101;
 }
 
 body #app .silent-book-keeper .actions-list {
@@ -8641,19 +8667,13 @@ body .modal-body .book-info .ratings .overall .material-icons {
   display: block;
 }
 
-body .modal-body .book-info .ratings .user-rating {
-  width: 140px;
-  height: 35px;
-  margin: auto;
-}
-
-body .modal-body .book-info .ratings .user-rating .material-icons {
-  display: block;
+body .modal-body .book-info .ratings .user .material-icons {
   cursor: pointer;
 }
 
 body .modal-body .book-list,
-body .modal-body .session-list {
+body .modal-body .session-list,
+body .modal-body .comment-list {
   list-style: none;
   padding: 0;
 }
@@ -8661,9 +8681,78 @@ body .modal-body .session-list {
 body .modal-body .book-list .book span,
 body .modal-body .book-list .session span,
 body .modal-body .session-list .book span,
-body .modal-body .session-list .session span {
+body .modal-body .session-list .session span,
+body .modal-body .comment-list .book span,
+body .modal-body .comment-list .session span {
   cursor: pointer;
   font-weight: 900;
+}
+
+body .modal-body .comment-list .comment,
+body .modal-body .comment-list .book,
+body .modal-body .book-list .comment,
+body .modal-body .book-list .book {
+  text-align: left;
+  margin-bottom: 21px;
+  cursor: pointer;
+  padding: 21px;
+}
+
+body .modal-body .comment-list .comment .comment-info,
+body .modal-body .comment-list .comment .book-info,
+body .modal-body .comment-list .book .comment-info,
+body .modal-body .comment-list .book .book-info,
+body .modal-body .book-list .comment .comment-info,
+body .modal-body .book-list .comment .book-info,
+body .modal-body .book-list .book .comment-info,
+body .modal-body .book-list .book .book-info {
+  display: inline-block;
+}
+
+body .modal-body .comment-list .comment .comment-info .comment-user,
+body .modal-body .comment-list .comment .comment-info .book-author,
+body .modal-body .comment-list .comment .book-info .comment-user,
+body .modal-body .comment-list .comment .book-info .book-author,
+body .modal-body .comment-list .book .comment-info .comment-user,
+body .modal-body .comment-list .book .comment-info .book-author,
+body .modal-body .comment-list .book .book-info .comment-user,
+body .modal-body .comment-list .book .book-info .book-author,
+body .modal-body .book-list .comment .comment-info .comment-user,
+body .modal-body .book-list .comment .comment-info .book-author,
+body .modal-body .book-list .comment .book-info .comment-user,
+body .modal-body .book-list .comment .book-info .book-author,
+body .modal-body .book-list .book .comment-info .comment-user,
+body .modal-body .book-list .book .comment-info .book-author,
+body .modal-body .book-list .book .book-info .comment-user,
+body .modal-body .book-list .book .book-info .book-author {
+  font-size: 10px;
+  font-weight: 900;
+}
+
+body .modal-body .comment-list .comment .quick-actions,
+body .modal-body .comment-list .book .quick-actions,
+body .modal-body .book-list .comment .quick-actions,
+body .modal-body .book-list .book .quick-actions {
+  display: inline-block;
+  text-align: right;
+  float: right;
+}
+
+body .modal-body .comment-list .comment .quick-actions .material-icons,
+body .modal-body .comment-list .book .quick-actions .material-icons,
+body .modal-body .book-list .comment .quick-actions .material-icons,
+body .modal-body .book-list .book .quick-actions .material-icons {
+  font-size: 18px;
+}
+
+body .modal-body .comment-list .comment:hover,
+body .modal-body .comment-list .book:hover,
+body .modal-body .book-list .comment:hover,
+body .modal-body .book-list .book:hover {
+  -webkit-box-shadow: -2px 3px 6px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: -2px 3px 6px 2px rgba(0, 0, 0, 0.25);
+  -webkit-transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in;
 }
 
 body .modal-body .stats .distribution {

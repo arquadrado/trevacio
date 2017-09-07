@@ -52,7 +52,7 @@ body {
 		  	transition: left .5s;
 		}
 		.gui-enter, .gui-leave-to {
-		  	left: -2000px;
+		  	left: -200%;
 		}
 
 		.slide-enter-active, .slide-leave-active {
@@ -64,11 +64,33 @@ body {
 		  	transition: left .5s;
 		}
 
+		.nav-arrows {
+			position: absolute;
+			margin: auto;
+			top: 177px;
+			left: 0;
+		    right: 0;
+		    display: table;
+		    width: 100%;
+		    z-index: 100;
+			.prev, .next {
+				cursor: pointer;
+				display: inline-block;
+			}
+			.prev {
+				float: left;
+			}
+			.next {
+				float: right;
+			}
+		}
+
 		.silent-book-keeper {
 			position: absolute;
 			top: 0;
 			height: 100vh;
 			transition: all 300ms ease-in;
+			z-index: 101;
 			.actions-list {
 				position: relative;
 				height: 100%;
@@ -272,18 +294,14 @@ body {
 			    	display: block;
 			    }
 	  		}
-	  		.user-rating {
-	  			width: 140px;
-			    height: 35px;
-			    margin: auto;
+	  		.user {
 	  			.material-icons {
-			    	display: block;
 			    	cursor: pointer;
 			    }
 	  		}
 	  	}
 	  }
-	  .book-list, .session-list {
+	  .book-list, .session-list, .comment-list {
 	  	list-style: none;
 	  	padding: 0;
 	  	.book, .session {
@@ -293,6 +311,38 @@ body {
 	  		}
 	  	}
 	  }
+
+	  .comment-list, .book-list {
+	  	.comment, .book {
+	  		text-align: left;
+	  		margin-bottom: 21px;
+	  		cursor: pointer;
+	  		padding: 21px;
+	  		.comment-info, .book-info {
+	  			display: inline-block;
+		  		.comment-user, .book-author {
+		  			font-size: 10px;
+		  			font-weight: 900;
+		  		}
+	  		}
+
+	  		.quick-actions {
+	  			display: inline-block;
+	  			text-align: right;
+	  			float: right;
+	  			.material-icons {
+	  				font-size: 18px;
+	  			}
+	  		}
+	  	}
+	  	.comment:hover, .book:hover {
+	  		-webkit-box-shadow: -2px 3px 6px 2px rgba(0,0,0,0.25);
+			-moz-box-shadow: -2px 3px 6px 2px rgba(0,0,0,0.25);
+			box-shadow: -2px 3px 6px 2px rgba(0,0,0,0.25); 
+			transition: all 0.3s ease-in;
+	  	}
+	  }
+
 	  .stats {
 	  	.distribution {
 	  		list-style: none;

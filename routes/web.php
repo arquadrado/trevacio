@@ -34,4 +34,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/delete-session', 'DashboardController@deleteReadingSession')->name('delete-session');
     Route::post('/delete-book', 'DashboardController@deleteBook')->name('delete-book');
     Route::post('/rate-book', 'DashboardController@rateBook')->name('rate-book');
+    Route::post('/save-comment', 'DashboardController@saveComment')->name('save-comment');
+    Route::post('/update-comment', 'DashboardController@updateComment')->name('update-comment');
 });

@@ -13,7 +13,15 @@
             </div>
             <ul class="book-list" v-if="hasBooks">
                 <li class="book" v-for="book in list" @click="openBook(book)">
-                    <span>{{ `${book.title} - ${book.author.name}` }}</span>
+                    <div class="book-info">
+                        <span class="book-title">{{ book.title }}</span>
+                        <br>
+                        <span class="book-author">by {{ book.author.name }}</span>
+                    </div>
+                    <div class="quick-actions">
+                        <i class="material-icons" @click="showBookComments($event, book)">comment</i>
+                        <i class="material-icons" @click="showBookStats($event, book)">timeline</i>
+                    </div>
                 </li>
             </ul>
             <h4 v-else>No books to show</h4>
@@ -58,6 +66,16 @@
             })
         },
         methods: {
+            showBookComments(event, book) {
+                event.stopPropagation()
+                this.setSelectedBook(book.id)
+                this.setContent('comment-list')
+            },
+            showBookStats(event, book) {
+                event.stopPropagation()
+                this.setSelectedBook(book.id)
+                this.setContent('stats')
+            },
             listIsSelected(name) {
                 return this.listName === name
             },

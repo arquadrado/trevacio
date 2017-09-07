@@ -2,6 +2,7 @@
 const state = {
     selectedBook: null,
     selectedReadingSession: null,
+    selectedComment: null,
     selectedList: 'userCollection',
     lists: {
         userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
@@ -17,6 +18,7 @@ const getters = {
         return null
     },
     getSelectedReadingSession: state => state.selectedReadingSession,
+    getSelectedComment: state => state.selectedComment,
     getUserCollection: state => state.lists.userCollection,
     getLibrary: state => state.lists.library,
     getSelectedList: state => state.lists[state.selectedList],
@@ -25,6 +27,45 @@ const getters = {
 }
 
 const actions = {
+    setSelectedComment({ commit }, comment) {
+        commit('SET_SELECTED_COMMENT', comment)
+    },
+    updateComment({ commit, dispatch, state }, data) {
+        commit('UPDATE_COMMENT', data.selectedComment)
+        $.post('update-comment', {
+            _token: window.handover._token,
+            commentId: data.selectedComment.id,
+            comment: data.comment
+        }, () => {
+            dispatch('updateLibrary', {
+                successCallback: null,
+                errorCallback: null,
+            })
+            console.log('comment updated')
+        })
+         .fail(() => {
+            commit('UPDATE_COMMENT', comment)
+         })
+    },
+    addComment({ commit, dispatch, state }, data) {
+        commit('ADD_COMMENT_TO_BOOK', data)
+        $.post('save-comment', {
+            _token: window.handover._token,
+            commentableId: data.commentable_id,
+            commentableType: data.commentable_type,
+            comment: data.comment,
+        }, () => {
+            dispatch('updateLibrary', {
+                successCallback: null,
+                errorCallback: null,
+            })
+            console.log('comment added')
+        })
+         .fail(() => {
+            commit('REMOVE_COMMENT_FROM_BOOK', null)
+         })
+    },
+
     rateBook({ commit, dispatch, state }, rating) {
         const previousRating = state.lists.library[state.selectedBook].user_rating
         const bookId = state.lists.library[state.selectedBook].id 
@@ -92,8 +133,7 @@ const actions = {
         let currentIdIndex = ids.indexOf(state.selectedBook)
 
         if (currentIdIndex > -1) {
-            let indexToSelect = ids.indexOf(state.selectedBook + 1)
-            dispatch('setSelectedBook', indexToSelect > -1 ? ids[indexToSelect] : ids[0])
+            dispatch('setSelectedBook', ids.length - 1 > currentIdIndex ? ids[currentIdIndex + 1] : ids[0])
         }
 
     },
@@ -106,8 +146,7 @@ const actions = {
         let currentIdIndex = ids.indexOf(state.selectedBook)
 
         if (currentIdIndex > -1) {
-            let indexToSelect = ids.indexOf(state.selectedBook - 1)
-            dispatch('setSelectedBook', indexToSelect > -1 ? ids[indexToSelect] : ids[ids.length - 1])
+            dispatch('setSelectedBook', currentIdIndex > 0 ? ids[currentIdIndex - 1] : ids[ids.length - 1])
         }
 
     },
@@ -211,8 +250,28 @@ const actions = {
 }
 
 const mutations = {
+    'UPDATE_COMMENT': (state, comment) => {
+        const index = state.lists.library[state.selectedBook].comments.indexOf(comment)
+
+        if (index > -1) {
+            state.lists.library[state.selectedBook].comments[index].body = comment.body    
+        } 
+    },
+    'ADD_COMMENT_TO_BOOK': (state, data) => {
+        state.lists.library[state.selectedBook].comments.unshift(data)
+    },
+    'REMOVE_COMMENT_FROM_BOOK': (state, comment) => {
+        if (comment) {
+            const index = state.lists.library[state.selectedBook].comments.indexOf(comment)
+
+            if (index > -1) {
+                state.lists.library[state.selectedBook].comments.splice(index, 1)    
+            }
+        }
+        state.lists.library[state.selectedBook].comments.shift(data)
+    },
     'RATE_BOOK': (state, rating) => {
-        state.lists.library[state.selectedBook].user_rating = rating
+        state.lists.library[state.selectedBook].user_rating[0].rating = rating
     },
     'DELETE_READING_SESSION': (state, session) => {
         if (state.selectedBook) {
@@ -242,6 +301,9 @@ const mutations = {
     },
     'SET_SELECTED_READING_SESSION': (state, session) => {
         state.selectedReadingSession = session
+    },
+    'SET_SELECTED_COMMENT': (state, comment) => {
+        state.selectedComment = comment
     },
     'UPDATE_LIBRARY': (state, data) => {
         state.lists.userCollection = data.userCollection

@@ -2,43 +2,42 @@
     <div class="content-wrapper">
         <div class="modal-header">
             <h3 class="action">Stats - {{ selectedBook.title }}</h3>
-            <button class="" @click="prev">PREVIOUS</button>
-            <button class="" @click="next">NEXT</button>
             <button class="" @click="back" v-if="hasHistory">Back</button>
             <button class="" @click="close">close</button>
         </div>
-        <v-touch @swiperight="prev" @swipeleft="next">
-            <div class="modal-body" v-if="hasStatsToShow">
-                <div class="body-controls">
-                    <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow !== 'all'">User Stats</button>
-                    <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow === 'all'">Book stats</button>
-                    
-                </div>
-                <div class="stats book-user-stats" v-if="statsToShow === 'user'">
-                    <span>You read <strong>{{ selectedBook.book_user_stats.page_average }}</strong> of this book in <strong>{{selectedBook.book_user_stats.timespan}}</strong> days in <strong>{{selectedBook.book_user_stats.session_count}}</strong> sessions</span><br>
-                    <span>You read an average of <strong>{{ selectedBook.book_user_stats.page_per_day_average }}</strong> pages per day</span><br><br>
-                    <span><strong>Distribution:</strong></span><br><br>
-                    <ul class="distribution">
-                        <li v-for="(count, day) in selectedBook.book_user_stats.distribution">
-                            <div class="day">{{ day }} </div>
-                            <div class="bar" v-bar:data="getDistributionRepresentation(count)">
-                                <span :style="barStyle"></span>
-                            </div>
-                            <span>{{ count }}</span>
-                        </li>
-                    </ul>
-                    <br>
-                </div>
-                <div class="stats book-stats" v-else>
-                    <span><strong>General page average:</strong> {{ selectedBook.book_stats.page_average }}</span><br>
-                    <span><strong>General page per day average:</strong> {{ selectedBook.book_stats.page_per_day_average }}</span><br>
-                    <br>
-                </div>
+        <div class="nav-arrows">
+            <span class="prev" @click="previousBook"><i class="material-icons">arrow_back</i></span>
+            <span class="next" @click="nextBook"><i class="material-icons">arrow_forward</i></span>
+        </div>
+        <div class="modal-body" v-if="hasStatsToShow">
+            <div class="body-controls">
+                <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow !== 'all'" v-if="selectedBook.in_library">User Stats</button>
+                <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow === 'all'">Book stats</button>
+                
             </div>
-            <div class="modal-body" v-else>
-                <h3>No stats to show</h3>
+            <div class="stats book-user-stats" v-if="statsToShow === 'user'">
+                <span>You read <strong>{{ selectedBook.book_user_stats.page_average }}</strong> of this book in <strong>{{selectedBook.book_user_stats.timespan}}</strong> days in <strong>{{selectedBook.book_user_stats.session_count}}</strong> sessions</span><br>
+                <span>You read an average of <strong>{{ selectedBook.book_user_stats.page_per_day_average }}</strong> pages per day</span><br><br>
+                <span><strong>Distribution:</strong></span><br><br>
+                <ul class="distribution">
+                    <li v-for="(count, day) in selectedBook.book_user_stats.distribution">
+                        <div class="day">{{ day }} </div>
+                        <div class="bar" v-bar:data="getDistributionRepresentation(count)">
+                            <span :style="barStyle"></span>
+                        </div>
+                        <span>{{ count }}</span>
+                    </li>
+                </ul>
+                <br>
             </div>
-        </v-touch>
+            <div class="stats book-stats" v-else>
+                <span>This book was read by <strong>{{ selectedBook.book_stats.users }}</strong> persons with an average of <strong>{{ selectedBook.book_stats.page_average }}</strong> pages per person and <strong>    {{ selectedBook.book_stats.page_per_day_average }}</strong> pages per day</span><br>
+                <br>
+            </div>
+        </div>
+        <div class="modal-body" v-else>
+            <h3>No stats to show</h3>
+        </div>
         
     </div>
 </template>
@@ -102,7 +101,6 @@
         directives: {
             bar: {
                 inserted: function (el, binding, vnode) {
-                    console.log($(el).width(), binding.value.count, binding.value.longest)
                     let barWidth = ($(el).width() * binding.value.count) / binding.value.longest 
                     let $span = $(el).find('span')
                     $span.width(barWidth)
@@ -118,6 +116,9 @@
             }
         },
         mounted() {
+            if (!this.selectedBook.in_library) {
+                this.statsToShow = 'all'
+            }
             const self = this
             window.addEventListener('keyup', (event) => {
                 switch (event.keyCode) {

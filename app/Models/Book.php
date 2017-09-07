@@ -35,7 +35,8 @@ class Book extends Model
         'author',
         'readingSessions',
         'userRating',
-        'ratings'
+        'ratings',
+        'comments'
     ];
 
     public function users()
@@ -68,6 +69,11 @@ class Book extends Model
     {
         return $this->hasMany(Rating::class)
                     ->where('user_id', Auth::user()->id);
+    }
+
+    public function comments()
+    {
+        return $this->morphMany('App\Models\Comment', 'commentable');
     }
 
      /*
@@ -123,6 +129,7 @@ class Book extends Model
         }*/
         //dd($this->users->count());
         return [
+            'users' => $users->count(),
             'page_average' => $users->count() > 0 ? round($data['pages'] / $users->count(), 2) : null,
             'page_per_day_average' => $days > 0 && $users->count() > 0 ? round($data['pages'] / ($users->count() * $days), 2) : null,
             'distribution' => $data['distribution']

@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Author;
 use App\Models\ReadingSession;
 use App\Models\Rating;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -46,6 +47,69 @@ class DashboardController extends Controller
             'userCollection' => $userCollection,
             'library' => $library
         ]);
+    }
+
+    public function updateComment()
+    {
+        $this->validate(request(), [
+                    'commentId' => 'required',
+                    'comment' => 'required'
+                ]);
+
+        if (!Auth::check()) {
+            abort(500);
+        }
+
+        $comment = Comment::find(request('commentId'));
+
+        if (is_null($comment)) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        if (Auth::user()->id !== $comment->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $comment->body = request('comment');
+        $comment->save();
+
+        return response()->json(['message' => 'comment updated'], 200);
+
+
+
+    }
+
+    public function saveComment()
+    {
+        $this->validate(request(), [
+                    'commentableId' => 'required',
+                    'commentableType' => 'required',
+                    'comment' => 'required'
+                ]);
+
+        if (!Auth::check()) {
+            abort(500);
+        }
+
+        $commentableTypes = [
+            'book' => 'App\Models\Book'
+        ];
+
+        if (!array_key_exists(request('commentableType'), $commentableTypes)) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        $commentable = Comment::create([
+            'commentable_type' => $commentableTypes[request('commentableType')],
+            'commentable_id' => request('commentableId'),
+            'body' => request('comment'),
+            'user_id' => Auth::user()->id
+        ]);
+
+        return response()->json(['message' => 'comment added'], 200);
+   
+
+
     }
 
     public function rateBook()
