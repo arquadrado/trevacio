@@ -13,8 +13,11 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="" :disabled="!canSubmit" @click="add">
+            <button v-if="!loading" class="" :disabled="!canSubmit" @click="add">
                 Save
+            </button>
+            <button v-else>
+                <loading-spinner></loading-spinner>
             </button>
         </div>
     </div>
@@ -58,6 +61,7 @@
                 }
             },
             ...mapGetters({
+                loading: 'isLoading',
                 colorScheme: 'getColorScheme',
                 selectedBook: 'getSelectedBook',
                 currentCommentList: 'getCommentListToDisplay',

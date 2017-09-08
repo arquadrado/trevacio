@@ -28,6 +28,10 @@ import { mapGetters, mapActions } from 'vuex'
 import ContentWrapper from './components/ContentWrapper.vue'
 import Gui from './components/Gui.vue'
 import Modal from './components/Modal.vue'
+import LoadingSpinner from './components/LoadingSpinner.vue'
+
+Vue.component('loading-spinner', LoadingSpinner)
+
 
 const app = new Vue({
     el: '#app',

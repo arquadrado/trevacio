@@ -11985,7 +11985,7 @@ module.exports = Vue$3;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(15);
-module.exports = __webpack_require__(112);
+module.exports = __webpack_require__(115);
 
 
 /***/ }),
@@ -12002,6 +12002,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__ = __webpack_require__(109);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_LoadingSpinner_vue__ = __webpack_require__(112);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_LoadingSpinner_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_LoadingSpinner_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /**
@@ -12033,6 +12035,9 @@ Vue.devtools = true;
 
 
 
+
+
+Vue.component('loading-spinner', __WEBPACK_IMPORTED_MODULE_5__components_LoadingSpinner_vue___default.a);
 
 var app = new Vue({
     el: '#app',
@@ -46117,19 +46122,28 @@ var state = {
         details: '#EBE44A',
         background: '#703A9E'
     }],
-    selectedColorSchemeIndex: 0
+    selectedColorSchemeIndex: 0,
+    loading: false
 };
 
 var getters = {
     getColorScheme: function getColorScheme(state) {
         return state.colorSchemes[state.selectedColorSchemeIndex];
+    },
+    isLoading: function isLoading(state) {
+        return state.loading;
     }
 };
 
 var actions = {
-    changeColorScheme: function changeColorScheme(_ref) {
-        var commit = _ref.commit,
-            state = _ref.state;
+    toggleLoading: function toggleLoading(_ref) {
+        var commit = _ref.commit;
+
+        commit('TOGGLE_LOADING');
+    },
+    changeColorScheme: function changeColorScheme(_ref2) {
+        var commit = _ref2.commit,
+            state = _ref2.state;
 
         commit('CHANGE_COLOR_SCHEME');
     }
@@ -46140,6 +46154,9 @@ var mutations = {
         var currentIndex = state.selectedColorSchemeIndex;
         currentIndex++;
         state.selectedColorSchemeIndex = currentIndex % state.colorSchemes.length;
+    },
+    'TOGGLE_LOADING': function TOGGLE_LOADING(state) {
+        state.loading = !state.loading;
     }
 };
 
@@ -46176,7 +46193,10 @@ var getters = {
         return null;
     },
     getSelectedReadingSession: function getSelectedReadingSession(state) {
-        return state.selectedReadingSession;
+        if (state.selectedBook) {
+            return state.lists.library[state.selectedBook].reading_sessions[state.selectedReadingSession];
+        }
+        return null;
     },
     getSelectedComment: function getSelectedComment(state) {
         return state.selectedComment;
@@ -46239,14 +46259,14 @@ var actions = {
             state = _ref4.state;
 
         console.log(state.commentListToDisplay);
-        switch (state.commentListToDisplay) {
+        /*switch (state.commentListToDisplay) {
             case 'book':
-                commit('ADD_COMMENT_TO_BOOK', data);
+                commit('ADD_COMMENT_TO_BOOK', data)
+             case 'session':
+                commit('ADD_COMMENT_TO_SESSION', data)
+        }*/
 
-            case 'session':
-                commit('ADD_COMMENT_TO_SESSION', data);
-        }
-
+        dispatch('toggleLoading');
         $.post('save-comment', {
             _token: window.handover._token,
             commentableId: data.commentable_id,
@@ -46254,6 +46274,7 @@ var actions = {
             comment: data.body
         }, function (response) {
             console.log(response);
+            dispatch('toggleLoading');
             dispatch('updateLibrary', {
                 successCallback: null,
                 errorCallback: null
@@ -46262,13 +46283,12 @@ var actions = {
             dispatch('setContent', 'comment');
             console.log('comment added');
         }).fail(function () {
-            switch (state.commentListToDisplay) {
+            /*switch (state.commentListToDisplay) {
                 case 'book':
-                    commit('REMOVE_COMMENT_FROM_BOOK', null);
-
-                case 'session':
-                    commit('REMOVE_COMMENT_FROM_SESSION', null);
-            }
+                    commit('REMOVE_COMMENT_FROM_BOOK', null)
+                 case 'session':
+                    commit('REMOVE_COMMENT_FROM_SESSION', null)
+            }*/
             dispatch('setSelectedComment', null);
         });
     },
@@ -46438,10 +46458,10 @@ var actions = {
 
         commit('SET_SELECTED_BOOK', id);
     },
-    setSelectedReadingSession: function setSelectedReadingSession(_ref15, session) {
+    setSelectedReadingSession: function setSelectedReadingSession(_ref15, index) {
         var commit = _ref15.commit;
 
-        commit('SET_SELECTED_READING_SESSION', session);
+        commit('SET_SELECTED_READING_SESSION', index);
     },
     updateLibrary: function updateLibrary(_ref16, args) {
         var commit = _ref16.commit;
@@ -46470,13 +46490,18 @@ var actions = {
             rootState = _ref18.rootState,
             state = _ref18.state;
 
+        dispatch('toggleLoading');
         $.post('save-reading-session', {
             _token: window.handover._token,
             session: args.session,
             bookId: args.bookId
-        }, args.successCallback).done(function (response, status, responseContent) {
+        }, function (response, status, responseContent) {
             if (responseContent.status == 200) {
-                dispatch('setSelectedReadingSession', response.session);
+                args.successCallback = function () {
+                    dispatch('toggleLoading');
+                    //dispatch('setSelectedReadingSession', response.session)
+                    dispatch('setContent', 'reading-session-list');
+                };
                 dispatch('updateLibrary', args);
                 dispatch('updateUserInfo');
             }
@@ -46543,8 +46568,8 @@ var mutations = {
     'SET_SELECTED_BOOK': function SET_SELECTED_BOOK(state, book) {
         state.selectedBook = book;
     },
-    'SET_SELECTED_READING_SESSION': function SET_SELECTED_READING_SESSION(state, session) {
-        state.selectedReadingSession = session;
+    'SET_SELECTED_READING_SESSION': function SET_SELECTED_READING_SESSION(state, index) {
+        state.selectedReadingSession = index;
     },
     'SET_SELECTED_COMMENT': function SET_SELECTED_COMMENT(state, comment) {
         state.selectedComment = comment;
@@ -48554,6 +48579,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
 
 
 
@@ -48577,7 +48605,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             };
         },
         adding: function adding() {
-            return this.selectedSession === null;
+            return this.selectedSession === null || typeof this.selectedSession == 'undefined';
         },
         canSubmit: function canSubmit() {
             return this.session.start !== null && this.session.end !== null && this.session.date !== null;
@@ -48585,7 +48613,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
         selectedBook: 'getSelectedBook',
         selectedSession: 'getSelectedReadingSession',
-        colorScheme: 'getColorScheme'
+        colorScheme: 'getColorScheme',
+        loading: 'isLoading'
     })),
     methods: _extends({
         showSessionNotes: function showSessionNotes() {
@@ -48657,7 +48686,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "click": _vm.back
     }
   }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), (!_vm.adding) ? _c('button', {
-    staticClass: "modal-default-button",
     on: {
       "click": _vm.deleteSession
     }
@@ -48766,7 +48794,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.setSelectedReadingSession(null)
       }
     }
-  }, [_vm._v("Add another session")]) : _vm._e(), _vm._v(" "), (_vm.adding) ? _c('button', {
+  }, [_vm._v("Add another session")]) : _vm._e(), _vm._v(" "), (_vm.adding && !_vm.loading) ? _c('button', {
     staticClass: "modal-default-button",
     attrs: {
       "disabled": !_vm.canSubmit
@@ -48774,7 +48802,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.saveSession
     }
-  }, [_vm._v("\n            Save\n        ")]) : _vm._e()])])
+  }, [_vm._v("\n            Save\n        ")]) : _vm._e(), _vm._v(" "), (_vm.adding && _vm.loading) ? _c('button', [_c('loading-spinner')], 1) : _vm._e()])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -48885,8 +48913,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             this.setSelectedReadingSession(null);
             this.setContent('reading-session');
         },
-        selectSession: function selectSession(session) {
-            this.setSelectedReadingSession(session);
+        selectSession: function selectSession(index) {
+            this.setSelectedReadingSession(index);
             this.setContent('reading-session');
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
@@ -48927,12 +48955,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Add reading session")])]), _vm._v(" "), _c('ul', {
     staticClass: "session-list"
-  }, _vm._l((_vm.selectedBook.reading_sessions), function(session) {
+  }, _vm._l((_vm.selectedBook.reading_sessions), function(session, index) {
     return _c('li', {
       staticClass: "session",
       on: {
         "click": function($event) {
-          _vm.selectSession(session)
+          _vm.selectSession(index)
         }
       }
     }, [_c('div', {
@@ -50070,7 +50098,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "comment-info"
     }, [_c('span', {
       staticClass: "comment-user"
-    }, [_vm._v(_vm._s(comment.user.name) + " - " + _vm._s(comment.updated_at))]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
+    }, [_vm._v(_vm._s(comment.user.name) + " - " + _vm._s(typeof comment.updated_at !== 'undefined' ? comment.updated_at : 'just now'))]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
       staticClass: "comment-body"
     }, [_vm._v(_vm._s(comment.body))])])])
   }))])])
@@ -50155,6 +50183,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
 
 
 
@@ -50194,6 +50225,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             }
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        loading: 'isLoading',
         colorScheme: 'getColorScheme',
         selectedBook: 'getSelectedBook',
         currentCommentList: 'getCommentListToDisplay',
@@ -50265,14 +50297,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })])]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
-  }, [_c('button', {
+  }, [(!_vm.loading) ? _c('button', {
     attrs: {
       "disabled": !_vm.canSubmit
     },
     on: {
       "click": _vm.add
     }
-  }, [_vm._v("\n            Save\n        ")])])])
+  }, [_vm._v("\n            Save\n        ")]) : _c('button', [_c('loading-spinner')], 1)])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -50931,6 +50963,143 @@ if (false) {
 
 /***/ }),
 /* 112 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(113),
+  /* template */
+  __webpack_require__(114),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/LoadingSpinner.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] LoadingSpinner.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-85df7f62", Component.options)
+  } else {
+    hotAPI.reload("data-v-85df7f62", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 113 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        colorScheme: 'getColorScheme'
+    })),
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({}))
+});
+
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('svg', {
+    attrs: {
+      "version": "1.1",
+      "id": "L3",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "xmlns:xlink": "http://www.w3.org/1999/xlink",
+      "x": "0px",
+      "y": "0px",
+      "viewBox": "0 0 100 100",
+      "enable-background": "new 0 0 0 0",
+      "xml:space": "preserve"
+    }
+  }, [_c('circle', {
+    staticStyle: {
+      "opacity": "0.5"
+    },
+    style: ({
+      'stroke': _vm.colorScheme.details
+    }),
+    attrs: {
+      "fill": "none",
+      "stroke-width": "4",
+      "cx": "50",
+      "cy": "50",
+      "r": "44"
+    }
+  }), _vm._v(" "), _c('circle', {
+    style: ({
+      'stroke': _vm.colorScheme.background,
+      'fill': _vm.colorScheme.details
+    }),
+    attrs: {
+      "stroke-width": "3",
+      "cx": "8",
+      "cy": "54",
+      "r": "6"
+    }
+  }, [_c('animateTransform', {
+    attrs: {
+      "attributeName": "transform",
+      "dur": "2s",
+      "type": "rotate",
+      "from": "0 50 48",
+      "to": "360 50 52",
+      "repeatCount": "indefinite"
+    }
+  })], 1)])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-85df7f62", module.exports)
+  }
+}
+
+/***/ }),
+/* 115 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

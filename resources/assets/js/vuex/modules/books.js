@@ -18,7 +18,12 @@ const getters = {
         }
         return null
     },
-    getSelectedReadingSession: state => state.selectedReadingSession,
+    getSelectedReadingSession: state => {
+        if (state.selectedBook) {
+            return state.lists.library[state.selectedBook].reading_sessions[state.selectedReadingSession]
+        }
+        return null 
+    }, 
     getSelectedComment: state => state.selectedComment,
     getUserCollection: state => state.lists.userCollection,
     getLibrary: state => state.lists.library,
@@ -56,15 +61,15 @@ const actions = {
     },
     addComment({ commit, dispatch, state }, data) {
         console.log(state.commentListToDisplay)
-        switch (state.commentListToDisplay) {
+        /*switch (state.commentListToDisplay) {
             case 'book':
                 commit('ADD_COMMENT_TO_BOOK', data)
 
             case 'session':
                 commit('ADD_COMMENT_TO_SESSION', data)
-        }
+        }*/
 
-
+        dispatch('toggleLoading')
         $.post('save-comment', {
             _token: window.handover._token,
             commentableId: data.commentable_id,
@@ -72,6 +77,7 @@ const actions = {
             comment: data.body,
         }, (response) => {
             console.log(response)
+            dispatch('toggleLoading')
             dispatch('updateLibrary', {
                 successCallback: null,
                 errorCallback: null,
@@ -81,13 +87,13 @@ const actions = {
             console.log('comment added')
         })
         .fail(() => {
-            switch (state.commentListToDisplay) {
+            /*switch (state.commentListToDisplay) {
                 case 'book':
                     commit('REMOVE_COMMENT_FROM_BOOK', null)
 
                 case 'session':
                     commit('REMOVE_COMMENT_FROM_SESSION', null)
-            }
+            }*/
             dispatch('setSelectedComment', null)
         })
     },
@@ -235,8 +241,8 @@ const actions = {
     setSelectedBook({ commit, state }, id) {
         commit('SET_SELECTED_BOOK', id)
     },
-    setSelectedReadingSession({ commit }, session) {
-        commit('SET_SELECTED_READING_SESSION', session)
+    setSelectedReadingSession({ commit }, index) {
+        commit('SET_SELECTED_READING_SESSION', index)
     },
     updateLibrary({ commit }, args) {
         $.get('update-library', (response) => {
@@ -256,17 +262,22 @@ const actions = {
         .fail(() => {console.log('failed to update user info')})
     },
     saveReadingSession({ commit, dispatch, rootState, state }, args) {
+        dispatch('toggleLoading')
         $.post('save-reading-session', {
             _token: window.handover._token,
             session: args.session,
             bookId: args.bookId
-        }, args.successCallback)
-        .done((response, status, responseContent) => {
+        }, (response, status, responseContent) => {
             if (responseContent.status == 200) {
-                dispatch('setSelectedReadingSession', response.session)
+                args.successCallback = () => {
+                    dispatch('toggleLoading')
+                    //dispatch('setSelectedReadingSession', response.session)
+                    dispatch('setContent', 'reading-session-list')
+                }
                 dispatch('updateLibrary', args)
                 dispatch('updateUserInfo')
             }
+            
         })
         .fail(args.errorCallback)
     },
@@ -329,8 +340,8 @@ const mutations = {
     'SET_SELECTED_BOOK': (state, book) => {
         state.selectedBook = book
     },
-    'SET_SELECTED_READING_SESSION': (state, session) => {
-        state.selectedReadingSession = session
+    'SET_SELECTED_READING_SESSION': (state, index) => {
+        state.selectedReadingSession = index
     },
     'SET_SELECTED_COMMENT': (state, comment) => {
         state.selectedComment = comment

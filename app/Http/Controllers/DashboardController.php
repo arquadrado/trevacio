@@ -312,11 +312,13 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         $userCollection = $user->books->reduce(function ($reduced, $book) {
+            $book->load('readingSessions.notes');
             $reduced[$book->id] = $book;
             return $reduced;
         }, []);
 
         $library = Book::all()->reduce(function ($reduced, $book) {
+            $book->load('readingSessions.notes');
             $reduced[$book->id] = $book;
             return $reduced;
         }, []);

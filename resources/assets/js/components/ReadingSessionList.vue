@@ -12,8 +12,8 @@
             </div>
             <ul class="session-list">
                 <li class="session" 
-                    v-for="session in selectedBook.reading_sessions" 
-                    @click="selectSession(session)"
+                    v-for="(session, index) in selectedBook.reading_sessions" 
+                    @click="selectSession(index)"
                 >
                     <div class="session-info">
                         <span class="session-date">{{ session.date }}</span>
@@ -52,8 +52,8 @@
                 this.setSelectedReadingSession(null)
                 this.setContent('reading-session')
             },
-            selectSession(session) {
-                this.setSelectedReadingSession(session)
+            selectSession(index) {
+                this.setSelectedReadingSession(index)
                 this.setContent('reading-session')
             },
             ...mapActions({

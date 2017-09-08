@@ -5,7 +5,7 @@
             <h3 class="action">I am a reading session</h3>
             <button @click="setContent('book')">Book</button>
             <button class="" v-if="hasHistory" @click="back">Back</button>
-            <button v-if="!adding" class="modal-default-button" @click="deleteSession">Delete</button>
+            <button v-if="!adding" class="" @click="deleteSession">Delete</button>
         </div>
         <div class="modal-body">
             <div class="body-controls"></div>
@@ -35,8 +35,11 @@
         </div>
         <div class="modal-footer">
             <button v-if="!adding" class="modal-default-button" @click="setSelectedReadingSession(null)">Add another session</button>
-            <button v-if="adding" class="modal-default-button" :disabled="!canSubmit" @click="saveSession">
+            <button v-if="adding && !loading" class="modal-default-button" :disabled="!canSubmit" @click="saveSession">
                 Save
+            </button>
+            <button v-if="adding && loading">
+                <loading-spinner></loading-spinner>
             </button>
         </div>
     </div>
@@ -64,7 +67,7 @@
                 }
             },
             adding() {
-                return this.selectedSession === null
+                return this.selectedSession === null || typeof this.selectedSession == 'undefined' 
             },
             canSubmit() {
                 return this.session.start !== null &&
@@ -74,7 +77,8 @@
             ...mapGetters({
                 selectedBook: 'getSelectedBook',
                 selectedSession: 'getSelectedReadingSession',
-                colorScheme: 'getColorScheme'
+                colorScheme: 'getColorScheme',
+                loading: 'isLoading'
             })
         },
         methods: {

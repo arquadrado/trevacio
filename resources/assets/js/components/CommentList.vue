@@ -15,7 +15,7 @@
             <ul class="comment-list">
                 <li class="comment" @click="selectComment(comment)" v-for="comment in commentList">
                     <div class="comment-info">
-                        <span class="comment-user">{{ comment.user.name }} - {{ comment.updated_at }}</span>
+                        <span class="comment-user">{{ comment.user.name }} - {{ typeof comment.updated_at !== 'undefined' ? comment.updated_at : 'just now' }}</span>
                         <br>
                         <span class="comment-body">{{ comment.body }}</span>
                     </div>

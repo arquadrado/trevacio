@@ -51,13 +51,14 @@ class Book extends Model
 
     public function allReadingSessions()
     {
-        return $this->hasMany(ReadingSession::class);
+        return $this->hasMany(ReadingSession::class)->orderBy('date', 'desc');
     }
 
     public function readingSessions()
     {
         return $this->hasMany(ReadingSession::class)
-                    ->where('user_id', Auth::user()->id);
+                    ->where('user_id', Auth::user()->id)
+                    ->orderBy('date', 'desc');
     }
 
     public function ratings()

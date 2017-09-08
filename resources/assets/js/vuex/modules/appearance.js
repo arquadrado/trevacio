@@ -46,13 +46,18 @@ const state = {
         },
     ],
     selectedColorSchemeIndex: 0,
+    loading: false
 }
 
 const getters = {
     getColorScheme: state => state.colorSchemes[state.selectedColorSchemeIndex],
+    isLoading: state => state.loading
 }
 
 const actions = {
+    toggleLoading({ commit }) {
+        commit('TOGGLE_LOADING')
+    },
     changeColorScheme({ commit, state }) {
         commit('CHANGE_COLOR_SCHEME')
     }
@@ -63,6 +68,9 @@ const mutations = {
         let currentIndex = state.selectedColorSchemeIndex
         currentIndex++
         state.selectedColorSchemeIndex = currentIndex % state.colorSchemes.length
+    },
+    'TOGGLE_LOADING': state => {
+        state.loading = !state.loading
     }
 }
 
