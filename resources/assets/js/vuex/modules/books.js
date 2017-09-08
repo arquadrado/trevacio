@@ -140,10 +140,10 @@ const actions = {
     },
     deleteReadingSession({ commit, dispatch, state }) {
         dispatch('setContent', 'reading-session-list')
-        commit('DELETE_READING_SESSION', state.selectedReadingSession)
+        commit('DELETE_READING_SESSION')
         $.post('delete-session', {
             _token: window.handover._token,
-            sessionId: state.selectedReadingSession.id,
+            sessionId: state.lists.library[state.selectedBook].reading_sessions[state.selectedReadingSession].id,
         }, () => {
             dispatch('setSelectedReadingSession', null)
             dispatch('updateUserInfo')
@@ -314,8 +314,9 @@ const mutations = {
     'RATE_BOOK': (state, rating) => {
         state.lists.library[state.selectedBook].user_rating[0].rating = rating
     },
-    'DELETE_READING_SESSION': (state, session) => {
+    'DELETE_READING_SESSION': (state) => {
         if (state.selectedBook) {
+            let session = state.lists.library[state.selectedBook].reading_sessions[state.selectedReadingSession]
             let index = state.lists.library[state.selectedBook].reading_sessions.indexOf(session)
             if (index > -1) {
                 state.lists.library[state.selectedBook].reading_sessions.splice(index, 1)

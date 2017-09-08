@@ -46344,10 +46344,10 @@ var actions = {
             state = _ref7.state;
 
         dispatch('setContent', 'reading-session-list');
-        commit('DELETE_READING_SESSION', state.selectedReadingSession);
+        commit('DELETE_READING_SESSION');
         $.post('delete-session', {
             _token: window.handover._token,
-            sessionId: state.selectedReadingSession.id
+            sessionId: state.lists.library[state.selectedBook].reading_sessions[state.selectedReadingSession].id
         }, function () {
             dispatch('setSelectedReadingSession', null);
             dispatch('updateUserInfo');
@@ -46542,8 +46542,9 @@ var mutations = {
     'RATE_BOOK': function RATE_BOOK(state, rating) {
         state.lists.library[state.selectedBook].user_rating[0].rating = rating;
     },
-    'DELETE_READING_SESSION': function DELETE_READING_SESSION(state, session) {
+    'DELETE_READING_SESSION': function DELETE_READING_SESSION(state) {
         if (state.selectedBook) {
+            var session = state.lists.library[state.selectedBook].reading_sessions[state.selectedReadingSession];
             var index = state.lists.library[state.selectedBook].reading_sessions.indexOf(session);
             if (index > -1) {
                 state.lists.library[state.selectedBook].reading_sessions.splice(index, 1);
