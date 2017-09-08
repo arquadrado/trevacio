@@ -8688,10 +8688,22 @@ body .modal-body .comment-list .session span {
   font-weight: 900;
 }
 
+body .modal-body .comment-list,
+body .modal-body .book-list,
+body .modal-body .session-list {
+  list-style: none;
+  padding: 0;
+}
+
 body .modal-body .comment-list .comment,
 body .modal-body .comment-list .book,
+body .modal-body .comment-list .session,
 body .modal-body .book-list .comment,
-body .modal-body .book-list .book {
+body .modal-body .book-list .book,
+body .modal-body .book-list .session,
+body .modal-body .session-list .comment,
+body .modal-body .session-list .book,
+body .modal-body .session-list .session {
   text-align: left;
   margin-bottom: 21px;
   cursor: pointer;
@@ -8700,12 +8712,31 @@ body .modal-body .book-list .book {
 
 body .modal-body .comment-list .comment .comment-info,
 body .modal-body .comment-list .comment .book-info,
+body .modal-body .comment-list .comment .session-info,
 body .modal-body .comment-list .book .comment-info,
 body .modal-body .comment-list .book .book-info,
+body .modal-body .comment-list .book .session-info,
+body .modal-body .comment-list .session .comment-info,
+body .modal-body .comment-list .session .book-info,
+body .modal-body .comment-list .session .session-info,
 body .modal-body .book-list .comment .comment-info,
 body .modal-body .book-list .comment .book-info,
+body .modal-body .book-list .comment .session-info,
 body .modal-body .book-list .book .comment-info,
-body .modal-body .book-list .book .book-info {
+body .modal-body .book-list .book .book-info,
+body .modal-body .book-list .book .session-info,
+body .modal-body .book-list .session .comment-info,
+body .modal-body .book-list .session .book-info,
+body .modal-body .book-list .session .session-info,
+body .modal-body .session-list .comment .comment-info,
+body .modal-body .session-list .comment .book-info,
+body .modal-body .session-list .comment .session-info,
+body .modal-body .session-list .book .comment-info,
+body .modal-body .session-list .book .book-info,
+body .modal-body .session-list .book .session-info,
+body .modal-body .session-list .session .comment-info,
+body .modal-body .session-list .session .book-info,
+body .modal-body .session-list .session .session-info {
   display: inline-block;
 }
 
@@ -8713,26 +8744,69 @@ body .modal-body .comment-list .comment .comment-info .comment-user,
 body .modal-body .comment-list .comment .comment-info .book-author,
 body .modal-body .comment-list .comment .book-info .comment-user,
 body .modal-body .comment-list .comment .book-info .book-author,
+body .modal-body .comment-list .comment .session-info .comment-user,
+body .modal-body .comment-list .comment .session-info .book-author,
 body .modal-body .comment-list .book .comment-info .comment-user,
 body .modal-body .comment-list .book .comment-info .book-author,
 body .modal-body .comment-list .book .book-info .comment-user,
 body .modal-body .comment-list .book .book-info .book-author,
+body .modal-body .comment-list .book .session-info .comment-user,
+body .modal-body .comment-list .book .session-info .book-author,
+body .modal-body .comment-list .session .comment-info .comment-user,
+body .modal-body .comment-list .session .comment-info .book-author,
+body .modal-body .comment-list .session .book-info .comment-user,
+body .modal-body .comment-list .session .book-info .book-author,
+body .modal-body .comment-list .session .session-info .comment-user,
+body .modal-body .comment-list .session .session-info .book-author,
 body .modal-body .book-list .comment .comment-info .comment-user,
 body .modal-body .book-list .comment .comment-info .book-author,
 body .modal-body .book-list .comment .book-info .comment-user,
 body .modal-body .book-list .comment .book-info .book-author,
+body .modal-body .book-list .comment .session-info .comment-user,
+body .modal-body .book-list .comment .session-info .book-author,
 body .modal-body .book-list .book .comment-info .comment-user,
 body .modal-body .book-list .book .comment-info .book-author,
 body .modal-body .book-list .book .book-info .comment-user,
-body .modal-body .book-list .book .book-info .book-author {
+body .modal-body .book-list .book .book-info .book-author,
+body .modal-body .book-list .book .session-info .comment-user,
+body .modal-body .book-list .book .session-info .book-author,
+body .modal-body .book-list .session .comment-info .comment-user,
+body .modal-body .book-list .session .comment-info .book-author,
+body .modal-body .book-list .session .book-info .comment-user,
+body .modal-body .book-list .session .book-info .book-author,
+body .modal-body .book-list .session .session-info .comment-user,
+body .modal-body .book-list .session .session-info .book-author,
+body .modal-body .session-list .comment .comment-info .comment-user,
+body .modal-body .session-list .comment .comment-info .book-author,
+body .modal-body .session-list .comment .book-info .comment-user,
+body .modal-body .session-list .comment .book-info .book-author,
+body .modal-body .session-list .comment .session-info .comment-user,
+body .modal-body .session-list .comment .session-info .book-author,
+body .modal-body .session-list .book .comment-info .comment-user,
+body .modal-body .session-list .book .comment-info .book-author,
+body .modal-body .session-list .book .book-info .comment-user,
+body .modal-body .session-list .book .book-info .book-author,
+body .modal-body .session-list .book .session-info .comment-user,
+body .modal-body .session-list .book .session-info .book-author,
+body .modal-body .session-list .session .comment-info .comment-user,
+body .modal-body .session-list .session .comment-info .book-author,
+body .modal-body .session-list .session .book-info .comment-user,
+body .modal-body .session-list .session .book-info .book-author,
+body .modal-body .session-list .session .session-info .comment-user,
+body .modal-body .session-list .session .session-info .book-author {
   font-size: 10px;
   font-weight: 900;
 }
 
 body .modal-body .comment-list .comment .quick-actions,
 body .modal-body .comment-list .book .quick-actions,
+body .modal-body .comment-list .session .quick-actions,
 body .modal-body .book-list .comment .quick-actions,
-body .modal-body .book-list .book .quick-actions {
+body .modal-body .book-list .book .quick-actions,
+body .modal-body .book-list .session .quick-actions,
+body .modal-body .session-list .comment .quick-actions,
+body .modal-body .session-list .book .quick-actions,
+body .modal-body .session-list .session .quick-actions {
   display: inline-block;
   text-align: right;
   float: right;
@@ -8740,15 +8814,25 @@ body .modal-body .book-list .book .quick-actions {
 
 body .modal-body .comment-list .comment .quick-actions .material-icons,
 body .modal-body .comment-list .book .quick-actions .material-icons,
+body .modal-body .comment-list .session .quick-actions .material-icons,
 body .modal-body .book-list .comment .quick-actions .material-icons,
-body .modal-body .book-list .book .quick-actions .material-icons {
+body .modal-body .book-list .book .quick-actions .material-icons,
+body .modal-body .book-list .session .quick-actions .material-icons,
+body .modal-body .session-list .comment .quick-actions .material-icons,
+body .modal-body .session-list .book .quick-actions .material-icons,
+body .modal-body .session-list .session .quick-actions .material-icons {
   font-size: 18px;
 }
 
 body .modal-body .comment-list .comment:hover,
 body .modal-body .comment-list .book:hover,
+body .modal-body .comment-list .session:hover,
 body .modal-body .book-list .comment:hover,
-body .modal-body .book-list .book:hover {
+body .modal-body .book-list .book:hover,
+body .modal-body .book-list .session:hover,
+body .modal-body .session-list .comment:hover,
+body .modal-body .session-list .book:hover,
+body .modal-body .session-list .session:hover {
   -webkit-box-shadow: -2px 3px 6px 2px rgba(0, 0, 0, 0.25);
   box-shadow: -2px 3px 6px 2px rgba(0, 0, 0, 0.25);
   -webkit-transition: all 0.3s ease-in;

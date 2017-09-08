@@ -33,11 +33,13 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         $userCollection = $user->books->reduce(function($reduced, $book) {
+            $book->load('readingSessions.notes');
             $reduced[$book->id] = $book;
             return $reduced;
         }, []);
 
         $library = Book::all()->reduce(function($reduced, $book) {
+            $book->load('readingSessions.notes');
             $reduced[$book->id] = $book;
             return $reduced;
         }, []);
@@ -92,21 +94,22 @@ class DashboardController extends Controller
         }
 
         $commentableTypes = [
-            'book' => 'App\Models\Book'
+            'book' => 'App\Models\Book',
+            'session' => 'App\Models\ReadingSession',
         ];
 
         if (!array_key_exists(request('commentableType'), $commentableTypes)) {
             return response()->json(['message' => 'Not found'], 404);
         }
 
-        $commentable = Comment::create([
+        $comment = Comment::create([
             'commentable_type' => $commentableTypes[request('commentableType')],
             'commentable_id' => request('commentableId'),
             'body' => request('comment'),
             'user_id' => Auth::user()->id
         ]);
 
-        return response()->json(['message' => 'comment added'], 200);
+        return response()->json(['message' => 'comment added', 'comment' => $comment], 200);
    
 
 

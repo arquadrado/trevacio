@@ -2,8 +2,9 @@
     <div class="content-wrapper">
 
         <div class="modal-header">
-            <h3 class="action">Comment</h3>
+            <h3 class="action">{{ title }}</h3>
             <button class="" v-if="hasHistory" @click="back">Back</button>
+            <button class="" @click="setContent('comment-list')">List</button>
         </div>
         <div class="modal-body">
             <div class="input-text" v-if="editing">
@@ -37,6 +38,13 @@
             }
         },
         computed: {
+            title() {
+                if (this.currentCommentList == 'book') {
+                    return `${this.selectedBook.title} comment`
+                }
+
+                return `${this.selectedBook.title} session of ${this.selectedReadingSession.date} note`
+            },
             canEdit() {
                 return this.selectedBook.in_library
             },
@@ -51,7 +59,9 @@
             ...mapGetters({
                 colorScheme: 'getColorScheme',
                 selectedBook: 'getSelectedBook',
-                selectedComment: 'getSelectedComment'
+                selectedComment: 'getSelectedComment',
+                selectedReadingSession: 'getSelectedReadingSession',
+                currentCommentList: 'getCommentListToDisplay',
             })
         },
         methods: {
@@ -62,7 +72,7 @@
                 this.editing = false
                 this.updateComment({
                     selectedComment: this.selectedComment,
-                    comment: this.comment
+                    body: this.comment
                 })
             },
             ...mapActions({

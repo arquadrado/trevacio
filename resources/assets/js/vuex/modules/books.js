@@ -7,7 +7,8 @@ const state = {
     lists: {
         userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
         library: typeof handover.library !== 'undefined' ? handover.library : [],
-    }
+    },
+    commentListToDisplay: 'book'
 }
 
 const getters = {
@@ -23,19 +24,24 @@ const getters = {
     getLibrary: state => state.lists.library,
     getSelectedList: state => state.lists[state.selectedList],
     getSelectedListName: state => state.selectedList,
-    getLists: state => state.lists
+    getLists: state => state.lists,
+    getCommentListToDisplay: state => state.commentListToDisplay
 }
 
 const actions = {
+    setCurrentCommentList({ commit }, listName) {
+        commit('SET_CURRENT_COMMENT_LIST', listName)
+    },
     setSelectedComment({ commit }, comment) {
         commit('SET_SELECTED_COMMENT', comment)
     },
     updateComment({ commit, dispatch, state }, data) {
-        commit('UPDATE_COMMENT', data.selectedComment)
+        commit('UPDATE_COMMENT', data.body)
+        
         $.post('update-comment', {
             _token: window.handover._token,
             commentId: data.selectedComment.id,
-            comment: data.comment
+            comment: data.body
         }, () => {
             dispatch('updateLibrary', {
                 successCallback: null,
@@ -43,27 +49,47 @@ const actions = {
             })
             console.log('comment updated')
         })
-         .fail(() => {
-            commit('UPDATE_COMMENT', comment)
-         })
+        .fail(() => {
+            commit('UPDATE_COMMENT', data.body)
+            
+        })
     },
     addComment({ commit, dispatch, state }, data) {
-        commit('ADD_COMMENT_TO_BOOK', data)
+        console.log(state.commentListToDisplay)
+        switch (state.commentListToDisplay) {
+            case 'book':
+                commit('ADD_COMMENT_TO_BOOK', data)
+
+            case 'session':
+                commit('ADD_COMMENT_TO_SESSION', data)
+        }
+
+
         $.post('save-comment', {
             _token: window.handover._token,
             commentableId: data.commentable_id,
             commentableType: data.commentable_type,
-            comment: data.comment,
-        }, () => {
+            comment: data.body,
+        }, (response) => {
+            console.log(response)
             dispatch('updateLibrary', {
                 successCallback: null,
                 errorCallback: null,
             })
+            dispatch('setSelectedComment', response.comment)
+            dispatch('setContent', 'comment')
             console.log('comment added')
         })
-         .fail(() => {
-            commit('REMOVE_COMMENT_FROM_BOOK', null)
-         })
+        .fail(() => {
+            switch (state.commentListToDisplay) {
+                case 'book':
+                    commit('REMOVE_COMMENT_FROM_BOOK', null)
+
+                case 'session':
+                    commit('REMOVE_COMMENT_FROM_SESSION', null)
+            }
+            dispatch('setSelectedComment', null)
+        })
     },
 
     rateBook({ commit, dispatch, state }, rating) {
@@ -250,15 +276,19 @@ const actions = {
 }
 
 const mutations = {
-    'UPDATE_COMMENT': (state, comment) => {
-        const index = state.lists.library[state.selectedBook].comments.indexOf(comment)
-
-        if (index > -1) {
-            state.lists.library[state.selectedBook].comments[index].body = comment.body    
-        } 
+    'SET_CURRENT_COMMENT_LIST': (state, listName) => {
+        state.commentListToDisplay = listName
+    },
+    'UPDATE_COMMENT': (state, body) => {
+        state.selectedComment.body = body
     },
     'ADD_COMMENT_TO_BOOK': (state, data) => {
         state.lists.library[state.selectedBook].comments.unshift(data)
+    },
+    'ADD_COMMENT_TO_SESSION': (state, data) => {
+        if (state.selectedReadingSession) {
+            state.selectedReadingSession.notes.unshift(data)
+        }
     },
     'REMOVE_COMMENT_FROM_BOOK': (state, comment) => {
         if (comment) {

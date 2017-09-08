@@ -70,7 +70,6 @@ class User extends Authenticatable
 
     public function getLongestSessionAttribute()
     {
-
         return $this->readingSessions->reduce(function ($reduced, $session) {
             if (!array_key_exists($session->date, $reduced['distribution'])) {
                 $reduced['distribution'][$session->date] = 0;

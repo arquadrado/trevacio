@@ -312,13 +312,15 @@ body {
 	  	}
 	  }
 
-	  .comment-list, .book-list {
-	  	.comment, .book {
+	  .comment-list, .book-list, .session-list {
+	  	list-style: none;
+	  	padding: 0;
+	  	.comment, .book, .session {
 	  		text-align: left;
 	  		margin-bottom: 21px;
 	  		cursor: pointer;
 	  		padding: 21px;
-	  		.comment-info, .book-info {
+	  		.comment-info, .book-info, .session-info {
 	  			display: inline-block;
 		  		.comment-user, .book-author {
 		  			font-size: 10px;
@@ -335,7 +337,7 @@ body {
 	  			}
 	  		}
 	  	}
-	  	.comment:hover, .book:hover {
+	  	.comment:hover, .book:hover, .session:hover {
 	  		-webkit-box-shadow: -2px 3px 6px 2px rgba(0,0,0,0.25);
 			-moz-box-shadow: -2px 3px 6px 2px rgba(0,0,0,0.25);
 			box-shadow: -2px 3px 6px 2px rgba(0,0,0,0.25); 

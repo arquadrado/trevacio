@@ -11985,7 +11985,7 @@ module.exports = Vue$3;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(15);
-module.exports = __webpack_require__(103);
+module.exports = __webpack_require__(112);
 
 
 /***/ }),
@@ -11998,9 +11998,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ContentWrapper_vue__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ContentWrapper_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_ContentWrapper_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__ = __webpack_require__(103);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__ = __webpack_require__(109);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -46164,7 +46164,8 @@ var state = {
     lists: {
         userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
         library: typeof handover.library !== 'undefined' ? handover.library : []
-    }
+    },
+    commentListToDisplay: 'book'
 };
 
 var getters = {
@@ -46194,25 +46195,34 @@ var getters = {
     },
     getLists: function getLists(state) {
         return state.lists;
+    },
+    getCommentListToDisplay: function getCommentListToDisplay(state) {
+        return state.commentListToDisplay;
     }
 };
 
 var actions = {
-    setSelectedComment: function setSelectedComment(_ref, comment) {
+    setCurrentCommentList: function setCurrentCommentList(_ref, listName) {
         var commit = _ref.commit;
+
+        commit('SET_CURRENT_COMMENT_LIST', listName);
+    },
+    setSelectedComment: function setSelectedComment(_ref2, comment) {
+        var commit = _ref2.commit;
 
         commit('SET_SELECTED_COMMENT', comment);
     },
-    updateComment: function updateComment(_ref2, data) {
-        var commit = _ref2.commit,
-            dispatch = _ref2.dispatch,
-            state = _ref2.state;
+    updateComment: function updateComment(_ref3, data) {
+        var commit = _ref3.commit,
+            dispatch = _ref3.dispatch,
+            state = _ref3.state;
 
-        commit('UPDATE_COMMENT', data.selectedComment);
+        commit('UPDATE_COMMENT', data.body);
+
         $.post('update-comment', {
             _token: window.handover._token,
             commentId: data.selectedComment.id,
-            comment: data.comment
+            comment: data.body
         }, function () {
             dispatch('updateLibrary', {
                 successCallback: null,
@@ -46220,34 +46230,52 @@ var actions = {
             });
             console.log('comment updated');
         }).fail(function () {
-            commit('UPDATE_COMMENT', comment);
+            commit('UPDATE_COMMENT', data.body);
         });
     },
-    addComment: function addComment(_ref3, data) {
-        var commit = _ref3.commit,
-            dispatch = _ref3.dispatch,
-            state = _ref3.state;
+    addComment: function addComment(_ref4, data) {
+        var commit = _ref4.commit,
+            dispatch = _ref4.dispatch,
+            state = _ref4.state;
 
-        commit('ADD_COMMENT_TO_BOOK', data);
+        console.log(state.commentListToDisplay);
+        switch (state.commentListToDisplay) {
+            case 'book':
+                commit('ADD_COMMENT_TO_BOOK', data);
+
+            case 'session':
+                commit('ADD_COMMENT_TO_SESSION', data);
+        }
+
         $.post('save-comment', {
             _token: window.handover._token,
             commentableId: data.commentable_id,
             commentableType: data.commentable_type,
-            comment: data.comment
-        }, function () {
+            comment: data.body
+        }, function (response) {
+            console.log(response);
             dispatch('updateLibrary', {
                 successCallback: null,
                 errorCallback: null
             });
+            dispatch('setSelectedComment', response.comment);
+            dispatch('setContent', 'comment');
             console.log('comment added');
         }).fail(function () {
-            commit('REMOVE_COMMENT_FROM_BOOK', null);
+            switch (state.commentListToDisplay) {
+                case 'book':
+                    commit('REMOVE_COMMENT_FROM_BOOK', null);
+
+                case 'session':
+                    commit('REMOVE_COMMENT_FROM_SESSION', null);
+            }
+            dispatch('setSelectedComment', null);
         });
     },
-    rateBook: function rateBook(_ref4, rating) {
-        var commit = _ref4.commit,
-            dispatch = _ref4.dispatch,
-            state = _ref4.state;
+    rateBook: function rateBook(_ref5, rating) {
+        var commit = _ref5.commit,
+            dispatch = _ref5.dispatch,
+            state = _ref5.state;
 
         var previousRating = state.lists.library[state.selectedBook].user_rating;
         var bookId = state.lists.library[state.selectedBook].id;
@@ -46266,10 +46294,10 @@ var actions = {
             commit('RATE_BOOK', previousRating);
         });
     },
-    deleteBook: function deleteBook(_ref5) {
-        var commit = _ref5.commit,
-            dispatch = _ref5.dispatch,
-            state = _ref5.state;
+    deleteBook: function deleteBook(_ref6) {
+        var commit = _ref6.commit,
+            dispatch = _ref6.dispatch,
+            state = _ref6.state;
 
         var bookId = state.lists.library[state.selectedBook].id;
         dispatch('setSelectedBook', null);
@@ -46290,10 +46318,10 @@ var actions = {
             });
         });
     },
-    deleteReadingSession: function deleteReadingSession(_ref6) {
-        var commit = _ref6.commit,
-            dispatch = _ref6.dispatch,
-            state = _ref6.state;
+    deleteReadingSession: function deleteReadingSession(_ref7) {
+        var commit = _ref7.commit,
+            dispatch = _ref7.dispatch,
+            state = _ref7.state;
 
         dispatch('setContent', 'reading-session-list');
         commit('DELETE_READING_SESSION', state.selectedReadingSession);
@@ -46311,23 +46339,7 @@ var actions = {
             });
         });
     },
-    nextBook: function nextBook(_ref7) {
-        var commit = _ref7.commit,
-            dispatch = _ref7.dispatch,
-            state = _ref7.state;
-
-        var ids = [];
-        for (var id in state.lists.userCollection) {
-            ids.push(parseInt(id));
-        }
-
-        var currentIdIndex = ids.indexOf(state.selectedBook);
-
-        if (currentIdIndex > -1) {
-            dispatch('setSelectedBook', ids.length - 1 > currentIdIndex ? ids[currentIdIndex + 1] : ids[0]);
-        }
-    },
-    previousBook: function previousBook(_ref8) {
+    nextBook: function nextBook(_ref8) {
         var commit = _ref8.commit,
             dispatch = _ref8.dispatch,
             state = _ref8.state;
@@ -46340,12 +46352,28 @@ var actions = {
         var currentIdIndex = ids.indexOf(state.selectedBook);
 
         if (currentIdIndex > -1) {
+            dispatch('setSelectedBook', ids.length - 1 > currentIdIndex ? ids[currentIdIndex + 1] : ids[0]);
+        }
+    },
+    previousBook: function previousBook(_ref9) {
+        var commit = _ref9.commit,
+            dispatch = _ref9.dispatch,
+            state = _ref9.state;
+
+        var ids = [];
+        for (var id in state.lists.userCollection) {
+            ids.push(parseInt(id));
+        }
+
+        var currentIdIndex = ids.indexOf(state.selectedBook);
+
+        if (currentIdIndex > -1) {
             dispatch('setSelectedBook', currentIdIndex > 0 ? ids[currentIdIndex - 1] : ids[ids.length - 1]);
         }
     },
-    addToLibrary: function addToLibrary(_ref9, args) {
-        var commit = _ref9.commit,
-            state = _ref9.state;
+    addToLibrary: function addToLibrary(_ref10, args) {
+        var commit = _ref10.commit,
+            state = _ref10.state;
 
         $.post('save-book', {
             _token: window.handover._token,
@@ -46359,9 +46387,9 @@ var actions = {
             }
         });
     },
-    addToUserCollection: function addToUserCollection(_ref10, args) {
-        var commit = _ref10.commit,
-            state = _ref10.state;
+    addToUserCollection: function addToUserCollection(_ref11, args) {
+        var commit = _ref11.commit,
+            state = _ref11.state;
 
         $.post('add-to-user-collection', {
             _token: window.handover._token,
@@ -46372,10 +46400,10 @@ var actions = {
             }
         });
     },
-    removeFromUserCollection: function removeFromUserCollection(_ref11, args) {
-        var commit = _ref11.commit,
-            dispatch = _ref11.dispatch,
-            state = _ref11.state;
+    removeFromUserCollection: function removeFromUserCollection(_ref12, args) {
+        var commit = _ref12.commit,
+            dispatch = _ref12.dispatch,
+            state = _ref12.state;
 
         $.post('remove-from-user-collection', {
             _token: window.handover._token,
@@ -46390,10 +46418,10 @@ var actions = {
             }
         });
     },
-    fetchBook: function fetchBook(_ref12, args) {
-        var commit = _ref12.commit,
-            dispatch = _ref12.dispatch,
-            state = _ref12.state;
+    fetchBook: function fetchBook(_ref13, args) {
+        var commit = _ref13.commit,
+            dispatch = _ref13.dispatch,
+            state = _ref13.state;
 
         $.post('get-book', {
             _token: window.handover._token,
@@ -46404,19 +46432,19 @@ var actions = {
             }
         }).fail(args.errorCallback);
     },
-    setSelectedBook: function setSelectedBook(_ref13, id) {
-        var commit = _ref13.commit,
-            state = _ref13.state;
+    setSelectedBook: function setSelectedBook(_ref14, id) {
+        var commit = _ref14.commit,
+            state = _ref14.state;
 
         commit('SET_SELECTED_BOOK', id);
     },
-    setSelectedReadingSession: function setSelectedReadingSession(_ref14, session) {
-        var commit = _ref14.commit;
+    setSelectedReadingSession: function setSelectedReadingSession(_ref15, session) {
+        var commit = _ref15.commit;
 
         commit('SET_SELECTED_READING_SESSION', session);
     },
-    updateLibrary: function updateLibrary(_ref15, args) {
-        var commit = _ref15.commit;
+    updateLibrary: function updateLibrary(_ref16, args) {
+        var commit = _ref16.commit;
 
         $.get('update-library', function (response) {
             console.log(response);
@@ -46426,8 +46454,8 @@ var actions = {
             });
         }).done(args.successCallback).fail(args.errorCallback);
     },
-    updateUserInfo: function updateUserInfo(_ref16) {
-        var commit = _ref16.commit;
+    updateUserInfo: function updateUserInfo(_ref17) {
+        var commit = _ref17.commit;
 
         $.get('update-user-info', function (response) {
             console.log(response);
@@ -46436,11 +46464,11 @@ var actions = {
             console.log('failed to update user info');
         });
     },
-    saveReadingSession: function saveReadingSession(_ref17, args) {
-        var commit = _ref17.commit,
-            dispatch = _ref17.dispatch,
-            rootState = _ref17.rootState,
-            state = _ref17.state;
+    saveReadingSession: function saveReadingSession(_ref18, args) {
+        var commit = _ref18.commit,
+            dispatch = _ref18.dispatch,
+            rootState = _ref18.rootState,
+            state = _ref18.state;
 
         $.post('save-reading-session', {
             _token: window.handover._token,
@@ -46454,23 +46482,27 @@ var actions = {
             }
         }).fail(args.errorCallback);
     },
-    setSelectedList: function setSelectedList(_ref18, list) {
-        var commit = _ref18.commit;
+    setSelectedList: function setSelectedList(_ref19, list) {
+        var commit = _ref19.commit;
 
         commit('SET_SELECTED_LIST', list);
     }
 };
 
 var mutations = {
-    'UPDATE_COMMENT': function UPDATE_COMMENT(state, comment) {
-        var index = state.lists.library[state.selectedBook].comments.indexOf(comment);
-
-        if (index > -1) {
-            state.lists.library[state.selectedBook].comments[index].body = comment.body;
-        }
+    'SET_CURRENT_COMMENT_LIST': function SET_CURRENT_COMMENT_LIST(state, listName) {
+        state.commentListToDisplay = listName;
+    },
+    'UPDATE_COMMENT': function UPDATE_COMMENT(state, body) {
+        state.selectedComment.body = body;
     },
     'ADD_COMMENT_TO_BOOK': function ADD_COMMENT_TO_BOOK(state, data) {
         state.lists.library[state.selectedBook].comments.unshift(data);
+    },
+    'ADD_COMMENT_TO_SESSION': function ADD_COMMENT_TO_SESSION(state, data) {
+        if (state.selectedReadingSession) {
+            state.selectedReadingSession.notes.unshift(data);
+        }
     },
     'REMOVE_COMMENT_FROM_BOOK': function REMOVE_COMMENT_FROM_BOOK(state, comment) {
         if (comment) {
@@ -46542,7 +46574,7 @@ var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(47),
   /* template */
-  __webpack_require__(93),
+  __webpack_require__(102),
   /* styles */
   null,
   /* scopeId */
@@ -46598,11 +46630,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Book_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__Book_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__Stats_vue__ = __webpack_require__(90);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__Stats_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__Stats_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__CommentList_vue__ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__CommentList_vue__ = __webpack_require__(93);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__CommentList_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__CommentList_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__AddComment_vue__ = __webpack_require__(116);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__AddComment_vue__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__AddComment_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__AddComment_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__Comment_vue__ = __webpack_require__(119);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__Comment_vue__ = __webpack_require__(99);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__Comment_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__Comment_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -48520,6 +48552,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
 
 
 
@@ -48554,6 +48588,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         colorScheme: 'getColorScheme'
     })),
     methods: _extends({
+        showSessionNotes: function showSessionNotes() {
+            this.setCurrentCommentList('session');
+            this.setContent('comment-list');
+        },
         deleteSession: function deleteSession() {
             var self = this;
             this.setModalContent({
@@ -48592,7 +48630,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         saveReadingSession: 'saveReadingSession',
         setSelectedReadingSession: 'setSelectedReadingSession',
         setModalContent: 'setModalContent',
-        deleteReadingSession: 'deleteReadingSession'
+        deleteReadingSession: 'deleteReadingSession',
+        setCurrentCommentList: 'setCurrentCommentList'
     }))
 });
 
@@ -48617,7 +48656,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.back
     }
-  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), _c('div', {
+  }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), (!_vm.adding) ? _c('button', {
+    staticClass: "modal-default-button",
+    on: {
+      "click": _vm.deleteSession
+    }
+  }, [_vm._v("Delete")]) : _vm._e()]), _vm._v(" "), _c('div', {
     staticClass: "modal-body"
   }, [_c('div', {
     staticClass: "body-controls"
@@ -48707,7 +48751,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })])]) : _c('div', {
     staticClass: "session"
-  }, [_c('h3', [_vm._v("Session of " + _vm._s(_vm.selectedSession.date))]), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Starting page:")]), _vm._v(" " + _vm._s(_vm.selectedSession.start))]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Ending page:")]), _vm._v(" " + _vm._s(_vm.selectedSession.end))]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Pages read:")]), _vm._v(" " + _vm._s(_vm.selectedSession.end - _vm.selectedSession.start))]), _c('br')])]), _vm._v(" "), _c('div', {
+  }, [_c('h3', [_vm._v("Session of " + _vm._s(_vm.selectedSession.date))]), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Starting page:")]), _vm._v(" " + _vm._s(_vm.selectedSession.start))]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Ending page:")]), _vm._v(" " + _vm._s(_vm.selectedSession.end))]), _c('br'), _vm._v(" "), _c('span', [_c('strong', [_vm._v("Pages read:")]), _vm._v(" " + _vm._s(_vm.selectedSession.end - _vm.selectedSession.start))]), _c('br'), _vm._v(" "), _c('div', {
+    staticClass: "book-actions"
+  }, [_c('button', {
+    on: {
+      "click": _vm.showSessionNotes
+    }
+  }, [_vm._v("Notes")])])])]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
   }, [(!_vm.adding) ? _c('button', {
     staticClass: "modal-default-button",
@@ -48724,12 +48774,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.saveSession
     }
-  }, [_vm._v("\n            Save\n        ")]) : _c('button', {
-    staticClass: "modal-default-button",
-    on: {
-      "click": _vm.deleteSession
-    }
-  }, [_vm._v("Delete")])])])
+  }, [_vm._v("\n            Save\n        ")]) : _vm._e()])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -48809,6 +48854,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -48856,11 +48907,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-header"
   }, [_c('h3', {
     staticClass: "action"
-  }, [_vm._v("I am a reading session list")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+  }, [_vm._v(_vm._s(_vm.selectedBook.title) + " session list")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
     on: {
       "click": _vm.back
     }
-  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), _c('div', {
+  }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), _c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setContent('book')
+      }
+    }
+  }, [_vm._v("Book")])]), _vm._v(" "), _c('div', {
     staticClass: "modal-body"
   }, [_c('div', {
     staticClass: "body-controls"
@@ -48872,14 +48929,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "session-list"
   }, _vm._l((_vm.selectedBook.reading_sessions), function(session) {
     return _c('li', {
-      staticClass: "session"
-    }, [_c('span', {
+      staticClass: "session",
       on: {
         "click": function($event) {
           _vm.selectSession(session)
         }
       }
-    }, [_vm._v(_vm._s(session.date))])])
+    }, [_c('div', {
+      staticClass: "session-info"
+    }, [_c('span', {
+      staticClass: "session-date"
+    }, [_vm._v(_vm._s(session.date))])])])
   }))])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
@@ -49015,6 +49075,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         showBookComments: function showBookComments(event, book) {
             event.stopPropagation();
             this.setSelectedBook(book.id);
+            this.setCurrentCommentList('book');
             this.setContent('comment-list');
         },
         showBookStats: function showBookStats(event, book) {
@@ -49040,7 +49101,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])((_mapActions = {
         setContent: 'setContent',
         setSelectedBook: 'setSelectedBook'
-    }, _defineProperty(_mapActions, 'setContent', 'setContent'), _defineProperty(_mapActions, 'setSelectedList', 'setSelectedList'), _mapActions)))
+    }, _defineProperty(_mapActions, 'setContent', 'setContent'), _defineProperty(_mapActions, 'setSelectedList', 'setSelectedList'), _defineProperty(_mapActions, 'setCurrentCommentList', 'setCurrentCommentList'), _mapActions)))
 });
 
 /***/ }),
@@ -49345,6 +49406,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -49368,6 +49433,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         colorScheme: 'getColorScheme'
     })),
     methods: _extends({
+        showComments: function showComments() {
+            this.setCurrentCommentList('book');
+            this.setContent('comment-list');
+        },
         deleteBook: function deleteBook() {
             var self = this;
             this.setModalContent({
@@ -49434,7 +49503,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         setModalContent: 'setModalContent',
         rateBook: 'rateBook',
         nextBook: 'nextBook',
-        previousBook: 'previousBook'
+        previousBook: 'previousBook',
+        setCurrentCommentList: 'setCurrentCommentList'
     }))
 });
 
@@ -49528,9 +49598,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Reading Sessions")]) : _vm._e(), _vm._v(" "), _c('button', {
     on: {
-      "click": function($event) {
-        _vm.setContent('comment-list')
-      }
+      "click": _vm.showComments
     }
   }, [_vm._v("Comments")]), _vm._v(" "), _c('button', {
     on: {
@@ -49840,6 +49908,597 @@ if (false) {
 /* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(94),
+  /* template */
+  __webpack_require__(95),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/CommentList.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] CommentList.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-bf269a0a", Component.options)
+  } else {
+    hotAPI.reload("data-v-bf269a0a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 94 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(3);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
+    data: function data() {
+        return {};
+    },
+
+    computed: _extends({
+        listTitle: function listTitle() {
+            if (this.currentCommentList == 'book') {
+                return this.selectedBook.title + ' comments';
+            }
+
+            return this.selectedBook.title + ' session of ' + this.selectedReadingSession.date + ' notes';
+        },
+        commentList: function commentList() {
+            return this.currentCommentList == 'book' ? this.selectedBook.comments : this.selectedReadingSession.notes;
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        selectedBook: 'getSelectedBook',
+        selectedReadingSession: 'getSelectedReadingSession',
+        currentCommentList: 'getCommentListToDisplay'
+    })),
+    methods: _extends({
+        addComment: function addComment() {
+            this.setContent('add-comment');
+        },
+        selectComment: function selectComment(comment) {
+            this.setSelectedComment(comment);
+            this.setContent('comment');
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        setContent: 'setContent',
+        setSelectedComment: 'setSelectedComment'
+    }))
+});
+
+/***/ }),
+/* 95 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "content-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v(_vm._s(_vm.listTitle))]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    on: {
+      "click": _vm.back
+    }
+  }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), _c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setContent('book')
+      }
+    }
+  }, [_vm._v("Book")]), _vm._v(" "), _c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setContent('reading-session-list')
+      }
+    }
+  }, [_vm._v("Sessions")])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, [_c('div', {
+    staticClass: "body-controls"
+  }, [(_vm.selectedBook.in_library) ? _c('button', {
+    on: {
+      "click": _vm.addComment
+    }
+  }, [_vm._v("Add comment")]) : _c('h4', [_vm._v("This book is not in your library. Add it to add comments")])]), _vm._v(" "), _c('ul', {
+    staticClass: "comment-list"
+  }, _vm._l((_vm.commentList), function(comment) {
+    return _c('li', {
+      staticClass: "comment",
+      on: {
+        "click": function($event) {
+          _vm.selectComment(comment)
+        }
+      }
+    }, [_c('div', {
+      staticClass: "comment-info"
+    }, [_c('span', {
+      staticClass: "comment-user"
+    }, [_vm._v(_vm._s(comment.user.name) + " - " + _vm._s(comment.updated_at))]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
+      staticClass: "comment-body"
+    }, [_vm._v(_vm._s(comment.body))])])])
+  }))])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-bf269a0a", module.exports)
+  }
+}
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(97),
+  /* template */
+  __webpack_require__(98),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/AddComment.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] AddComment.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0ccbbe10", Component.options)
+  } else {
+    hotAPI.reload("data-v-0ccbbe10", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 97 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(3);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
+    data: function data() {
+        return {
+            comment: ''
+        };
+    },
+
+    computed: _extends({
+        title: function title() {
+            if (this.currentCommentList == 'book') {
+                return 'Add comment to ' + this.selectedBook.title;
+            }
+
+            return this.selectedBook.title + ' session of ' + this.selectedReadingSession.date + ' note';
+        },
+        canSubmit: function canSubmit() {
+            return this.comment !== '' && this.selectedBook != null;
+        },
+        textareaStyle: function textareaStyle() {
+            return {
+                'border': '2px solid ' + this.colorScheme.details
+            };
+        },
+        commentableId: function commentableId() {
+            switch (this.currentCommentList) {
+                case 'book':
+                    return this.selectedBook.id;
+
+                case 'session':
+                    return this.selectedReadingSession.id;
+
+            }
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        colorScheme: 'getColorScheme',
+        selectedBook: 'getSelectedBook',
+        currentCommentList: 'getCommentListToDisplay',
+        selectedReadingSession: 'getSelectedReadingSession',
+        user: 'getUser'
+    })),
+    methods: _extends({
+        add: function add() {
+            this.addComment({
+                body: this.comment,
+                commentable_id: this.commentableId,
+                commentable_type: this.currentCommentList,
+                user: this.user
+            });
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        setContent: 'setContent',
+        addComment: 'addComment'
+    }))
+});
+
+/***/ }),
+/* 98 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "content-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v(_vm._s(_vm.title))]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    on: {
+      "click": _vm.back
+    }
+  }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), _c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setContent('comment-list')
+      }
+    }
+  }, [_vm._v("List")])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, [_c('div', {
+    staticClass: "input-text"
+  }, [_c('label', [_vm._v("Comment")]), _vm._v(" "), _c('textarea', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.comment),
+      expression: "comment"
+    }],
+    style: (_vm.textareaStyle),
+    attrs: {
+      "name": "",
+      "id": "",
+      "cols": "30",
+      "rows": "7"
+    },
+    domProps: {
+      "value": (_vm.comment)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.comment = $event.target.value
+      }
+    }
+  })])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  }, [_c('button', {
+    attrs: {
+      "disabled": !_vm.canSubmit
+    },
+    on: {
+      "click": _vm.add
+    }
+  }, [_vm._v("\n            Save\n        ")])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-0ccbbe10", module.exports)
+  }
+}
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(100),
+  /* template */
+  __webpack_require__(101),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/Comment.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Comment.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-67c637bd", Component.options)
+  } else {
+    hotAPI.reload("data-v-67c637bd", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 100 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(3);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
+    data: function data() {
+        return {
+            editing: false,
+            comment: ''
+        };
+    },
+
+    computed: _extends({
+        title: function title() {
+            if (this.currentCommentList == 'book') {
+                return this.selectedBook.title + ' comment';
+            }
+
+            return this.selectedBook.title + ' session of ' + this.selectedReadingSession.date + ' note';
+        },
+        canEdit: function canEdit() {
+            return this.selectedBook.in_library;
+        },
+        canSubmit: function canSubmit() {
+            return this.comment !== '' && this.selectedBook != null;
+        },
+        textareaStyle: function textareaStyle() {
+            return {
+                'border': '2px solid ' + this.colorScheme.details
+            };
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        colorScheme: 'getColorScheme',
+        selectedBook: 'getSelectedBook',
+        selectedComment: 'getSelectedComment',
+        selectedReadingSession: 'getSelectedReadingSession',
+        currentCommentList: 'getCommentListToDisplay'
+    })),
+    methods: _extends({
+        edit: function edit() {
+            this.editing = !this.editing;
+        },
+        save: function save() {
+            this.editing = false;
+            this.updateComment({
+                selectedComment: this.selectedComment,
+                body: this.comment
+            });
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        setContent: 'setContent',
+        updateComment: 'updateComment'
+    })),
+    mounted: function mounted() {
+        this.comment = this.selectedComment.body;
+    }
+});
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "content-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v(_vm._s(_vm.title))]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    on: {
+      "click": _vm.back
+    }
+  }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), _c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setContent('comment-list')
+      }
+    }
+  }, [_vm._v("List")])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, [(_vm.editing) ? _c('div', {
+    staticClass: "input-text"
+  }, [_c('textarea', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.comment),
+      expression: "comment"
+    }],
+    style: (_vm.textareaStyle),
+    attrs: {
+      "name": "",
+      "id": "",
+      "cols": "30",
+      "rows": "7"
+    },
+    domProps: {
+      "value": (_vm.comment)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.comment = $event.target.value
+      }
+    }
+  })]) : _c('div', {
+    staticClass: "comment-body"
+  }, [_c('span', [_vm._v(_vm._s(_vm.comment))])])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  }, [(_vm.editing) ? _c('button', {
+    on: {
+      "click": _vm.edit
+    }
+  }, [_vm._v("Cancel")]) : _vm._e(), _vm._v(" "), (_vm.editing) ? _c('button', {
+    attrs: {
+      "disabled": !_vm.canSubmit
+    },
+    on: {
+      "click": _vm.save
+    }
+  }, [_vm._v("\n            Save\n        ")]) : _vm._e(), _vm._v(" "), (!_vm.editing && _vm.canEdit) ? _c('button', {
+    on: {
+      "click": _vm.edit
+    }
+  }, [_vm._v("Edit")]) : _vm._e()])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-67c637bd", module.exports)
+  }
+}
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports, __webpack_require__) {
+
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "content"
@@ -49860,15 +50519,15 @@ if (false) {
 }
 
 /***/ }),
-/* 94 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(95),
+  __webpack_require__(104),
   /* template */
-  __webpack_require__(99),
+  __webpack_require__(108),
   /* styles */
   null,
   /* scopeId */
@@ -49900,13 +50559,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 95 */
+/* 104 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GuiAction_vue__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GuiAction_vue__ = __webpack_require__(105);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GuiAction_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__GuiAction_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -49964,15 +50623,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 96 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(97),
+  __webpack_require__(106),
   /* template */
-  __webpack_require__(98),
+  __webpack_require__(107),
   /* styles */
   null,
   /* scopeId */
@@ -50004,7 +50663,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 97 */
+/* 106 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50075,7 +50734,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 98 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -50106,7 +50765,7 @@ if (false) {
 }
 
 /***/ }),
-/* 99 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -50139,15 +50798,15 @@ if (false) {
 }
 
 /***/ }),
-/* 100 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(101),
+  __webpack_require__(110),
   /* template */
-  __webpack_require__(102),
+  __webpack_require__(111),
   /* styles */
   null,
   /* scopeId */
@@ -50179,7 +50838,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 101 */
+/* 110 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50233,7 +50892,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 102 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -50271,540 +50930,10 @@ if (false) {
 }
 
 /***/ }),
-/* 103 */
+/* 112 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 104 */,
-/* 105 */,
-/* 106 */,
-/* 107 */,
-/* 108 */,
-/* 109 */,
-/* 110 */,
-/* 111 */,
-/* 112 */,
-/* 113 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(114),
-  /* template */
-  __webpack_require__(115),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/CommentList.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] CommentList.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-bf269a0a", Component.options)
-  } else {
-    hotAPI.reload("data-v-bf269a0a", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 114 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(3);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
-    data: function data() {
-        return {};
-    },
-
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-        selectedBook: 'getSelectedBook'
-    })),
-    methods: _extends({
-        addComment: function addComment() {
-            this.setContent('add-comment');
-        },
-        selectComment: function selectComment(comment) {
-            this.setSelectedComment(comment);
-            this.setContent('comment');
-        }
-    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-        setContent: 'setContent',
-        setSelectedComment: 'setSelectedComment'
-    }))
-});
-
-/***/ }),
-/* 115 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "content-wrapper"
-  }, [_c('div', {
-    staticClass: "modal-header"
-  }, [_c('h3', {
-    staticClass: "action"
-  }, [_vm._v("Comments")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
-    on: {
-      "click": _vm.back
-    }
-  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), _c('div', {
-    staticClass: "modal-body"
-  }, [_c('div', {
-    staticClass: "body-controls"
-  }, [(_vm.selectedBook.in_library) ? _c('button', {
-    on: {
-      "click": _vm.addComment
-    }
-  }, [_vm._v("Add comment")]) : _c('h4', [_vm._v("This book is not in your library. Add it to add comments")])]), _vm._v(" "), _c('ul', {
-    staticClass: "comment-list"
-  }, _vm._l((_vm.selectedBook.comments), function(comment) {
-    return _c('li', {
-      staticClass: "comment",
-      on: {
-        "click": function($event) {
-          _vm.selectComment(comment)
-        }
-      }
-    }, [_c('div', {
-      staticClass: "comment-info"
-    }, [_c('span', {
-      staticClass: "comment-user"
-    }, [_vm._v(_vm._s(comment.user.name))]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
-      staticClass: "comment-body"
-    }, [_vm._v(_vm._s(comment.body))])])])
-  }))])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-bf269a0a", module.exports)
-  }
-}
-
-/***/ }),
-/* 116 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(117),
-  /* template */
-  __webpack_require__(118),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/AddComment.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] AddComment.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0ccbbe10", Component.options)
-  } else {
-    hotAPI.reload("data-v-0ccbbe10", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 117 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(3);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
-    data: function data() {
-        return {
-            comment: ''
-        };
-    },
-
-    computed: _extends({
-        canSubmit: function canSubmit() {
-            return this.comment !== '' && this.selectedBook != null;
-        },
-        textareaStyle: function textareaStyle() {
-            return {
-                'border': '2px solid ' + this.colorScheme.details
-            };
-        }
-    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-        colorScheme: 'getColorScheme',
-        selectedBook: 'getSelectedBook'
-    })),
-    methods: _extends({
-        add: function add() {
-            this.addComment({
-                comment: this.comment,
-                commentable_id: this.selectedBook.id,
-                commentable_type: 'book'
-            });
-            this.setContent('comment');
-        }
-    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-        setContent: 'setContent',
-        addComment: 'addComment'
-    }))
-});
-
-/***/ }),
-/* 118 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "content-wrapper"
-  }, [_c('div', {
-    staticClass: "modal-header"
-  }, [_c('h3', {
-    staticClass: "action"
-  }, [_vm._v("Add a comment")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
-    on: {
-      "click": _vm.back
-    }
-  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), _c('div', {
-    staticClass: "modal-body"
-  }, [_c('div', {
-    staticClass: "input-text"
-  }, [_c('label', [_vm._v("Comment")]), _vm._v(" "), _c('textarea', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.comment),
-      expression: "comment"
-    }],
-    style: (_vm.textareaStyle),
-    attrs: {
-      "name": "",
-      "id": "",
-      "cols": "30",
-      "rows": "7"
-    },
-    domProps: {
-      "value": (_vm.comment)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.comment = $event.target.value
-      }
-    }
-  })])]), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
-  }, [_c('button', {
-    attrs: {
-      "disabled": !_vm.canSubmit
-    },
-    on: {
-      "click": _vm.add
-    }
-  }, [_vm._v("\n            Save\n        ")])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-0ccbbe10", module.exports)
-  }
-}
-
-/***/ }),
-/* 119 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(120),
-  /* template */
-  __webpack_require__(121),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/Comment.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] Comment.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-67c637bd", Component.options)
-  } else {
-    hotAPI.reload("data-v-67c637bd", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 120 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(3);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
-    data: function data() {
-        return {
-            editing: false,
-            comment: ''
-        };
-    },
-
-    computed: _extends({
-        canEdit: function canEdit() {
-            return this.selectedBook.in_library;
-        },
-        canSubmit: function canSubmit() {
-            return this.comment !== '' && this.selectedBook != null;
-        },
-        textareaStyle: function textareaStyle() {
-            return {
-                'border': '2px solid ' + this.colorScheme.details
-            };
-        }
-    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
-        colorScheme: 'getColorScheme',
-        selectedBook: 'getSelectedBook',
-        selectedComment: 'getSelectedComment'
-    })),
-    methods: _extends({
-        edit: function edit() {
-            this.editing = !this.editing;
-        },
-        save: function save() {
-            this.editing = false;
-            this.updateComment({
-                selectedComment: this.selectedComment,
-                comment: this.comment
-            });
-        }
-    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
-        setContent: 'setContent',
-        updateComment: 'updateComment'
-    })),
-    mounted: function mounted() {
-        this.comment = this.selectedComment.body;
-    }
-});
-
-/***/ }),
-/* 121 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "content-wrapper"
-  }, [_c('div', {
-    staticClass: "modal-header"
-  }, [_c('h3', {
-    staticClass: "action"
-  }, [_vm._v("Comment")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
-    on: {
-      "click": _vm.back
-    }
-  }, [_vm._v("Back")]) : _vm._e()]), _vm._v(" "), _c('div', {
-    staticClass: "modal-body"
-  }, [(_vm.editing) ? _c('div', {
-    staticClass: "input-text"
-  }, [_c('textarea', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.comment),
-      expression: "comment"
-    }],
-    style: (_vm.textareaStyle),
-    attrs: {
-      "name": "",
-      "id": "",
-      "cols": "30",
-      "rows": "7"
-    },
-    domProps: {
-      "value": (_vm.comment)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.comment = $event.target.value
-      }
-    }
-  })]) : _c('div', {
-    staticClass: "comment-body"
-  }, [_c('span', [_vm._v(_vm._s(_vm.comment))])])]), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
-  }, [(_vm.editing) ? _c('button', {
-    on: {
-      "click": _vm.edit
-    }
-  }, [_vm._v("Cancel")]) : _vm._e(), _vm._v(" "), (_vm.editing) ? _c('button', {
-    attrs: {
-      "disabled": !_vm.canSubmit
-    },
-    on: {
-      "click": _vm.save
-    }
-  }, [_vm._v("\n            Save\n        ")]) : _vm._e(), _vm._v(" "), (!_vm.editing && _vm.canEdit) ? _c('button', {
-    on: {
-      "click": _vm.edit
-    }
-  }, [_vm._v("Edit")]) : _vm._e()])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-67c637bd", module.exports)
-  }
-}
 
 /***/ })
 /******/ ]);

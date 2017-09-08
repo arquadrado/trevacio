@@ -5,6 +5,7 @@
             <h3 class="action">I am a reading session</h3>
             <button @click="setContent('book')">Book</button>
             <button class="" v-if="hasHistory" @click="back">Back</button>
+            <button v-if="!adding" class="modal-default-button" @click="deleteSession">Delete</button>
         </div>
         <div class="modal-body">
             <div class="body-controls"></div>
@@ -27,6 +28,9 @@
                 <span><strong>Starting page:</strong> {{ selectedSession.start }}</span><br>
                 <span><strong>Ending page:</strong> {{ selectedSession.end }}</span><br>
                 <span><strong>Pages read:</strong> {{ selectedSession.end - selectedSession.start }}</span><br>
+                <div class="book-actions">
+                    <button @click="showSessionNotes">Notes</button>
+                </div>
             </div>
         </div>
         <div class="modal-footer">
@@ -34,8 +38,6 @@
             <button v-if="adding" class="modal-default-button" :disabled="!canSubmit" @click="saveSession">
                 Save
             </button>
-            <button v-else class="modal-default-button" @click="deleteSession">Delete</button>
-
         </div>
     </div>
 </template>
@@ -76,6 +78,10 @@
             })
         },
         methods: {
+            showSessionNotes() {
+                this.setCurrentCommentList('session')
+                this.setContent('comment-list')
+            },
             deleteSession() {
                 const self = this
                 this.setModalContent({
@@ -118,7 +124,8 @@
                 saveReadingSession: 'saveReadingSession',
                 setSelectedReadingSession: 'setSelectedReadingSession',
                 setModalContent: 'setModalContent',
-                deleteReadingSession: 'deleteReadingSession'
+                deleteReadingSession: 'deleteReadingSession',
+                setCurrentCommentList: 'setCurrentCommentList'
             })
         }
     }

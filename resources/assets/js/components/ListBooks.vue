@@ -69,6 +69,7 @@
             showBookComments(event, book) {
                 event.stopPropagation()
                 this.setSelectedBook(book.id)
+                this.setCurrentCommentList('book')
                 this.setContent('comment-list')
             },
             showBookStats(event, book) {
@@ -95,7 +96,8 @@
                 setContent: 'setContent',
                 setSelectedBook: 'setSelectedBook',
                 setContent: 'setContent',
-                setSelectedList: 'setSelectedList'
+                setSelectedList: 'setSelectedList',
+                setCurrentCommentList: 'setCurrentCommentList'
             })
         }
     }

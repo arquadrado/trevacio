@@ -2,16 +2,22 @@
     <div class="content-wrapper">
 
         <div class="modal-header">
-            <h3 class="action">I am a reading session list</h3>
+            <h3 class="action">{{ selectedBook.title }} session list</h3>
             <button class="" v-if="hasHistory" @click="back">Back</button>
+            <button class="" @click="setContent('book')">Book</button>
         </div>
         <div class="modal-body">
             <div class="body-controls">
                 <button class="" @click="addReadingSession">Add reading session</button>
             </div>
             <ul class="session-list">
-                <li class="session" v-for="session in selectedBook.reading_sessions">
-                    <span @click="selectSession(session)">{{ session.date }}</span>
+                <li class="session" 
+                    v-for="session in selectedBook.reading_sessions" 
+                    @click="selectSession(session)"
+                >
+                    <div class="session-info">
+                        <span class="session-date">{{ session.date }}</span>
+                    </div>
                 </li>
             </ul>
         </div>

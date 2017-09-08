@@ -10,7 +10,6 @@
 </div>
 
 <content-wrapper></content-wrapper>
-
 <transition name="gui">
     <gui v-if="showGui"></gui>
 </transition>

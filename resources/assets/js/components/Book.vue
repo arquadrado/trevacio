@@ -1,6 +1,7 @@
 <template>
     <div class="content-wrapper">
         <div class="book" v-if="selectedBook">
+
             <div class="modal-header">
                 <h3 class="action">Book</h3>
                 <button class="" v-if="canDeleteBook" @click="deleteBook">Delete</button>
@@ -10,10 +11,12 @@
                 <button class="" @click="close">close</button>
                 <button class="" v-if="hasHistory" @click="back">Back</button>
             </div>
+
             <div class="nav-arrows">
                 <span class="prev" @click="previousBook"><i class="material-icons">arrow_back</i></span>
                 <span class="next" @click="nextBook"><i class="material-icons">arrow_forward</i></span>
             </div>
+
             <div class="modal-body">
                 <div class="book-info">
                     <h3><strong>{{ selectedBook.title }}</strong></h3>
@@ -32,10 +35,11 @@
                 </div>
                 <div class="book-actions">
                     <button v-if="selectedBook.in_library" @click="setContent('reading-session-list')">Reading Sessions</button>
-                    <button @click="setContent('comment-list')">Comments</button>
+                    <button @click="showComments">Comments</button>
                     <button @click="setContent('stats')">Stats</button>
                 </div>
             </div>
+            
             <div class="modal-footer">
                 <button class="modal-default-button" @click="removeBookFromUserCollection" v-if="selectedBook.in_library">Remove from collection</button>
                 <div class="book-not-owned" v-if="!selectedBook.in_library">
@@ -74,6 +78,10 @@
             })
         },
         methods: {
+            showComments() {
+                this.setCurrentCommentList('book')
+                this.setContent('comment-list')
+            },
             deleteBook() {
                 const self = this
                 this.setModalContent({
@@ -144,6 +152,7 @@
                 rateBook: 'rateBook',
                 nextBook: 'nextBook',
                 previousBook: 'previousBook',
+                setCurrentCommentList: 'setCurrentCommentList'
             })
         }
     }

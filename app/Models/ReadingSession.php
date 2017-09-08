@@ -27,7 +27,7 @@ class ReadingSession extends Model
      *
      **/
 
-    protected $with = [];
+    //protected $with = ['notes'];
 
     public function user()
     {
@@ -38,6 +38,16 @@ class ReadingSession extends Model
     {
         return $this->belongsTo(Book::class);
     }
+
+    public function notes()
+    {
+        return $this->morphMany('App\Models\Comment', 'commentable')->orderBy('created_at', 'desc');
+    }
+
+    /*public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }*/
 
      /*
     }
