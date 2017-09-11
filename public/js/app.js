@@ -11985,7 +11985,7 @@ module.exports = Vue$3;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(15);
-module.exports = __webpack_require__(115);
+module.exports = __webpack_require__(118);
 
 
 /***/ }),
@@ -11998,11 +11998,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ContentWrapper_vue__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ContentWrapper_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_ContentWrapper_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__ = __webpack_require__(103);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__ = __webpack_require__(106);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Gui_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Gui_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__ = __webpack_require__(109);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__ = __webpack_require__(112);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Modal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_Modal_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_LoadingSpinner_vue__ = __webpack_require__(112);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_LoadingSpinner_vue__ = __webpack_require__(115);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_LoadingSpinner_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_LoadingSpinner_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -46182,7 +46182,8 @@ var state = {
         userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
         library: typeof handover.library !== 'undefined' ? handover.library : []
     },
-    commentListToDisplay: 'book'
+    commentListToDisplay: 'book',
+    booksLoadedInfo: {}
 };
 
 var getters = {
@@ -46218,24 +46219,32 @@ var getters = {
     },
     getCommentListToDisplay: function getCommentListToDisplay(state) {
         return state.commentListToDisplay;
+    },
+    getBooksLoadedInfo: function getBooksLoadedInfo(state) {
+        return state.booksLoadedInfo;
     }
 };
 
 var actions = {
-    setCurrentCommentList: function setCurrentCommentList(_ref, listName) {
+    setBookInfo: function setBookInfo(_ref, info) {
         var commit = _ref.commit;
+
+        commit('SET_BOOK_INFO', info);
+    },
+    setCurrentCommentList: function setCurrentCommentList(_ref2, listName) {
+        var commit = _ref2.commit;
 
         commit('SET_CURRENT_COMMENT_LIST', listName);
     },
-    setSelectedComment: function setSelectedComment(_ref2, comment) {
-        var commit = _ref2.commit;
+    setSelectedComment: function setSelectedComment(_ref3, comment) {
+        var commit = _ref3.commit;
 
         commit('SET_SELECTED_COMMENT', comment);
     },
-    updateComment: function updateComment(_ref3, data) {
-        var commit = _ref3.commit,
-            dispatch = _ref3.dispatch,
-            state = _ref3.state;
+    updateComment: function updateComment(_ref4, data) {
+        var commit = _ref4.commit,
+            dispatch = _ref4.dispatch,
+            state = _ref4.state;
 
         commit('UPDATE_COMMENT', data.body);
 
@@ -46253,10 +46262,10 @@ var actions = {
             commit('UPDATE_COMMENT', data.body);
         });
     },
-    addComment: function addComment(_ref4, data) {
-        var commit = _ref4.commit,
-            dispatch = _ref4.dispatch,
-            state = _ref4.state;
+    addComment: function addComment(_ref5, data) {
+        var commit = _ref5.commit,
+            dispatch = _ref5.dispatch,
+            state = _ref5.state;
 
         console.log(state.commentListToDisplay);
         /*switch (state.commentListToDisplay) {
@@ -46292,10 +46301,10 @@ var actions = {
             dispatch('setSelectedComment', null);
         });
     },
-    rateBook: function rateBook(_ref5, rating) {
-        var commit = _ref5.commit,
-            dispatch = _ref5.dispatch,
-            state = _ref5.state;
+    rateBook: function rateBook(_ref6, rating) {
+        var commit = _ref6.commit,
+            dispatch = _ref6.dispatch,
+            state = _ref6.state;
 
         var previousRating = state.lists.library[state.selectedBook].user_rating;
         var bookId = state.lists.library[state.selectedBook].id;
@@ -46314,10 +46323,10 @@ var actions = {
             commit('RATE_BOOK', previousRating);
         });
     },
-    deleteBook: function deleteBook(_ref6) {
-        var commit = _ref6.commit,
-            dispatch = _ref6.dispatch,
-            state = _ref6.state;
+    deleteBook: function deleteBook(_ref7) {
+        var commit = _ref7.commit,
+            dispatch = _ref7.dispatch,
+            state = _ref7.state;
 
         var bookId = state.lists.library[state.selectedBook].id;
         dispatch('setSelectedBook', null);
@@ -46338,10 +46347,10 @@ var actions = {
             });
         });
     },
-    deleteReadingSession: function deleteReadingSession(_ref7) {
-        var commit = _ref7.commit,
-            dispatch = _ref7.dispatch,
-            state = _ref7.state;
+    deleteReadingSession: function deleteReadingSession(_ref8) {
+        var commit = _ref8.commit,
+            dispatch = _ref8.dispatch,
+            state = _ref8.state;
 
         dispatch('setContent', 'reading-session-list');
         commit('DELETE_READING_SESSION');
@@ -46359,23 +46368,7 @@ var actions = {
             });
         });
     },
-    nextBook: function nextBook(_ref8) {
-        var commit = _ref8.commit,
-            dispatch = _ref8.dispatch,
-            state = _ref8.state;
-
-        var ids = [];
-        for (var id in state.lists.userCollection) {
-            ids.push(parseInt(id));
-        }
-
-        var currentIdIndex = ids.indexOf(state.selectedBook);
-
-        if (currentIdIndex > -1) {
-            dispatch('setSelectedBook', ids.length - 1 > currentIdIndex ? ids[currentIdIndex + 1] : ids[0]);
-        }
-    },
-    previousBook: function previousBook(_ref9) {
+    nextBook: function nextBook(_ref9) {
         var commit = _ref9.commit,
             dispatch = _ref9.dispatch,
             state = _ref9.state;
@@ -46388,12 +46381,28 @@ var actions = {
         var currentIdIndex = ids.indexOf(state.selectedBook);
 
         if (currentIdIndex > -1) {
+            dispatch('setSelectedBook', ids.length - 1 > currentIdIndex ? ids[currentIdIndex + 1] : ids[0]);
+        }
+    },
+    previousBook: function previousBook(_ref10) {
+        var commit = _ref10.commit,
+            dispatch = _ref10.dispatch,
+            state = _ref10.state;
+
+        var ids = [];
+        for (var id in state.lists.userCollection) {
+            ids.push(parseInt(id));
+        }
+
+        var currentIdIndex = ids.indexOf(state.selectedBook);
+
+        if (currentIdIndex > -1) {
             dispatch('setSelectedBook', currentIdIndex > 0 ? ids[currentIdIndex - 1] : ids[ids.length - 1]);
         }
     },
-    addToLibrary: function addToLibrary(_ref10, args) {
-        var commit = _ref10.commit,
-            state = _ref10.state;
+    addToLibrary: function addToLibrary(_ref11, args) {
+        var commit = _ref11.commit,
+            state = _ref11.state;
 
         $.post('save-book', {
             _token: window.handover._token,
@@ -46407,9 +46416,9 @@ var actions = {
             }
         });
     },
-    addToUserCollection: function addToUserCollection(_ref11, args) {
-        var commit = _ref11.commit,
-            state = _ref11.state;
+    addToUserCollection: function addToUserCollection(_ref12, args) {
+        var commit = _ref12.commit,
+            state = _ref12.state;
 
         $.post('add-to-user-collection', {
             _token: window.handover._token,
@@ -46420,10 +46429,10 @@ var actions = {
             }
         });
     },
-    removeFromUserCollection: function removeFromUserCollection(_ref12, args) {
-        var commit = _ref12.commit,
-            dispatch = _ref12.dispatch,
-            state = _ref12.state;
+    removeFromUserCollection: function removeFromUserCollection(_ref13, args) {
+        var commit = _ref13.commit,
+            dispatch = _ref13.dispatch,
+            state = _ref13.state;
 
         $.post('remove-from-user-collection', {
             _token: window.handover._token,
@@ -46438,10 +46447,10 @@ var actions = {
             }
         });
     },
-    fetchBook: function fetchBook(_ref13, args) {
-        var commit = _ref13.commit,
-            dispatch = _ref13.dispatch,
-            state = _ref13.state;
+    fetchBook: function fetchBook(_ref14, args) {
+        var commit = _ref14.commit,
+            dispatch = _ref14.dispatch,
+            state = _ref14.state;
 
         $.post('get-book', {
             _token: window.handover._token,
@@ -46452,19 +46461,19 @@ var actions = {
             }
         }).fail(args.errorCallback);
     },
-    setSelectedBook: function setSelectedBook(_ref14, id) {
-        var commit = _ref14.commit,
-            state = _ref14.state;
+    setSelectedBook: function setSelectedBook(_ref15, id) {
+        var commit = _ref15.commit,
+            state = _ref15.state;
 
         commit('SET_SELECTED_BOOK', id);
     },
-    setSelectedReadingSession: function setSelectedReadingSession(_ref15, index) {
-        var commit = _ref15.commit;
+    setSelectedReadingSession: function setSelectedReadingSession(_ref16, index) {
+        var commit = _ref16.commit;
 
         commit('SET_SELECTED_READING_SESSION', index);
     },
-    updateLibrary: function updateLibrary(_ref16, args) {
-        var commit = _ref16.commit;
+    updateLibrary: function updateLibrary(_ref17, args) {
+        var commit = _ref17.commit;
 
         $.get('update-library', function (response) {
             console.log(response);
@@ -46474,8 +46483,8 @@ var actions = {
             });
         }).done(args.successCallback).fail(args.errorCallback);
     },
-    updateUserInfo: function updateUserInfo(_ref17) {
-        var commit = _ref17.commit;
+    updateUserInfo: function updateUserInfo(_ref18) {
+        var commit = _ref18.commit;
 
         $.get('update-user-info', function (response) {
             console.log(response);
@@ -46484,11 +46493,11 @@ var actions = {
             console.log('failed to update user info');
         });
     },
-    saveReadingSession: function saveReadingSession(_ref18, args) {
-        var commit = _ref18.commit,
-            dispatch = _ref18.dispatch,
-            rootState = _ref18.rootState,
-            state = _ref18.state;
+    saveReadingSession: function saveReadingSession(_ref19, args) {
+        var commit = _ref19.commit,
+            dispatch = _ref19.dispatch,
+            rootState = _ref19.rootState,
+            state = _ref19.state;
 
         dispatch('toggleLoading');
         $.post('save-reading-session', {
@@ -46507,14 +46516,17 @@ var actions = {
             }
         }).fail(args.errorCallback);
     },
-    setSelectedList: function setSelectedList(_ref19, list) {
-        var commit = _ref19.commit;
+    setSelectedList: function setSelectedList(_ref20, list) {
+        var commit = _ref20.commit;
 
         commit('SET_SELECTED_LIST', list);
     }
 };
 
 var mutations = {
+    'SET_BOOK_INFO': function SET_BOOK_INFO(state, info) {
+        state.booksLoadedInfo[state.selectedBook] = info;
+    },
     'SET_CURRENT_COMMENT_LIST': function SET_CURRENT_COMMENT_LIST(state, listName) {
         state.commentListToDisplay = listName;
     },
@@ -46600,7 +46612,7 @@ var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(47),
   /* template */
-  __webpack_require__(102),
+  __webpack_require__(105),
   /* styles */
   null,
   /* scopeId */
@@ -46662,6 +46674,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__AddComment_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__AddComment_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__Comment_vue__ = __webpack_require__(99);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__Comment_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__Comment_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__BookInfo_vue__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__BookInfo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13__BookInfo_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -46672,6 +46686,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+
 
 
 
@@ -46700,7 +46715,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         'stats': __WEBPACK_IMPORTED_MODULE_9__Stats_vue___default.a,
         'comment-list': __WEBPACK_IMPORTED_MODULE_10__CommentList_vue___default.a,
         'add-comment': __WEBPACK_IMPORTED_MODULE_11__AddComment_vue___default.a,
-        'comment': __WEBPACK_IMPORTED_MODULE_12__Comment_vue___default.a
+        'comment': __WEBPACK_IMPORTED_MODULE_12__Comment_vue___default.a,
+        'book-info': __WEBPACK_IMPORTED_MODULE_13__BookInfo_vue___default.a
     },
     computed: _extends({
         style: function style() {
@@ -49439,6 +49455,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -49619,7 +49636,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_vm._v(_vm._s(_vm.selectedBook.user_rating.length && _vm.selectedBook.user_rating[0].rating >= n ? 'star' : 'star_border'))])
   })) : _vm._e()])]), _vm._v(" "), _c('div', {
     staticClass: "book-actions"
-  }, [(_vm.selectedBook.in_library) ? _c('button', {
+  }, [_c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setContent('book-info')
+      }
+    }
+  }, [_vm._v("Info")]), _vm._v(" "), (_vm.selectedBook.in_library) ? _c('button', {
     on: {
       "click": function($event) {
         _vm.setContent('reading-session-list')
@@ -50532,6 +50555,354 @@ if (false) {
 /* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(103),
+  /* template */
+  __webpack_require__(104),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/home/arquadrado/development/php/days-of-books/resources/assets/js/components/BookInfo.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] BookInfo.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4f70be6e", Component.options)
+  } else {
+    hotAPI.reload("data-v-4f70be6e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 103 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__ = __webpack_require__(3);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    mixins: [__WEBPACK_IMPORTED_MODULE_1__mixins_Navigation_js__["a" /* default */]],
+    data: function data() {
+        return {
+            hasInfo: false,
+            searchLanguage: 'en',
+            loading: false
+        };
+    },
+
+    computed: _extends({
+        title: function title() {
+            return this.selectedBook.title + ' info';
+        },
+        inputStyle: function inputStyle() {
+            return {
+                'border-bottom': '2px solid ' + this.colorScheme.details
+            };
+        },
+        info: function info() {
+            return this.booksLoadedInfo[this.selectedBook.id];
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        colorScheme: 'getColorScheme',
+        selectedBook: 'getSelectedBook',
+        booksLoadedInfo: 'getBooksLoadedInfo'
+    })),
+    methods: _extends({
+        findMatch: function findMatch(needle, haystack, needleTarget, haystackKey) {
+            var explodedName = needle.split(' ');
+            var processed = haystack.filter(function (item) {
+                return explodedName.every(function (word) {
+                    return item[haystackKey].toLowerCase().includes(word.toLowerCase());
+                });
+            });
+            if (processed.length > 0) {
+                return processed[0][needleTarget];
+            }
+            self.hasInfo = false;
+            self.loading = false;
+            return null;
+        },
+        fetchBookInfoByTitle: function fetchBookInfoByTitle() {},
+        fetchBookInfo: function fetchBookInfo() {
+            var _this = this;
+
+            var self = this;
+            var errorCallback = function errorCallback(response) {
+                console.log(response, 'error');
+                self.hasInfo = false;
+                self.loading = false;
+            };
+
+            this.searchWikipedia(function (response) {
+                var authorPageId = self.processWikipediaResults(response.query.search);
+                console.log(response, 'get author pageid');
+                self.fetchWikipediaPageById(authorPageId, function (response) {
+                    console.log(response, 'get author page');
+                    var page = response.query.pages[Object.keys(response.query.pages)[0]];
+                    self.getWikipediaPageBooksSection(page, function (response) {
+                        var sections = response.parse.sections;
+                        console.log(response, 'get book sections');
+
+                        if (!sections) {
+                            self.hasInfo = false;
+                            self.loading = false;
+                            return null;
+                        }
+
+                        var booksSections = sections.filter(function (section) {
+                            console.log(section.line.toLowerCase());
+                            return section.line.toLowerCase() == 'books' || section.line.toLowerCase() == 'bibliography' || section.line.toLowerCase() == 'popular science books' || section.line.toLowerCase() == 'list of works';
+                        });
+                        console.log(booksSections, 'puta que pariu');
+                        if (booksSections.length > 0) {
+                            self.getBooksSectionBookLink(page, booksSections[0], function (response) {
+                                console.log(response, 'get section links');
+                                var match = self.findMatch(self.selectedBook.title, response.parse.links, '*', '*');
+                                self.fetchWikipediaPageByTitle(match);
+                            }, errorCallback);
+                            return;
+                        }
+
+                        _this.loading = false;
+                        _this.hasInfo = false;
+                    }, errorCallback);
+                }, errorCallback);
+            }, errorCallback);
+        },
+        searchWikipedia: function searchWikipedia(successCallback, errorCallback) {
+            this.loading = true;
+            var url = 'https://' + this.searchLanguage + '.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + this.selectedBook.author.name.replace(' ', '_') + '&utf8=&origin=*&format=json';
+            $.get({
+                url: url,
+                success: successCallback,
+                error: errorCallback
+            });
+        },
+        getWikipediaPageBooksSection: function getWikipediaPageBooksSection(page, successCallback, errorCallback) {
+            var url = 'https://' + this.searchLanguage + '.wikipedia.org/w/api.php?action=parse&format=json&page=' + page.title + '&prop=sections&origin=*';
+
+            $.get({
+                url: url,
+                success: successCallback,
+                error: errorCallback
+            });
+        },
+        getBooksSectionBookLink: function getBooksSectionBookLink(page, section, successCallback, errorCallback) {
+            if (section == null || page == null) {
+                return null;
+            }
+
+            var url = 'https://' + this.searchLanguage + '.wikipedia.org/w/api.php?action=parse&format=json&page=' + page.title + '&section=' + section.index + '&prop=links&origin=*';
+
+            $.get({
+                url: url,
+                success: successCallback,
+                error: errorCallback
+            });
+        },
+        fetchWikipediaPageByTitle: function fetchWikipediaPageByTitle(title) {
+            if (!title) {
+                console.log('y would?');
+                this.hasInfo = false;
+                this.loading = false;
+                return;
+            }
+
+            var self = this;
+            var url = 'https://' + this.searchLanguage + '.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro=&explaintext=&titles=' + title + '&inprop=url&origin=*';
+
+            //let url = `https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles=${this.selectedBook.title.replace(' ', '_')}`
+
+            $.get({
+                url: url,
+                success: function success(response) {
+                    console.log(response, 'get page by title');
+                    self.setBookInfo(response.query.pages[Object.keys(response.query.pages)[0]]);
+                    self.hasInfo = true;
+                    self.loading = false;
+                },
+                error: function error(response) {
+                    console.log(response, 'error');
+                    self.hasInfo = false;
+                    self.loading = false;
+                }
+            });
+        },
+        fetchWikipediaPageById: function fetchWikipediaPageById(pageId, successCallback, errorCallback) {
+            if (!pageId) {
+                console.log('y would?');
+                this.hasInfo = false;
+                return;
+            }
+
+            var self = this;
+            var url = 'https://' + this.searchLanguage + '.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro=&explaintext=&pageids=' + pageId + '&origin=*&inprop=url';
+
+            $.get({
+                url: url,
+                success: successCallback,
+                error: errorCallback
+            });
+        },
+        processWikipediaResults: function processWikipediaResults(results) {
+            var self = this;
+            var explodedName = self.selectedBook.author.name.replace(/[^a-zA-Z ]/g, "").split(' ');
+            console.log(explodedName);
+            var processed = results.filter(function (result) {
+                return explodedName.every(function (word) {
+                    return result.title.toLowerCase().includes(word.toLowerCase());
+                });
+            });
+
+            if (processed.length > 0) {
+                return processed[0].pageid;
+            }
+
+            self.hasInfo = false;
+            self.loading = false;
+            return null;
+        }
+    }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
+        setContent: 'setContent',
+        setBookInfo: 'setBookInfo'
+    })),
+
+    mounted: function mounted() {
+        if (!this.bookInfo) {
+            this.fetchBookInfo();
+        }
+    }
+});
+
+/***/ }),
+/* 104 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "content-wrapper"
+  }, [_c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v(_vm._s(_vm.title))]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+    on: {
+      "click": _vm.back
+    }
+  }, [_vm._v("Back")]) : _vm._e(), _vm._v(" "), _c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setContent('book')
+      }
+    }
+  }, [_vm._v("Book")])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, [(_vm.loading) ? _c('loading-spinner') : _c('div', {
+    staticClass: "show-info"
+  }, [(_vm.hasInfo) ? _c('div', {
+    staticClass: "info"
+  }, [_c('p', [_vm._v(_vm._s(_vm.info.extract))])]) : _vm._e(), _vm._v(" "), (!_vm.hasInfo) ? _c('div', {
+    staticClass: "info-not-found"
+  }, [_c('h4', [_vm._v("\n                    Couldn't find any information about this book. You are sure that it exists?\n                ")]), _vm._v(" "), _c('span', [_vm._v("Wanna try in a different language?")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('div', {
+    staticClass: "input-text"
+  }, [_c('label', [_vm._v("Enter the language you would like to search")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.searchLanguage),
+      expression: "searchLanguage"
+    }],
+    style: (_vm.inputStyle),
+    domProps: {
+      "value": (_vm.searchLanguage)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.searchLanguage = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('br'), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.fetchBookInfo
+    }
+  }, [_vm._v("search in author books")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.fetchBookInfoByTitle
+    }
+  }, [_vm._v("search by title")])]) : _vm._e()])], 1)])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-4f70be6e", module.exports)
+  }
+}
+
+/***/ }),
+/* 105 */
+/***/ (function(module, exports, __webpack_require__) {
+
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "content"
@@ -50552,15 +50923,15 @@ if (false) {
 }
 
 /***/ }),
-/* 103 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(104),
+  __webpack_require__(107),
   /* template */
-  __webpack_require__(108),
+  __webpack_require__(111),
   /* styles */
   null,
   /* scopeId */
@@ -50592,13 +50963,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 104 */
+/* 107 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GuiAction_vue__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GuiAction_vue__ = __webpack_require__(108);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GuiAction_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__GuiAction_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -50656,15 +51027,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 105 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(106),
+  __webpack_require__(109),
   /* template */
-  __webpack_require__(107),
+  __webpack_require__(110),
   /* styles */
   null,
   /* scopeId */
@@ -50696,7 +51067,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 106 */
+/* 109 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50767,7 +51138,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 107 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -50798,7 +51169,7 @@ if (false) {
 }
 
 /***/ }),
-/* 108 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -50831,15 +51202,15 @@ if (false) {
 }
 
 /***/ }),
-/* 109 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(110),
+  __webpack_require__(113),
   /* template */
-  __webpack_require__(111),
+  __webpack_require__(114),
   /* styles */
   null,
   /* scopeId */
@@ -50871,7 +51242,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 110 */
+/* 113 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50925,7 +51296,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 111 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -50963,15 +51334,15 @@ if (false) {
 }
 
 /***/ }),
-/* 112 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(113),
+  __webpack_require__(116),
   /* template */
-  __webpack_require__(114),
+  __webpack_require__(117),
   /* styles */
   null,
   /* scopeId */
@@ -51003,7 +51374,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 113 */
+/* 116 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -51039,7 +51410,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 114 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -51100,7 +51471,7 @@ if (false) {
 }
 
 /***/ }),
-/* 115 */
+/* 118 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

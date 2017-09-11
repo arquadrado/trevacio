@@ -34,6 +34,7 @@
                     </div>
                 </div>
                 <div class="book-actions">
+                    <button @click="setContent('book-info')">Info</button>
                     <button v-if="selectedBook.in_library" @click="setContent('reading-session-list')">Reading Sessions</button>
                     <button @click="showComments">Comments</button>
                     <button @click="setContent('stats')">Stats</button>

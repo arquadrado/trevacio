@@ -8,7 +8,8 @@ const state = {
         userCollection: typeof handover.userCollection !== 'undefined' ? handover.userCollection : [],
         library: typeof handover.library !== 'undefined' ? handover.library : [],
     },
-    commentListToDisplay: 'book'
+    commentListToDisplay: 'book',
+    booksLoadedInfo: {}
 }
 
 const getters = {
@@ -30,10 +31,14 @@ const getters = {
     getSelectedList: state => state.lists[state.selectedList],
     getSelectedListName: state => state.selectedList,
     getLists: state => state.lists,
-    getCommentListToDisplay: state => state.commentListToDisplay
+    getCommentListToDisplay: state => state.commentListToDisplay,
+    getBooksLoadedInfo: state => state.booksLoadedInfo
 }
 
 const actions = {
+    setBookInfo({ commit }, info) {
+        commit('SET_BOOK_INFO', info)
+    },
     setCurrentCommentList({ commit }, listName) {
         commit('SET_CURRENT_COMMENT_LIST', listName)
     },
@@ -287,6 +292,9 @@ const actions = {
 }
 
 const mutations = {
+    'SET_BOOK_INFO': (state, info) => {
+        state.booksLoadedInfo[state.selectedBook] = info
+    },
     'SET_CURRENT_COMMENT_LIST': (state, listName) => {
         state.commentListToDisplay = listName
     },

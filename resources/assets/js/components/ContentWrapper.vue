@@ -20,6 +20,7 @@
     import CommentList from './CommentList.vue'
     import AddComment from './AddComment.vue'
     import Comment from './Comment.vue'
+    import BookInfo from './BookInfo.vue'
 
     export default {
         components: {
@@ -35,6 +36,7 @@
             'comment-list': CommentList,
             'add-comment': AddComment,
             'comment': Comment,
+            'book-info': BookInfo,
         },
         computed: {
             style() {
