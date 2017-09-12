@@ -9,6 +9,7 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import Trevacio from './Trevacio.vue'
+    import Home from './Home.vue'
     import Add from './AddBook.vue'
     import Get from './GetBook.vue'
     import ReadingSession from './ReadingSession.vue'
@@ -24,6 +25,7 @@
 
     export default {
         components: {
+            'home': Home,
             'trevacio': Trevacio,
             'add': Add,
             'get': Get,

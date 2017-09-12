@@ -13,10 +13,11 @@ const state = {
     navigationHistory: [],
 
     actions: {
+        
         add: {
             label: 'Add',
             name: 'add',
-            icon: 'library_add',
+            icon: 'playlist_add',
             description: 'Add books to your personal library'
         },
         get: {
@@ -34,15 +35,21 @@ const state = {
         settings: {
             label: 'Settings',
             name: 'settings',
-            icon: 'settings',
+            icon: 'people',
             description: 'Personalize your experience and view your stats'
         },
-        trevacio: {
+        home: {
+            label: 'Home',
+            name: 'home',
+            icon: 'close',
+            description: 'Close the menu and go back to home screen'
+        },
+        /*trevacio: {
             label: 'Trevacio',
             name: 'trevacio',
             icon: 'close',
             description: 'Close the menu and go back to home screen'
-        },
+        },*/
         //joke: 'Wanna hear a joke?',
         //default: 'Ok, lets do this!',
     },
@@ -60,7 +67,7 @@ const state = {
                 }]
     },
 
-    content: 'trevacio'
+    content: 'home'
 }
 
 const getters = {

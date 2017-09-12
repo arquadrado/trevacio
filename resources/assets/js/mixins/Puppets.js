@@ -35,7 +35,6 @@ export default {
 								if (self.normalize(str, diacritics).includes(word)) {
 									reduced += 1
 								}
-								console.log(self.normalize(str, diacritics).includes(word), self.normalize(str, diacritics), word)
 								return reduced
 							}, 0) / cleanNeedle.length
 

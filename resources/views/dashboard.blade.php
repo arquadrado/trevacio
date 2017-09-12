@@ -1,7 +1,6 @@
 @extends('partials.master')
 
 @section('content')
-<h1>{{ config('app.name') }}</h1>
 <div class="table h20">
     <div class="eye-suit center middle">
         <button @click="suitEyes" title="Suit your eyes"><i class="material-icons">palette</i></button>

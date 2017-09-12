@@ -46,9 +46,17 @@ const app = new Vue({
     computed: {
     	selectedSuit() {
             console.log(this.colorScheme)
+            if (this.colorScheme.hasOwnProperty('font')) {
+                return {
+                    'background-color': this.colorScheme.background,
+                    'color': this.colorScheme.details,
+                    'font-family': this.colorScheme.font,
+                }
+            }
+
     		return {
                 'background-color': this.colorScheme.background,
-                'color': this.colorScheme.details
+                'color': this.colorScheme.details,
             }
     	},
         ...mapGetters({

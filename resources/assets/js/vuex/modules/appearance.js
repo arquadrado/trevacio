@@ -1,6 +1,11 @@
 const state = {
     colorSchemes: [
         {
+            details: '#000000',
+            background: '#fff7e6',
+            font: 'Times New Roman'
+        },
+        {
             details: '#ADDCDC',
             background: '#163434'
         },
