@@ -65,15 +65,6 @@ const actions = {
         })
     },
     addComment({ commit, dispatch, state }, data) {
-        console.log(state.commentListToDisplay)
-        /*switch (state.commentListToDisplay) {
-            case 'book':
-                commit('ADD_COMMENT_TO_BOOK', data)
-
-            case 'session':
-                commit('ADD_COMMENT_TO_SESSION', data)
-        }*/
-
         dispatch('toggleLoading')
         $.post('save-comment', {
             _token: window.handover._token,
@@ -81,7 +72,6 @@ const actions = {
             commentableType: data.commentable_type,
             comment: data.body,
         }, (response) => {
-            console.log(response)
             dispatch('toggleLoading')
             dispatch('updateLibrary', {
                 successCallback: null,
@@ -92,13 +82,6 @@ const actions = {
             console.log('comment added')
         })
         .fail(() => {
-            /*switch (state.commentListToDisplay) {
-                case 'book':
-                    commit('REMOVE_COMMENT_FROM_BOOK', null)
-
-                case 'session':
-                    commit('REMOVE_COMMENT_FROM_SESSION', null)
-            }*/
             dispatch('setSelectedComment', null)
         })
     },
@@ -188,8 +171,9 @@ const actions = {
 
     },
 
-    addToLibrary({ commit, state }, args) {
-         $.post('save-book', {
+    addToLibrary({ commit, dispatch, state }, args) {
+        dispatch('toggleLoading')
+        $.post('save-book', {
             _token: window.handover._token,
             title: args.book.title,
             author: args.book.author,
@@ -201,9 +185,12 @@ const actions = {
                 commit('ADD_TO_LIBRARY', response.book)
                 commit('ADD_TO_USER_COLLECTION', response.book)
             }
+            dispatch('toggleLoading')
+
          })
     },
-    addToUserCollection({ commit, state }, args) {
+    addToUserCollection({ commit, dispatch, state }, args) {
+        dispatch('toggleLoading')
         $.post('add-to-user-collection', {
             _token: window.handover._token,
             book: args.book
@@ -213,6 +200,7 @@ const actions = {
             if (responseContent.status == 200) {
                 commit('ADD_TO_USER_COLLECTION', response.book)
             }
+            dispatch('toggleLoading')
          })
     },
     removeFromUserCollection({ commit, dispatch, state }, args) {
@@ -232,6 +220,7 @@ const actions = {
          })
     },
     fetchBook({ commit, dispatch, state }, args) {
+        dispatch('toggleLoading')
         $.post('get-book', {
             _token: window.handover._token,
             title: args.book,
@@ -240,6 +229,7 @@ const actions = {
             if (responseContent.status == 200) {
                 dispatch('setSelectedBook', response.book.id)
             }
+            dispatch('toggleLoading')
         })
         .fail(args.errorCallback)
     },

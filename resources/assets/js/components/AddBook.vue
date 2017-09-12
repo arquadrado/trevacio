@@ -26,8 +26,11 @@
             </div>
 
             <div class="modal-footer">
-                <button class="" :disabled="!canSubmit" @click="addBookToLibrary">
+                <button class="" v-if="!loading" :disabled="!canSubmit" @click="addBookToLibrary">
                     Save
+                </button>
+                <button v-if="loading">
+                    <loading-spinner></loading-spinner>
                 </button>
             </div>
         </div>
@@ -89,6 +92,7 @@
                 colorScheme: 'getColorScheme',
                 userCollection: 'getUserCollection',
                 library: 'getLibrary',
+                loading: 'isLoading'
             })
         },
         methods: {

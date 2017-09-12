@@ -33,11 +33,13 @@
 </template>
 
 <script>
+    import diacritics from 'diacritics'
     import { mapGetters, mapActions } from 'vuex'
     import Navigation from './../mixins/Navigation.js'
+    import Puppets from './../mixins/Puppets.js'
 
     export default {
-        mixins: [Navigation],
+        mixins: [Navigation, Puppets],
         data() {
             return {
                 hasInfo: false,
@@ -65,135 +67,53 @@
             })
         },
         methods: {
-            findMatch(needle, haystack, needleTarget, haystackKey) {
-                let explodedName = needle.split(' ')
-                let processed = haystack.filter((item) => {
-                    return explodedName.every((word) => {
-                        return item[haystackKey].toLowerCase().includes(word.toLowerCase())
-                    })
-                })
-                if (processed.length > 0) {
-                    return processed[0][needleTarget]
-                }
-                self.hasInfo = false
-                self.loading = false
-                return null
+            __stop() {
+                this.hasInfo = false
+                this.loading = false
             },
             fetchBookInfoByTitle() {
-
+                this.searchWikipedia(this.selectedBook.title, (response) => {
+                    const page = this.processWikipediaResults(
+                        this.selectedBook.title, 
+                        response.query.search
+                    )
+                    if (!page) {
+                        this.__stop()
+                        return
+                    }
+                    this.fetchWikipediaPageByTitle(page.title)
+                })
             },
             fetchBookInfo() {
-                const self = this
-                const errorCallback = (response) => {
-                    console.log(response, 'error')
-                    self.hasInfo = false
-                    self.loading = false
-                }
+                this.searchWikipedia(this.selectedBook.author.name, (response) => {
+                    const authorPage = this.processWikipediaResults(
+                        this.selectedBook.author.name,
+                        response.query.search
+                    )
 
-                this.searchWikipedia((response) => {
-                    const authorPageId = self.processWikipediaResults(response.query.search)
-                    console.log(response, 'get author pageid')
-                    self.fetchWikipediaPageById(authorPageId, (response) => {
-                        console.log(response, 'get author page')
-                        const page = response.query.pages[Object.keys(response.query.pages)[0]]
-                        self.getWikipediaPageBooksSection(page, (response) => {
-                            let sections = response.parse.sections
-                            console.log(response, 'get book sections')
-
-                            if (!sections) {
-                                self.hasInfo = false
-                                self.loading = false
-                                return null
-                            }
-
-                            let booksSections = sections.filter((section) => {
-                                console.log(section.line.toLowerCase())
-                                return section.line.toLowerCase() == 'books' || section.line.toLowerCase() == 'bibliography' || section.line.toLowerCase() == 'popular science books' || section.line.toLowerCase() == 'list of works'
-                            })
-                            console.log(booksSections, 'puta que pariu')
-                            if (booksSections.length > 0) {
-                                self.getBooksSectionBookLink(page, booksSections[0], (response) => {
-                                    console.log(response, 'get section links')
-                                    let match = self.findMatch(self.selectedBook.title, response.parse.links, '*', '*')
-                                    self.fetchWikipediaPageByTitle(match)
-
-                                }, errorCallback)
-                                return
-                            }
-
-                            this.loading = false
-                            this.hasInfo = false
-
-
-                        }, errorCallback)
-                    }, errorCallback)
-                }, errorCallback)
+                    if (!authorPage) {
+                        this.__stop()
+                        return
+                    }
+                    this.fetchWikipediaPageById(authorPage.pageid)
+                })
             },
-            searchWikipedia(successCallback, errorCallback) {
+            searchWikipedia(searchString, success) {
                 this.loading = true
-                let url = `https://${this.searchLanguage}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${this.selectedBook.author.name.replace(' ', '_')}&utf8=&origin=*&format=json`
-                $.get({
-                    url: url,
-                    success: successCallback,
-                    error: errorCallback
-                })
-            },
-            getWikipediaPageBooksSection(page, successCallback, errorCallback) {
-                let url = `https://${this.searchLanguage}.wikipedia.org/w/api.php?action=parse&format=json&page=${page.title}&prop=sections&origin=*`
-
-                $.get({
-                    url: url,
-                    success: successCallback,
-                    error: errorCallback
-                })
-
-
-            },
-            getBooksSectionBookLink(page, section, successCallback, errorCallback) {
-                if (section == null || page == null) {
-                    return null
-                }
-
-                let url = `https://${this.searchLanguage}.wikipedia.org/w/api.php?action=parse&format=json&page=${page.title}&section=${section.index}&prop=links&origin=*`
-
-                $.get({
-                    url: url,
-                    success: successCallback,
-                    error: errorCallback
-                })
-
-            },
-            fetchWikipediaPageByTitle(title) {
-                if (!title) {
-                    console.log('y would?')
-                    this.hasInfo = false
-                    this.loading = false
-                    return
-                }
+                let url = `https://${this.searchLanguage}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${searchString.replace(' ', '_')}&utf8=&origin=*&format=json`
 
                 const self = this
-                let url = `https://${this.searchLanguage}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro=&explaintext=&titles=${title}&inprop=url&origin=*`
-
-                //let url = `https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles=${this.selectedBook.title.replace(' ', '_')}`
-
                 $.get({
                     url: url,
-                    success: (response) => {
-                        console.log(response, 'get page by title')
-                        self.setBookInfo(response.query.pages[Object.keys(response.query.pages)[0]])
-                        self.hasInfo = true
-                        self.loading = false
-                    },
+                    success: success,
                     error: (response) => {
                         console.log(response, 'error')
-                        self.hasInfo = false
-                        self.loading = false
+                        self.__stop()
                     }
                 })
             },
-            fetchWikipediaPageById(pageId, successCallback, errorCallback) {
+            fetchWikipediaPageById(pageId) {
                 if (!pageId) {
-                    console.log('y would?')
                     this.hasInfo = false
                     return
                 }
@@ -203,26 +123,118 @@
 
                 $.get({
                     url: url,
-                    success: successCallback,
-                    error: errorCallback
+                    success: (response) => {
+                        const page = response.query.pages[Object.keys(response.query.pages)[0]]
+                        self.getWikipediaPageBooksSection(page)
+                    },
+                    error: (response) => {
+                        console.log(response, 'error')
+                        self.__stop()
+                    }
                 })
             },
-            processWikipediaResults(results) {
+            getWikipediaPageBooksSection(page) {
+                let url = `https://${this.searchLanguage}.wikipedia.org/w/api.php?action=parse&format=json&page=${page.title}&prop=sections&origin=*`
                 const self = this
-                let explodedName = self.selectedBook.author.name.replace(/[^a-zA-Z ]/g, "").split(' ')
-                console.log(explodedName)
-                let processed = results.filter((result) => {
-                    return explodedName.every((word) => {
-                        return result.title.toLowerCase().includes(word.toLowerCase())
-                    })
+                $.get({
+                    url: url,
+                    success: (response) => {
+                        let sections = response.parse.sections
+
+                        if (!sections) {
+                            self.__stop()
+                            return null
+                        }
+
+                        let booksSections = sections.filter((section) => {
+                            return section.line.toLowerCase() == 'books' || section.line.toLowerCase() == 'bibliography' || section.line.toLowerCase() == 'popular science books' || section.line.toLowerCase() == 'list of works' || section.line.toLowerCase() == 'works'
+                        })
+                        if (booksSections.length > 0) {
+                            self.getBooksSectionBookLink(page, booksSections[0],)
+                            return
+                        }
+
+                        self.__stop()
+
+                    },
+                    error: (response) => {
+                        console.log(response, 'error')
+                        self.__stop()
+                    }
                 })
 
-                if (processed.length > 0) {
-                    return processed[0].pageid
+
+            },
+            getBooksSectionBookLink(page, section) {
+                if (section == null || page == null) {
+                    return null
                 }
 
-                self.hasInfo = false
-                self.loading = false
+                let url = `https://${this.searchLanguage}.wikipedia.org/w/api.php?action=parse&format=json&page=${page.title}&section=${section.index}&prop=links&origin=*`
+
+                const self = this
+                $.get({
+                    url: url,
+                    success: (response) => {
+                        let match = self.getHighestMatch(self.selectedBook.title, response.parse.links, '*')
+
+                        if (match.matchingIndex > 0.5) {
+
+                            self.fetchWikipediaPageByTitle(match.content['*'])
+                            return
+                        }
+
+                        self.__stop()
+
+                    },
+                    error: (response) => {
+                        console.log(response, 'error')
+                        self.__stop()
+                    }
+                })
+
+            },
+            fetchWikipediaPageByTitle(title) {
+                this.loading = true
+                if (!title) {
+                    this.__stop()
+                    return
+                }
+
+                const self = this
+                let url = `https://${this.searchLanguage}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro=&explaintext=&titles=${title}&inprop=url&origin=*`
+
+                $.get({
+                    url: url,
+                    success: (response) => {
+                        self.setBookInfo(response.query.pages[Object.keys(response.query.pages)[0]])
+                        self.hasInfo = true
+                        self.loading = false
+                    },
+                    error: (response) => {
+                        console.log(response, 'error')
+                        self.__stop()
+                    }
+                })
+            },
+            processWikipediaResults(searchString, results) {
+                const match = this.getHighestMatch(
+                    searchString, 
+                    results,
+                    'title',
+                    true
+                ) 
+
+                if (!match) {
+                    this.__stop()
+                    return null
+                }
+
+                if (match.matchingIndex > 0.6) {
+                    return match.content
+                }
+
+                this.__stop()
                 return null
             },
             ...mapActions({
@@ -232,9 +244,12 @@
         },
 
         mounted() {
-            if (!this.bookInfo) {
+            if (!this.booksLoadedInfo.hasOwnProperty(this.selectedBook.id)) {
                 this.fetchBookInfo()
+                return
             }
+
+            this.hasInfo = true
         }
     }
 </script>

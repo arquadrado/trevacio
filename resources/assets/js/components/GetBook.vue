@@ -18,8 +18,11 @@
             </div>
 
             <div class="modal-footer">
-                <button class="modal-default-button" :disabled="!canSubmit" @click="getBook">
+                <button class="modal-default-button" v-if="!loading" :disabled="!canSubmit" @click="getBook">
                     Get book
+                </button>
+                <button v-if="loading">
+                    <loading-spinner></loading-spinner>
                 </button>
             </div>
         </div>
@@ -78,7 +81,8 @@
                 selectedBook: 'getSelectedBook',
                 selectedList: 'getSelectedList',
                 userCollection: 'getUserCollection',
-                library: 'getLibrary'
+                library: 'getLibrary',
+                loading: 'isLoading'
             })
         },
         methods: {
