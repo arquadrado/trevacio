@@ -11,7 +11,6 @@
         <div class="book" v-if="selectedBook && !loading">
             <div class="modal-header">
                 <h3 class="action">Book</h3>
-                <button class="" v-if="canDeleteBook" @click="deleteBook">Delete</button>
                 <button class="" @click="searchBook">Search</button>
                 <button class="" @click="addBook">Add</button>
                 <button class="" v-if="selectedList" @click="setContent('list')">List</button>
@@ -50,6 +49,7 @@
             
             <div class="modal-footer">
                 <button class="modal-default-button" @click="removeBookFromUserCollection" v-if="selectedBook.in_library">Remove from collection</button>
+                <button class="" v-if="canDeleteBook" @click="deleteBook">Delete</button>
                 <div class="book-not-owned" v-if="!selectedBook.in_library">
                     <h4>This book is not in your library. Add it to perform additional actions</h4>
                     <button class="modal-default-button" @click="addBookToUserCollection">

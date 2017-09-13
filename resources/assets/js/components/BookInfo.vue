@@ -3,6 +3,8 @@
 
         <div class="modal-header">
             <h3 class="action">{{ title }}</h3>
+            <h4>info</h4>
+            <br>
             <button class="" v-if="hasHistory" @click="back">Back</button>
             <button class="" @click="setContent('book')">Book</button>
         </div>
@@ -11,6 +13,7 @@
             <div class="show-info" v-else>
                 <div class="info" v-if="hasInfo">
                     <p>{{ info.extract }}</p>
+                    <a :href="info.fullurl" target=_blank>source</a>
                 </div>
                 <div class="info-not-found" v-if="!hasInfo">
                     <h4>
@@ -49,7 +52,7 @@
         },
         computed: {
             title() {
-                return `${this.selectedBook.title} info`
+                return `${this.selectedBook.title}`
             },
             inputStyle() {
                 return {

@@ -2,27 +2,38 @@
     <div class="response">
         <div class="success" v-if="status == 200">
             <div class="modal-body">
-                <h3>Book Added</h3>
-                <button @click="openBook">Open book</button>
+                <h3>{{ response.book.title }} added</h3>
+                <button @click="openBook(response.book)">Open book</button>
+                <button @click="addAnother">Add another</button>
             </div>
         </div>
         <div class="book-found" v-if="status == 201">
             <div class="modal-body">
                 <h3>{{ response.message }}</h3>
-                <button @click="setBook(book)" v-for="book in books">
-                    {{ book.title }} - {{ book.author.name }}
-                </button>
+                <ul class="book-list">
+                    <li class="book" v-for="book in books" @click="openBook(book)">
+                        <div class="book-info">
+                            <span class="book-title">{{ book.title }}</span>
+                            <br>
+                            <span class="book-author">by {{ book.author.name }}</span>
+                        </div>
+                        <div class="quick-actions">
+                            <i class="material-icons" @click="showBookComments($event, book)">comment</i>
+                            <i class="material-icons" @click="showBookStats($event, book)">timeline</i>
+                        </div>
+                    </li>
+                </ul>
                 <br>
-                <button :disabled="!book" @click="addToLibrary">Add this book to my library</button>
                 <button @click="newBook">This is a different book</button>
             </div>
         </div>
         <div class="book-owned" v-if="status == 202">
             <div class="modal-body">
                 <h3>{{ response.message }}</h3>
-                <button @click="openBook(book)">
+                <button @click="openBook(response.book)">
                     Open {{ response.book.title }}
                 </button>
+                <button @click="addAnother">Add another</button>
                 <button @click="toggleModal">Close</button>
             </div>
         </div>
@@ -36,17 +47,19 @@
         props: ['response', 'status', 'books'],
         data() {
             return {
-                book: null
             }
         },
-        computed: {},
+        computed: {
+            ...mapGetters({
+            })
+        },
         methods: {
-            openBook() {
-                this.setSelectedBook(this.response.book.id)
-                this.setContent('book')
+            addAnother() {
+                this.$emit('addAnother')
             },
-            setBook(book) {
-                this.book = book
+            openBook(book) {
+                this.setSelectedBook(book.id)
+                this.setContent('book')
             },
             addToLibrary() {
                 this.$emit('inLibrary', this.book)

@@ -2,7 +2,9 @@
     <div class="content-wrapper">
 
         <div class="modal-header">
-            <h3 class="action">{{ selectedBook.title }} session list</h3>
+            <h3 class="action">{{ selectedBook.title }}</h3>
+            <h4>reading sessions</h4>
+            <br>
             <button class="" v-if="hasHistory" @click="back">Back</button>
             <button class="" @click="setContent('book')">Book</button>
         </div>

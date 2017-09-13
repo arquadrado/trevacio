@@ -133,12 +133,14 @@ const actions = {
          })
     },
     deleteReadingSession({ commit, dispatch, state }) {
-        dispatch('setContent', 'reading-session-list')
-        commit('DELETE_READING_SESSION')
+        dispatch('toggleLoading')
         $.post('delete-session', {
             _token: window.handover._token,
             sessionId: state.lists.library[state.selectedBook].reading_sessions[state.selectedReadingSession].id,
         }, () => {
+            commit('DELETE_READING_SESSION')
+            dispatch('setContent', 'reading-session-list')
+            dispatch('toggleLoading')
             dispatch('setSelectedReadingSession', null)
             dispatch('updateUserInfo')
             console.log('session deleted')
@@ -152,7 +154,8 @@ const actions = {
     },
     nextBook({ commit, dispatch, state }) {
         const ids = []
-        for (let id in state.lists.userCollection) {
+        const currentList = state.lists[state.selectedList]
+        for (let id in currentList) {
             ids.push(parseInt(id))
         }
 
@@ -165,7 +168,8 @@ const actions = {
     },
     previousBook({ commit, dispatch, state }) {
         const ids = []
-        for (let id in state.lists.userCollection) {
+        const currentList = state.lists[state.selectedList]
+        for (let id in currentList) {
             ids.push(parseInt(id))
         }
 

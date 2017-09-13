@@ -8354,6 +8354,8 @@ body {
   width: 100%;
   height: 100vh;
   position: relative;
+  color: #000000;
+  background-color: #fff7e6;
   /*
 	 * The following styles are auto-applied to elements with
 	 * transition="modal" when their visibility is toggled
@@ -8364,6 +8366,18 @@ body {
 	 */
 }
 
+@-webkit-keyframes autofill {
+  to {
+    color: #000000;
+    background: transparent;
+  }
+}
+
+body input:-webkit-autofill {
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}
+
 body #app {
   width: 100%;
   height: 100%;
@@ -8371,6 +8385,93 @@ body #app {
   display: table;
   -webkit-transition: all 300ms ease-in;
   transition: all 300ms ease-in;
+}
+
+body #app .welcome {
+  font-family: 'Times New Roman';
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: table;
+}
+
+body #app .welcome .greetings {
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+body #app .login,
+body #app .register {
+  font-family: 'Times New Roman';
+}
+
+body #app .login .login-header,
+body #app .login .register-header,
+body #app .register .login-header,
+body #app .register .register-header {
+  text-align: center;
+  margin: 70px;
+}
+
+body #app .login #login-form,
+body #app .login #register-form,
+body #app .register #login-form,
+body #app .register #register-form {
+  text-align: center;
+}
+
+body #app .login #login-form .form-group,
+body #app .login #register-form .form-group,
+body #app .register #login-form .form-group,
+body #app .register #register-form .form-group {
+  text-align: center;
+}
+
+body #app .login #login-form .form-group .submit-button button,
+body #app .login #register-form .form-group .submit-button button,
+body #app .register #login-form .form-group .submit-button button,
+body #app .register #register-form .form-group .submit-button button {
+  font-size: 21px;
+  font-weight: 900;
+}
+
+body #app .login #login-form .form-group label,
+body #app .login #register-form .form-group label,
+body #app .register #login-form .form-group label,
+body #app .register #register-form .form-group label {
+  display: block;
+}
+
+body #app .login #login-form .form-group .input-text,
+body #app .login #register-form .form-group .input-text,
+body #app .register #login-form .form-group .input-text,
+body #app .register #register-form .form-group .input-text {
+  margin: 7px 0 35px 0;
+}
+
+body #app .login #login-form .form-group .input-text .help-block,
+body #app .login #register-form .form-group .input-text .help-block,
+body #app .register #login-form .form-group .input-text .help-block,
+body #app .register #register-form .form-group .input-text .help-block {
+  font-size: 14px;
+}
+
+body #app .login #login-form .form-group .input-text input,
+body #app .login #register-form .form-group .input-text input,
+body #app .register #login-form .form-group .input-text input,
+body #app .register #register-form .form-group .input-text input {
+  height: 42px;
+  width: 100%;
+  border-bottom: 2px solid #000000;
+  background-color: transparent;
+}
+
+body #app .login #login-form .forgot-password,
+body #app .login #register-form .forgot-password,
+body #app .register #login-form .forgot-password,
+body #app .register #register-form .forgot-password {
+  margin-top: 21px;
 }
 
 body #app button {
@@ -8511,6 +8612,15 @@ body #app .content {
 
 body #app .content .content-wrapper {
   position: relative;
+}
+
+body #app .content .content-wrapper .user-settings .modal-footer {
+  text-align: center;
+}
+
+body #app .content .content-wrapper .user-settings .modal-footer .logout-button {
+  cursor: pointer;
+  color: inherit;
 }
 
 body #app .content .content-wrapper .greeting {

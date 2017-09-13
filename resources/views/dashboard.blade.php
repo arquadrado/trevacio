@@ -22,7 +22,8 @@
         user: {!! $user !!},
         userCollection: {!! json_encode($userCollection) !!},
         library: {!! json_encode($library) !!},
-        _token: '{{ csrf_token() }}'
+        _token: '{{ csrf_token() }}',
+        logout_route: '{{ route('logout') }}'
     }
 </script>
 @endsection

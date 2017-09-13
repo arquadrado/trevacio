@@ -1,7 +1,9 @@
 <template>
     <div class="content-wrapper">
         <div class="modal-header">
-            <h3 class="action">Stats - {{ selectedBook.title }}</h3>
+            <h3 class="action">{{ selectedBook.title }}</h3>
+            <h4>stats</h4>
+            <br>
             <button class="" @click="setContent('book')">Book</button>
             <button class="" @click="back" v-if="hasHistory">Back</button>
             <button class="" @click="close">close</button>

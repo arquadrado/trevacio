@@ -13,16 +13,13 @@
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');
-
 Route::middleware(['auth'])->group(function () {
-	Route::get('/', function () {
-		return redirect()->route('dashboard');
-	});
+
     Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
     Route::post('/save-book', 'DashboardController@saveBook')->name('save-book');
     Route::post('/add-to-user-collection', 'DashboardController@addToUserCollection')->name('add-to-user-collection');

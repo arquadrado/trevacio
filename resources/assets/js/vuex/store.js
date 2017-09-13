@@ -24,7 +24,7 @@ const state = {
             label: 'Get',
             name: 'get',
             icon: 'search',
-            description: 'Search for a specific book'
+            description: 'Search books by title or author'
         },
         list: {
             label: 'List',

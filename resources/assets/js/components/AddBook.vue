@@ -3,6 +3,8 @@
 
         <div class="modal-header">
             <h3 class="action">Add a book</h3>
+            <br>
+            <button class="" @click="setContent('get')">Get</button>
             <button class="" @click="setContent('list')">List</button>
             <button class="" v-if="hasHistory" @click="back">Back</button>
             <button class="" @click="setContent('trevacio')">close</button>
@@ -41,6 +43,7 @@
             v-if="response"
             @inLibrary="addBookToUserCollection"
             @newBook="addBookToLibrary($event, true)"
+            @addAnother="addAnother"
         ></response>
     </div>
 </template>
@@ -96,6 +99,12 @@
             })
         },
         methods: {
+            addAnother() {
+                this.book.title = ''
+                this.book.author = ''
+                this.submitted = false
+                this.response = false
+            },
             addBookToUserCollection(book) {
                 const self = this
                 self.addToUserCollection({

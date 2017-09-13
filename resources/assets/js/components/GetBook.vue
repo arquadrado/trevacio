@@ -2,9 +2,11 @@
     <div class="content-wrapper">
 
         <div class="modal-header">
-            <h3 class="action">Search for a book</h3>
+            <h3 class="action">Search for books</h3>
+            <br>
+            <button class="" @click="setContent('add')">Add</button>
             <button class="" @click="listBooks">List</button>
-            <button class="" @click="setContent('trevacio')">close</button>
+            <button class="" @click="setContent('home')">close</button>
             <button class="" v-if="hasHistory" @click="back">Back</button>
         </div>
 
@@ -12,14 +14,14 @@
 
             <div class="modal-body">
                 <div class="input-text">
-                    <label for="book">What is the name of the book?</label>
+                    <label for="book">Enter a book title or an author</label>
                     <input type="text" name="book" :style="inputStyle" v-model="bookToGet">
                 </div>
             </div>
 
             <div class="modal-footer">
                 <button class="modal-default-button" v-if="!loading" :disabled="!canSubmit" @click="getBook">
-                    Get book
+                    Search
                 </button>
                 <button v-if="loading">
                     <loading-spinner></loading-spinner>
@@ -106,7 +108,8 @@
                         if (books.length > 0) {
                             this.response = {
                                 responseJSON: {
-                                    message: 'Found these fukers'
+                                    message: 'Found some books locally',
+                                    books: books
                                 },
                                 status: 201
                             }
@@ -134,6 +137,7 @@
                             errorCallback: (response) => {
                                 self.response = response
                                 self.submitted = true
+                                self.toggleLoading()
                             }
                         })
                     },
@@ -149,7 +153,8 @@
                 setContent: 'setContent',
                 fetchBook: 'fetchBook',
                 updateLibrary: 'updateLibrary',
-                setSelectedList: 'setSelectedList'
+                setSelectedList: 'setSelectedList',
+                toggleLoading: 'toggleLoading'
             })
         }
     }

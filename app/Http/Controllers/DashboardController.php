@@ -23,6 +23,10 @@ class DashboardController extends Controller
         //$this->middleware('auth');
     }
 
+    public function home() {
+        dd('hey');
+    }
+
     /**
      * Show the application dashboard.
      *
@@ -164,6 +168,27 @@ class DashboardController extends Controller
         $books = Book::where('title', request('title'))->get();
 
         if (is_null($books) || $books->isEmpty()) {
+
+            $authors = Author::where('name', request('title'))->get();
+
+            $books = $authors->reduce(function ($reduced, $author) {
+                if (is_null($reduced)) {
+                    $reduced = $author->books;
+                    return $reduced;
+                }
+
+                $reduced->merge($author->books);
+
+                return $reduced;
+            }, null);
+
+            if (!is_null($books) && !$books->isEmpty()) {
+                return response()->json([
+                    'message' => 'Found some books!',
+                    'books' => $books
+                ], 201);
+            }
+
             return response()->json([
                     'message' => 'Book not found'
                 ], 404);
