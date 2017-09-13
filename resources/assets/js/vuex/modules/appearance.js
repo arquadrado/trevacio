@@ -60,7 +60,7 @@ const getters = {
 }
 
 const actions = {
-    toggleLoading({ commit }) {
+    toggleLoading({ commit, state }) {
         commit('TOGGLE_LOADING')
     },
     changeColorScheme({ commit, state }) {

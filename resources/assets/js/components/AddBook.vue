@@ -177,7 +177,7 @@
                 setContent: 'setContent',
                 addToLibrary: 'addToLibrary',
                 addToUserCollection: 'addToUserCollection',
-                updateLibrary: 'updateLibrary'
+                updateLibrary: 'updateLibrary',
             })
         }
     }

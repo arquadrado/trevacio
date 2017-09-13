@@ -14,7 +14,12 @@
                 <span>{{ comment }}</span>
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" v-if="loading">
+            <button>
+                <loading-spinner></loading-spinner>
+            </button>
+        </div>
+        <div class="modal-footer" v-else>
 
             <button v-if="editing" @click="edit">Cancel</button>
             <button class="" :disabled="!canSubmit" @click="save" v-if="editing">
@@ -62,6 +67,7 @@
                 selectedComment: 'getSelectedComment',
                 selectedReadingSession: 'getSelectedReadingSession',
                 currentCommentList: 'getCommentListToDisplay',
+                loading: 'isLoading'
             })
         },
         methods: {
@@ -69,10 +75,12 @@
                 this.editing = !this.editing
             },
             save() {
-                this.editing = false
                 this.updateComment({
                     selectedComment: this.selectedComment,
-                    body: this.comment
+                    body: this.comment,
+                    doneCallback: () => {
+                        this.editing = false
+                    }
                 })
             },
             ...mapActions({

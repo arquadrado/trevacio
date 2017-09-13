@@ -46478,7 +46478,8 @@ var getters = {
 
 var actions = {
     toggleLoading: function toggleLoading(_ref) {
-        var commit = _ref.commit;
+        var commit = _ref.commit,
+            state = _ref.state;
 
         commit('TOGGLE_LOADING');
     },
@@ -46587,6 +46588,7 @@ var actions = {
             dispatch = _ref4.dispatch,
             state = _ref4.state;
 
+        dispatch('toggleLoading');
         commit('UPDATE_COMMENT', data.body);
 
         $.post('update-comment', {
@@ -46594,8 +46596,9 @@ var actions = {
             commentId: data.selectedComment.id,
             comment: data.body
         }, function () {
+            dispatch('toggleLoading');
             dispatch('updateLibrary', {
-                successCallback: null,
+                successCallback: data.doneCallback,
                 errorCallback: null
             });
             console.log('comment updated');
@@ -46654,15 +46657,19 @@ var actions = {
             dispatch = _ref7.dispatch,
             state = _ref7.state;
 
+        dispatch('toggleLoading');
         var bookId = state.lists.library[state.selectedBook].id;
-        dispatch('setSelectedBook', null);
-        dispatch('setContent', 'list');
+
         $.post('delete-book', {
             _token: window.handover._token,
             bookId: bookId
         }, function () {
+            dispatch('toggleLoading');
             dispatch('updateLibrary', {
-                successCallback: null,
+                successCallback: function successCallback() {
+                    dispatch('setSelectedBook', null);
+                    dispatch('setContent', 'list');
+                },
                 errorCallback: null
             });
             console.log('book deleted');
@@ -46730,6 +46737,7 @@ var actions = {
         var commit = _ref11.commit,
             dispatch = _ref11.dispatch,
             state = _ref11.state;
+
 
         dispatch('toggleLoading');
         $.post('save-book', {
@@ -46807,15 +46815,18 @@ var actions = {
         commit('SET_SELECTED_READING_SESSION', index);
     },
     updateLibrary: function updateLibrary(_ref17, args) {
-        var commit = _ref17.commit;
+        var commit = _ref17.commit,
+            dispatch = _ref17.dispatch;
 
-        $.get('update-library', function (response) {
+        dispatch('toggleLoading');
+        $.get('update-library', args.successCallback).done(function (response) {
             console.log(response);
+            dispatch('toggleLoading');
             commit('UPDATE_LIBRARY', {
                 userCollection: response.userCollection,
                 library: response.library
             });
-        }).done(args.successCallback).fail(args.errorCallback);
+        }).fail(args.errorCallback);
     },
     updateUserInfo: function updateUserInfo(_ref18) {
         var commit = _ref18.commit;
@@ -46886,7 +46897,14 @@ var mutations = {
         state.lists.library[state.selectedBook].comments.shift(data);
     },
     'RATE_BOOK': function RATE_BOOK(state, rating) {
-        state.lists.library[state.selectedBook].user_rating[0].rating = rating;
+        if (state.lists.library[state.selectedBook].user_rating.length) {
+
+            state.lists.library[state.selectedBook].user_rating[0].rating = rating;
+        } else {
+            state.lists.library[state.selectedBook].user_rating[0] = {
+                rating: rating
+            };
+        }
     },
     'DELETE_READING_SESSION': function DELETE_READING_SESSION(state) {
         if (state.selectedBook) {
@@ -49895,6 +49913,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -49907,7 +49932,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     computed: _extends({
         userRating: function userRating() {
-            return this.selectedBook.user_rating[0].rating;
+            if (this.selectedBook.user_rating && this.selectedBook.user_rating.length) {
+
+                return this.selectedBook.user_rating[0].rating;
+            }
+            return 0;
         },
         canDeleteBook: function canDeleteBook() {
             return this.selectedBook.can_delete == 1;
@@ -49915,7 +49944,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
         selectedBook: 'getSelectedBook',
         selectedList: 'getSelectedList',
-        colorScheme: 'getColorScheme'
+        colorScheme: 'getColorScheme',
+        loading: 'isLoading'
     })),
     methods: _extends({
         showComments: function showComments() {
@@ -50000,7 +50030,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "content-wrapper"
-  }, [(_vm.selectedBook) ? _c('div', {
+  }, [(_vm.loading) ? _c('div', {
+    staticClass: "book"
+  }, [_vm._m(0), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, [_c('loading-spinner')], 1)]) : _vm._e(), _vm._v(" "), (_vm.selectedBook && !_vm.loading) ? _c('div', {
     staticClass: "book"
   }, [_c('div', {
     staticClass: "modal-header"
@@ -50112,7 +50146,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "click": _vm.addBookToUserCollection
     }
   }, [_vm._v("\n                    Add book\n                ")])]) : _vm._e()])]) : _vm._e()])
-},staticRenderFns: []}
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "modal-header"
+  }, [_c('h3', {
+    staticClass: "action"
+  }, [_vm._v("Book")])])
+}]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
@@ -50215,6 +50255,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -50228,6 +50269,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     computed: _extends({
+        hasUserStats: function hasUserStats() {
+            return this.statsToShow === 'user' && this.selectedBook.book_user_stats;
+        },
         hasStatsToShow: function hasStatsToShow() {
             return this.selectedBook !== null && this.selectedBook.book_stats;
         },
@@ -50316,7 +50360,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-header"
   }, [_c('h3', {
     staticClass: "action"
-  }, [_vm._v("Stats - " + _vm._s(_vm.selectedBook.title))]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
+  }, [_vm._v("Stats - " + _vm._s(_vm.selectedBook.title))]), _vm._v(" "), _c('button', {
+    on: {
+      "click": function($event) {
+        _vm.setContent('book')
+      }
+    }
+  }, [_vm._v("Book")]), _vm._v(" "), (_vm.hasHistory) ? _c('button', {
     on: {
       "click": _vm.back
     }
@@ -50360,7 +50410,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.toggleStatsToShow
     }
-  }, [_vm._v("Book stats")])]), _vm._v(" "), (_vm.statsToShow === 'user') ? _c('div', {
+  }, [_vm._v("Book stats")])]), _vm._v(" "), (_vm.hasUserStats) ? _c('div', {
     staticClass: "stats book-user-stats"
   }, [_c('span', [_vm._v("You read "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.page_average))]), _vm._v(" of this book in "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.timespan))]), _vm._v(" days in "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.session_count))]), _vm._v(" sessions")]), _c('br'), _vm._v(" "), _c('span', [_vm._v("You read an average of "), _c('strong', [_vm._v(_vm._s(_vm.selectedBook.book_user_stats.page_per_day_average))]), _vm._v(" pages per day")]), _c('br'), _c('br'), _vm._v(" "), _vm._m(0), _c('br'), _c('br'), _vm._v(" "), _c('ul', {
     staticClass: "distribution"
@@ -50854,6 +50904,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -50891,17 +50946,22 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         selectedBook: 'getSelectedBook',
         selectedComment: 'getSelectedComment',
         selectedReadingSession: 'getSelectedReadingSession',
-        currentCommentList: 'getCommentListToDisplay'
+        currentCommentList: 'getCommentListToDisplay',
+        loading: 'isLoading'
     })),
     methods: _extends({
         edit: function edit() {
             this.editing = !this.editing;
         },
         save: function save() {
-            this.editing = false;
+            var _this = this;
+
             this.updateComment({
                 selectedComment: this.selectedComment,
-                body: this.comment
+                body: this.comment,
+                doneCallback: function doneCallback() {
+                    _this.editing = false;
+                }
             });
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
@@ -50963,7 +51023,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })]) : _c('div', {
     staticClass: "comment-body"
-  }, [_c('span', [_vm._v(_vm._s(_vm.comment))])])]), _vm._v(" "), _c('div', {
+  }, [_c('span', [_vm._v(_vm._s(_vm.comment))])])]), _vm._v(" "), (_vm.loading) ? _c('div', {
+    staticClass: "modal-footer"
+  }, [_c('button', [_c('loading-spinner')], 1)]) : _c('div', {
     staticClass: "modal-footer"
   }, [(_vm.editing) ? _c('button', {
     on: {
@@ -51149,7 +51211,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 url: url,
                 success: success,
                 error: function error(response) {
-                    console.log(response, 'error');
                     self.__stop();
                 }
             });
@@ -51189,7 +51250,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     }
 
                     var booksSections = sections.filter(function (section) {
-                        return section.line.toLowerCase() == 'books' || section.line.toLowerCase() == 'bibliography' || section.line.toLowerCase() == 'popular science books' || section.line.toLowerCase() == 'list of works' || section.line.toLowerCase() == 'works';
+                        return section.line.toLowerCase() == 'books' || section.line.toLowerCase() == 'bibliography' || section.line.toLowerCase() == 'popular science books' || section.line.toLowerCase() == 'list of works' || section.line.toLowerCase() == 'works' || section.line.toLowerCase() == 'obras';
                     });
                     if (booksSections.length > 0) {
                         self.getBooksSectionBookLink(page, booksSections[0]);
@@ -51215,9 +51276,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             $.get({
                 url: url,
                 success: function success(response) {
+                    console.log(response, section);
                     var match = self.getHighestMatch(self.selectedBook.title, response.parse.links, '*');
+                    console.log(match);
 
-                    if (match.matchingIndex > 0.5) {
+                    if (match && match.matchingIndex > 0.5) {
 
                         self.fetchWikipediaPageByTitle(match.content['*']);
                         return;
@@ -51257,12 +51320,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         processWikipediaResults: function processWikipediaResults(searchString, results) {
             var match = this.getHighestMatch(searchString, results, 'title', true);
 
-            if (!match) {
-                this.__stop();
-                return null;
-            }
-
-            if (match.matchingIndex > 0.6) {
+            if (match && match.matchingIndex > 0.6) {
                 return match.content;
             }
 

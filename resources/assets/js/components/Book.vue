@@ -1,7 +1,14 @@
 <template>
     <div class="content-wrapper">
-        <div class="book" v-if="selectedBook">
-
+        <div class="book" v-if="loading">
+            <div class="modal-header">
+                <h3 class="action">Book</h3>
+            </div>
+            <div class="modal-body">
+                <loading-spinner></loading-spinner>
+            </div>
+        </div>
+        <div class="book" v-if="selectedBook && !loading">
             <div class="modal-header">
                 <h3 class="action">Book</h3>
                 <button class="" v-if="canDeleteBook" @click="deleteBook">Delete</button>
@@ -67,7 +74,11 @@
         },
         computed: {
             userRating() {
-                return this.selectedBook.user_rating[0].rating
+                if (this.selectedBook.user_rating && this.selectedBook.user_rating.length) {
+
+                    return this.selectedBook.user_rating[0].rating
+                }
+                return 0
             },
             canDeleteBook() {
                 return this.selectedBook.can_delete == 1
@@ -75,7 +86,8 @@
             ...mapGetters({
                 selectedBook: 'getSelectedBook',
                 selectedList: 'getSelectedList',
-                colorScheme: 'getColorScheme'
+                colorScheme: 'getColorScheme',
+                loading: 'isLoading'
             })
         },
         methods: {

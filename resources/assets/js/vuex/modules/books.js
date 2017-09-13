@@ -46,6 +46,7 @@ const actions = {
         commit('SET_SELECTED_COMMENT', comment)
     },
     updateComment({ commit, dispatch, state }, data) {
+        dispatch('toggleLoading')
         commit('UPDATE_COMMENT', data.body)
         
         $.post('update-comment', {
@@ -53,8 +54,9 @@ const actions = {
             commentId: data.selectedComment.id,
             comment: data.body
         }, () => {
+            dispatch('toggleLoading')
             dispatch('updateLibrary', {
-                successCallback: null,
+                successCallback: data.doneCallback,
                 errorCallback: null,
             })
             console.log('comment updated')
@@ -106,15 +108,19 @@ const actions = {
          })
     },
     deleteBook({ commit, dispatch, state }) {
+        dispatch('toggleLoading')
         let bookId = state.lists.library[state.selectedBook].id 
-        dispatch('setSelectedBook', null)
-        dispatch('setContent', 'list')
+        
         $.post('delete-book', {
             _token: window.handover._token,
             bookId: bookId,
         }, () => {
+            dispatch('toggleLoading')
             dispatch('updateLibrary', {
-                successCallback: null,
+                successCallback: () => {
+                    dispatch('setSelectedBook', null)
+                    dispatch('setContent', 'list')
+                },
                 errorCallback: null,
             })
             console.log('book deleted')
@@ -172,6 +178,7 @@ const actions = {
     },
 
     addToLibrary({ commit, dispatch, state }, args) {
+
         dispatch('toggleLoading')
         $.post('save-book', {
             _token: window.handover._token,
@@ -239,14 +246,17 @@ const actions = {
     setSelectedReadingSession({ commit }, index) {
         commit('SET_SELECTED_READING_SESSION', index)
     },
-    updateLibrary({ commit }, args) {
-        $.get('update-library', (response) => {
+    updateLibrary({ commit, dispatch }, args) {
+        dispatch('toggleLoading')
+        $.get('update-library', args.successCallback)
+        .done((response) => {
             console.log(response)
+            dispatch('toggleLoading')
             commit('UPDATE_LIBRARY', {
                 userCollection: response.userCollection,
                 library: response.library
             })
-        }).done(args.successCallback)
+        })
         .fail(args.errorCallback)
     },
     updateUserInfo({ commit }) {
@@ -310,7 +320,14 @@ const mutations = {
         state.lists.library[state.selectedBook].comments.shift(data)
     },
     'RATE_BOOK': (state, rating) => {
-        state.lists.library[state.selectedBook].user_rating[0].rating = rating
+        if (state.lists.library[state.selectedBook].user_rating.length) {
+
+            state.lists.library[state.selectedBook].user_rating[0].rating = rating
+        } else {
+            state.lists.library[state.selectedBook].user_rating[0] = {
+                rating: rating
+            }
+        }
     },
     'DELETE_READING_SESSION': (state) => {
         if (state.selectedBook) {

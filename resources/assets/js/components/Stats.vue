@@ -2,6 +2,7 @@
     <div class="content-wrapper">
         <div class="modal-header">
             <h3 class="action">Stats - {{ selectedBook.title }}</h3>
+            <button class="" @click="setContent('book')">Book</button>
             <button class="" @click="back" v-if="hasHistory">Back</button>
             <button class="" @click="close">close</button>
         </div>
@@ -15,7 +16,7 @@
                 <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow === 'all'">Book stats</button>
                 
             </div>
-            <div class="stats book-user-stats" v-if="statsToShow === 'user'">
+            <div class="stats book-user-stats" v-if="hasUserStats">
                 <span>You read <strong>{{ selectedBook.book_user_stats.page_average }}</strong> of this book in <strong>{{selectedBook.book_user_stats.timespan}}</strong> days in <strong>{{selectedBook.book_user_stats.session_count}}</strong> sessions</span><br>
                 <span>You read an average of <strong>{{ selectedBook.book_user_stats.page_per_day_average }}</strong> pages per day</span><br><br>
                 <span><strong>Distribution:</strong></span><br><br>
@@ -54,6 +55,9 @@
             }
         },
         computed: {
+            hasUserStats() {
+                return this.statsToShow === 'user' && this.selectedBook.book_user_stats
+            },
             hasStatsToShow() {
                 return this.selectedBook !== null && this.selectedBook.book_stats
             },

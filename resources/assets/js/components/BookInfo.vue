@@ -107,7 +107,6 @@
                     url: url,
                     success: success,
                     error: (response) => {
-                        console.log(response, 'error')
                         self.__stop()
                     }
                 })
@@ -147,7 +146,7 @@
                         }
 
                         let booksSections = sections.filter((section) => {
-                            return section.line.toLowerCase() == 'books' || section.line.toLowerCase() == 'bibliography' || section.line.toLowerCase() == 'popular science books' || section.line.toLowerCase() == 'list of works' || section.line.toLowerCase() == 'works'
+                            return section.line.toLowerCase() == 'books' || section.line.toLowerCase() == 'bibliography' || section.line.toLowerCase() == 'popular science books' || section.line.toLowerCase() == 'list of works' || section.line.toLowerCase() == 'works' || section.line.toLowerCase() == 'obras'
                         })
                         if (booksSections.length > 0) {
                             self.getBooksSectionBookLink(page, booksSections[0],)
@@ -176,9 +175,11 @@
                 $.get({
                     url: url,
                     success: (response) => {
+                        console.log(response, section)
                         let match = self.getHighestMatch(self.selectedBook.title, response.parse.links, '*')
+                        console.log(match)
 
-                        if (match.matchingIndex > 0.5) {
+                        if (match && match.matchingIndex > 0.5) {
 
                             self.fetchWikipediaPageByTitle(match.content['*'])
                             return
@@ -225,12 +226,7 @@
                     true
                 ) 
 
-                if (!match) {
-                    this.__stop()
-                    return null
-                }
-
-                if (match.matchingIndex > 0.6) {
+                if (match && match.matchingIndex > 0.6) {
                     return match.content
                 }
 
