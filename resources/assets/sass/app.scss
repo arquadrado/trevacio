@@ -36,10 +36,6 @@ body {
 		transition: all 300ms ease-in;
 		//font-size: 28px;
 		
-		.container {
-			margin: auto;
-			padding: 0;
-		}
 		.welcome {
 			font-family: 'Times New Roman';
 			position:relative;
@@ -72,10 +68,10 @@ body {
 			}
 			.login-header, .register-header {
 				text-align: center;
-				margin: 70px;
+				margin: 35px 14px;
 				.title {
 					font-weight: 900;
-					font-size: 63px;
+					font-size: 56px;
 					a {
 						text-decoration: none;
 					}
@@ -300,9 +296,8 @@ body {
 		}
 
 		.page-title {
-			font-weight: 900;
-			font-size: 49px;
-			margin-top: 63px;
+			font-size: 21px;
+			margin-top: 28px;
 		}
 
 
@@ -320,7 +315,7 @@ body {
 		}
 
 		.h20 {
-			height: 20vh;
+			height: 14vh;
 		}
 
 		.center {
@@ -400,7 +395,8 @@ body {
 	}
 
 	.modal-body {
-	  //margin: 20px 0;
+	  margin: auto;
+	  max-width: 500px;
 	  .book-info {
 	  	margin-bottom: 21px;
 	  	.author {

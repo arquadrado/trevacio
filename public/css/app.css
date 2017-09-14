@@ -8387,11 +8387,6 @@ body #app {
   transition: all 300ms ease-in;
 }
 
-body #app .container {
-  margin: auto;
-  padding: 0;
-}
-
 body #app .welcome {
   font-family: 'Times New Roman';
   position: relative;
@@ -8436,7 +8431,7 @@ body #app .login .register-header,
 body #app .register .login-header,
 body #app .register .register-header {
   text-align: center;
-  margin: 70px;
+  margin: 35px 14px;
 }
 
 body #app .login .login-header .title,
@@ -8444,7 +8439,7 @@ body #app .login .register-header .title,
 body #app .register .login-header .title,
 body #app .register .register-header .title {
   font-weight: 900;
-  font-size: 63px;
+  font-size: 56px;
 }
 
 body #app .login .login-header .title a,
@@ -8721,9 +8716,8 @@ body #app .content .content-wrapper .book-keeper .fallbacks {
 }
 
 body #app .page-title {
-  font-weight: 900;
-  font-size: 49px;
-  margin-top: 63px;
+  font-size: 21px;
+  margin-top: 28px;
 }
 
 body #app .eye-suit {
@@ -8740,7 +8734,7 @@ body #app .h80 {
 }
 
 body #app .h20 {
-  height: 20vh;
+  height: 14vh;
 }
 
 body #app .center {
@@ -8820,6 +8814,11 @@ body .modal-header h3 {
 body .modal-footer {
   border: 0;
   text-align: center;
+}
+
+body .modal-body {
+  margin: auto;
+  max-width: 500px;
 }
 
 body .modal-body .book-info {
