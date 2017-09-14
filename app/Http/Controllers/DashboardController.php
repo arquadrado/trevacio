@@ -48,10 +48,17 @@ class DashboardController extends Controller
             return $reduced;
         }, []);
 
+        $authors = Author::all()->reduce(function ($reduced, $author) {
+            $author->load('books');
+            $reduced[$author->id] = $author;
+            return $reduced;
+        }, []);
+
         return view('dashboard', [
             'user' => $user,
             'userCollection' => $userCollection,
-            'library' => $library
+            'library' => $library,
+            'authors' => $authors
         ]);
     }
 

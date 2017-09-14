@@ -22,6 +22,7 @@
     import AddComment from './AddComment.vue'
     import Comment from './Comment.vue'
     import BookInfo from './BookInfo.vue'
+    import Author from './Author.vue'
 
     export default {
         components: {
@@ -39,6 +40,7 @@
             'add-comment': AddComment,
             'comment': Comment,
             'book-info': BookInfo,
+            'author': Author,
         },
         computed: {
             style() {

@@ -76,19 +76,19 @@
             },
             textareaStyle() {
                 return {
-                    'border': `2px solid ${this.colorScheme.details}`
+                    'border': `1px solid ${this.colorScheme.details}`
                 }
             },
             inputStyle() {
                 return {
-                    'border-bottom': `2px solid ${this.colorScheme.details}`
+                    'border-bottom': `1px solid ${this.colorScheme.details}`
                 }
             },
             style() {
                 return {
                     'background-color': this.colorScheme.background,
                     'color': this.colorScheme.details,
-                    'border': `2px solid ${this.colorScheme.details}`
+                    'border': `1px solid ${this.colorScheme.details}`
                 }
             },
             ...mapGetters({

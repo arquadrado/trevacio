@@ -47,7 +47,7 @@
             },
             textareaStyle() {
                 return {
-                    'border': `2px solid ${this.colorScheme.details}`
+                    'border': `1px solid ${this.colorScheme.details}`
                 }
             },
             commentableId() {

@@ -1,14 +1,6 @@
 <template>
     <div class="content-wrapper">
-        <div class="reading-session" v-if="loading">
-            <div class="modal-header">
-                <h3 class="action">Book</h3>
-            </div>
-            <div class="modal-body">
-                <loading-spinner></loading-spinner>
-            </div>
-        </div>
-        <div class="reading-session" v-else>
+        <div class="reading-session">
             <div class="modal-header">
                 <h3 class="action">{{ title }}</h3>
                 <h4 v-if="!adding">reading session</h4>
@@ -43,8 +35,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button v-if="!adding" class="modal-default-button" @click="setSelectedReadingSession(null)">Add another session</button>
-                <button v-if="adding && !loading" class="modal-default-button" :disabled="!canSubmit" @click="saveSession">
+                <button v-if="!adding" class="" @click="setSelectedReadingSession(null)">Add another session</button>
+                <button v-if="adding && !loading" class="" :disabled="!canSubmit" @click="saveSession">
                     Save
                 </button>
                 <button v-if="adding && loading">
@@ -80,7 +72,7 @@
             },
             inputStyle() {
                 return {
-                    'border-bottom': `2px solid ${this.colorScheme.details}`
+                    'border-bottom': `1px solid ${this.colorScheme.details}`
                 }
             },
             adding() {
@@ -112,7 +104,6 @@
                             label: 'Yes',
                             callback: () => {
                                 self.deleteReadingSession()
-                                self.toggleModal()
                             }
                         },
                         {
@@ -126,7 +117,6 @@
                 this.toggleModal()
             },
             saveSession() {
-                console.log(this.selectedBook, 'selectedBook')
                 this.saveReadingSession({
                     session: this.session,
                     bookId: this.selectedBook.id,

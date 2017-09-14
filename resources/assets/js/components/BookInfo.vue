@@ -12,7 +12,7 @@
             <loading-spinner v-if="loading"></loading-spinner>
             <div class="show-info" v-else>
                 <div class="info" v-if="hasInfo">
-                    <p>{{ info.extract }}</p>
+                    <p class="info-text">{{ info.extract }}</p>
                     <a :href="info.fullurl" target=_blank>source</a>
                 </div>
                 <div class="info-not-found" v-if="!hasInfo">
@@ -56,7 +56,7 @@
             },
             inputStyle() {
                 return {
-                    'border-bottom': `2px solid ${this.colorScheme.details}`
+                    'border-bottom': `1px solid ${this.colorScheme.details}`
                 }
             },
             

@@ -9,7 +9,10 @@ const state = {
         library: typeof handover.library !== 'undefined' ? handover.library : [],
     },
     commentListToDisplay: 'book',
-    booksLoadedInfo: {}
+    booksLoadedInfo: {},
+    authors: typeof handover.authors !== 'undefined' ? handover.authors : {},
+    selectedAuthorId: null,
+    authorsLoadedInfo: {}
 }
 
 const getters = {
@@ -32,10 +35,18 @@ const getters = {
     getSelectedListName: state => state.selectedList,
     getLists: state => state.lists,
     getCommentListToDisplay: state => state.commentListToDisplay,
-    getBooksLoadedInfo: state => state.booksLoadedInfo
+    getBooksLoadedInfo: state => state.booksLoadedInfo,
+    getSelectedAuthor: state => state.authors[state.selectedAuthorId],
+    getAuthorsLoadedInfo: state => state.authorsLoadedInfo
 }
 
 const actions = {
+    setAuthorInfo({ commit }, info) {
+        commit('SET_AUTHOR_INFO', info)
+    },
+    setSelectedAuthor({ commit }, authorId) {
+        commit('SET_SELECTED_AUTHOR', authorId)
+    },
     setBookInfo({ commit }, info) {
         commit('SET_BOOK_INFO', info)
     },
@@ -120,6 +131,7 @@ const actions = {
                 successCallback: () => {
                     dispatch('setSelectedBook', null)
                     dispatch('setContent', 'list')
+                    dispatch('toggleModal')
                 },
                 errorCallback: null,
             })
@@ -143,6 +155,7 @@ const actions = {
             dispatch('toggleLoading')
             dispatch('setSelectedReadingSession', null)
             dispatch('updateUserInfo')
+            dispatch('toggleModal')
             console.log('session deleted')
         })
          .fail(() => {
@@ -278,9 +291,8 @@ const actions = {
             bookId: args.bookId
         }, (response, status, responseContent) => {
             if (responseContent.status == 200) {
+                dispatch('toggleLoading')
                 args.successCallback = () => {
-                    dispatch('toggleLoading')
-                    //dispatch('setSelectedReadingSession', response.session)
                     dispatch('setContent', 'reading-session-list')
                 }
                 dispatch('updateLibrary', args)
@@ -296,6 +308,12 @@ const actions = {
 }
 
 const mutations = {
+    'SET_AUTHOR_INFO': (state, info) => {
+        state.authorsLoadedInfo[state.selectedAuthorId] = info
+    },
+    'SET_SELECTED_AUTHOR': (state, authorId) => {
+        state.selectedAuthorId = authorId
+    },
     'SET_BOOK_INFO': (state, info) => {
         state.booksLoadedInfo[state.selectedBook] = info
     },

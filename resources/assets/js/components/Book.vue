@@ -1,14 +1,6 @@
 <template>
     <div class="content-wrapper">
-        <div class="book" v-if="loading">
-            <div class="modal-header">
-                <h3 class="action">Book</h3>
-            </div>
-            <div class="modal-body">
-                <loading-spinner></loading-spinner>
-            </div>
-        </div>
-        <div class="book" v-if="selectedBook && !loading">
+        <div class="book" v-if="selectedBook">
             <div class="modal-header">
                 <h3 class="action">Book</h3>
                 <button class="" @click="searchBook">Search</button>
@@ -26,7 +18,15 @@
             <div class="modal-body">
                 <div class="book-info">
                     <h3><strong>{{ selectedBook.title }}</strong></h3>
-                    <span>by<strong> {{ selectedBook.author.name }} </strong></span><br><br>
+                    <span 
+                        class="author" 
+                        @click="selectAuthor(selectedBook.author.id)">by
+                        <strong>
+                            {{ selectedBook.author.name }}
+                        </strong>
+                    </span>
+                    <br>
+                    <br>
                     <div class="ratings">
                         <span>overall rating</span>
                         <div class="overall">
@@ -48,11 +48,11 @@
             </div>
             
             <div class="modal-footer">
-                <button class="modal-default-button" @click="removeBookFromUserCollection" v-if="selectedBook.in_library">Remove from collection</button>
+                <button class="" @click="removeBookFromUserCollection" v-if="selectedBook.in_library">Remove from collection</button>
                 <button class="" v-if="canDeleteBook" @click="deleteBook">Delete</button>
                 <div class="book-not-owned" v-if="!selectedBook.in_library">
                     <h4>This book is not in your library. Add it to perform additional actions</h4>
-                    <button class="modal-default-button" @click="addBookToUserCollection">
+                    <button class="" @click="addBookToUserCollection">
                         Add book
                     </button>
                 </div>
@@ -91,6 +91,10 @@
             })
         },
         methods: {
+            selectAuthor(id) {
+                this.setSelectedAuthor(id)
+                this.setContent('author')
+            },
             showComments() {
                 this.setCurrentCommentList('book')
                 this.setContent('comment-list')
@@ -104,7 +108,6 @@
                             label: 'Yes',
                             callback: () => {
                                 self.deleteBookFromLibrary()
-                                self.toggleModal()
                             }
                         },
                         {
@@ -165,7 +168,8 @@
                 rateBook: 'rateBook',
                 nextBook: 'nextBook',
                 previousBook: 'previousBook',
-                setCurrentCommentList: 'setCurrentCommentList'
+                setCurrentCommentList: 'setCurrentCommentList',
+                setSelectedAuthor: 'setSelectedAuthor' 
             })
         }
     }

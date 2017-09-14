@@ -4,11 +4,14 @@
             <div class="modal-wrapper">
                 <div class="modal-container" :style="style">
 
-                    <h3>{{ message }}</h3>
-                    <div class="actions" v-if="actions">
+                    <h4>{{ message }}</h4>
+                    <div class="actions" v-if="actions && !loading">
                         <button v-for="action in actions" @click="action.callback">{{ action.label }}</button>
                     </div>
-                    <button v-else @click="toggleModal">close</button>
+                    <div class="actions" v-else>
+                        <loading-spinner></loading-spinner>
+                    </div>
+                    <button v-if="!actions" @click="toggleModal">close</button>
                 </div>
             </div>
         </div>
@@ -34,12 +37,13 @@
                 return {
                     'background-color': this.colorScheme.background,
                     'color': this.colorScheme.details,
-                    'border': `2px solid ${this.colorScheme.details}`
+                    'border': `1px solid ${this.colorScheme.details}`
                 }
             },
             ...mapGetters({
                 content: 'getModalContent',
                 colorScheme: 'getColorScheme',
+                loading: 'isLoading'
             })
         },
         methods: {

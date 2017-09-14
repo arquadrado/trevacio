@@ -4,9 +4,8 @@
     <div class="welcome">
         <div class="greetings">
             <h1><strong>Welcome to <a href="">Kooper</a></strong></h1>
-            <h3>where you koop your beeks...</h3>
-            <h3><strong><a href="{{ route('dashboard') }}">keep your books</a></strong></h3>
-            <h4>I mean</h4>
+            <h4>where you koop your beeks...</h4>
+            <h3 class="keep-books"><strong><a href="{{ route('dashboard') }}">keep your books</a></strong></h3><h4 class="i-mean">, I mean</h4>
         </div>
     </div>
 @endsection

@@ -4,7 +4,7 @@
 <div class="container register">
     <div class="row register-header">
         <div class="col-xs-12">
-            <h1><strong><a href="{{ route('home') }}">Kooper</a></strong></h1>
+            <h1 class="title"><strong><a href="{{ route('home') }}">Kooper</a></strong></h1>
             <h3>Register</h3>
         </div>
     </div>

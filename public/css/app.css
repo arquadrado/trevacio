@@ -8387,6 +8387,11 @@ body #app {
   transition: all 300ms ease-in;
 }
 
+body #app .container {
+  margin: auto;
+  padding: 0;
+}
+
 body #app .welcome {
   font-family: 'Times New Roman';
   position: relative;
@@ -8399,11 +8404,31 @@ body #app .welcome .greetings {
   text-align: center;
   display: table-cell;
   vertical-align: middle;
+  padding: 42px;
+}
+
+body #app .welcome .greetings h1 {
+  font-size: 42px;
+  margin-bottom: 56px;
+}
+
+body #app .welcome .greetings .keep-books {
+  margin-top: 7px;
+  display: inline-block;
+}
+
+body #app .welcome .greetings .i-mean {
+  display: inline-block;
 }
 
 body #app .login,
 body #app .register {
   font-family: 'Times New Roman';
+}
+
+body #app .login a,
+body #app .register a {
+  color: #000000;
 }
 
 body #app .login .login-header,
@@ -8412,6 +8437,21 @@ body #app .register .login-header,
 body #app .register .register-header {
   text-align: center;
   margin: 70px;
+}
+
+body #app .login .login-header .title,
+body #app .login .register-header .title,
+body #app .register .login-header .title,
+body #app .register .register-header .title {
+  font-weight: 900;
+  font-size: 63px;
+}
+
+body #app .login .login-header .title a,
+body #app .login .register-header .title a,
+body #app .register .login-header .title a,
+body #app .register .register-header .title a {
+  text-decoration: none;
 }
 
 body #app .login #login-form,
@@ -8426,6 +8466,15 @@ body #app .login #register-form .form-group,
 body #app .register #login-form .form-group,
 body #app .register #register-form .form-group {
   text-align: center;
+  max-width: 500px;
+  margin: auto;
+}
+
+body #app .login #login-form .form-group .submit-button,
+body #app .login #register-form .form-group .submit-button,
+body #app .register #login-form .form-group .submit-button,
+body #app .register #register-form .form-group .submit-button {
+  margin-top: 14px;
 }
 
 body #app .login #login-form .form-group .submit-button button,
@@ -8447,7 +8496,7 @@ body #app .login #login-form .form-group .input-text,
 body #app .login #register-form .form-group .input-text,
 body #app .register #login-form .form-group .input-text,
 body #app .register #register-form .form-group .input-text {
-  margin: 7px 0 35px 0;
+  margin: 7px 0 21px 0;
 }
 
 body #app .login #login-form .form-group .input-text .help-block,
@@ -8461,9 +8510,9 @@ body #app .login #login-form .form-group .input-text input,
 body #app .login #register-form .form-group .input-text input,
 body #app .register #login-form .form-group .input-text input,
 body #app .register #register-form .form-group .input-text input {
-  height: 42px;
+  height: 30px;
   width: 100%;
-  border-bottom: 2px solid #000000;
+  border-bottom: 1px solid #000000;
   background-color: transparent;
 }
 
@@ -8472,6 +8521,10 @@ body #app .login #register-form .forgot-password,
 body #app .register #login-form .forgot-password,
 body #app .register #register-form .forgot-password {
   margin-top: 21px;
+}
+
+body #app .info-text {
+  text-align: justify;
 }
 
 body #app button {
@@ -8614,6 +8667,10 @@ body #app .content .content-wrapper {
   position: relative;
 }
 
+body #app .content .content-wrapper .author .author-info {
+  margin-bottom: 35px;
+}
+
 body #app .content .content-wrapper .user-settings .modal-footer {
   text-align: center;
 }
@@ -8625,11 +8682,13 @@ body #app .content .content-wrapper .user-settings .modal-footer .logout-button 
 
 body #app .content .content-wrapper .greeting {
   font-size: 35px;
+  margin-top: 105px;
 }
 
 body #app .content .content-wrapper .cta {
   cursor: pointer;
   font-weight: 900;
+  text-transform: uppercase;
 }
 
 body #app .content .content-wrapper .book-keeper {
@@ -8661,8 +8720,14 @@ body #app .content .content-wrapper .book-keeper .fallbacks {
   border: inherit;
 }
 
+body #app .page-title {
+  font-weight: 900;
+  font-size: 49px;
+  margin-top: 63px;
+}
+
 body #app .eye-suit {
-  padding: 42px 0 0 0;
+  padding: 14px 0 0 0;
 }
 
 body #app .table {
@@ -8679,7 +8744,6 @@ body #app .h20 {
 }
 
 body #app .center {
-  display: table-cell;
   text-align: center;
 }
 
@@ -8755,10 +8819,15 @@ body .modal-header h3 {
 
 body .modal-footer {
   border: 0;
+  text-align: center;
 }
 
 body .modal-body .book-info {
   margin-bottom: 21px;
+}
+
+body .modal-body .book-info .author {
+  cursor: pointer;
 }
 
 body .modal-body .book-info .ratings .overall {
@@ -8787,7 +8856,9 @@ body .modal-body .book-info .ratings .user .material-icons {
 
 body .modal-body .book-list,
 body .modal-body .session-list,
-body .modal-body .comment-list {
+body .modal-body .comment-list,
+body .modal-body .note-list {
+  margin-top: 21px;
   list-style: none;
   padding: 0;
 }
@@ -8797,14 +8868,17 @@ body .modal-body .book-list .session span,
 body .modal-body .session-list .book span,
 body .modal-body .session-list .session span,
 body .modal-body .comment-list .book span,
-body .modal-body .comment-list .session span {
+body .modal-body .comment-list .session span,
+body .modal-body .note-list .book span,
+body .modal-body .note-list .session span {
   cursor: pointer;
   font-weight: 900;
 }
 
 body .modal-body .comment-list,
 body .modal-body .book-list,
-body .modal-body .session-list {
+body .modal-body .session-list,
+body .modal-body .note-list {
   list-style: none;
   padding: 0;
 }
@@ -8817,7 +8891,10 @@ body .modal-body .book-list .book,
 body .modal-body .book-list .session,
 body .modal-body .session-list .comment,
 body .modal-body .session-list .book,
-body .modal-body .session-list .session {
+body .modal-body .session-list .session,
+body .modal-body .note-list .comment,
+body .modal-body .note-list .book,
+body .modal-body .note-list .session {
   text-align: left;
   margin-bottom: 21px;
   cursor: pointer;
@@ -8850,7 +8927,16 @@ body .modal-body .session-list .book .book-info,
 body .modal-body .session-list .book .session-info,
 body .modal-body .session-list .session .comment-info,
 body .modal-body .session-list .session .book-info,
-body .modal-body .session-list .session .session-info {
+body .modal-body .session-list .session .session-info,
+body .modal-body .note-list .comment .comment-info,
+body .modal-body .note-list .comment .book-info,
+body .modal-body .note-list .comment .session-info,
+body .modal-body .note-list .book .comment-info,
+body .modal-body .note-list .book .book-info,
+body .modal-body .note-list .book .session-info,
+body .modal-body .note-list .session .comment-info,
+body .modal-body .note-list .session .book-info,
+body .modal-body .note-list .session .session-info {
   display: inline-block;
 }
 
@@ -8907,7 +8993,25 @@ body .modal-body .session-list .session .comment-info .book-author,
 body .modal-body .session-list .session .book-info .comment-user,
 body .modal-body .session-list .session .book-info .book-author,
 body .modal-body .session-list .session .session-info .comment-user,
-body .modal-body .session-list .session .session-info .book-author {
+body .modal-body .session-list .session .session-info .book-author,
+body .modal-body .note-list .comment .comment-info .comment-user,
+body .modal-body .note-list .comment .comment-info .book-author,
+body .modal-body .note-list .comment .book-info .comment-user,
+body .modal-body .note-list .comment .book-info .book-author,
+body .modal-body .note-list .comment .session-info .comment-user,
+body .modal-body .note-list .comment .session-info .book-author,
+body .modal-body .note-list .book .comment-info .comment-user,
+body .modal-body .note-list .book .comment-info .book-author,
+body .modal-body .note-list .book .book-info .comment-user,
+body .modal-body .note-list .book .book-info .book-author,
+body .modal-body .note-list .book .session-info .comment-user,
+body .modal-body .note-list .book .session-info .book-author,
+body .modal-body .note-list .session .comment-info .comment-user,
+body .modal-body .note-list .session .comment-info .book-author,
+body .modal-body .note-list .session .book-info .comment-user,
+body .modal-body .note-list .session .book-info .book-author,
+body .modal-body .note-list .session .session-info .comment-user,
+body .modal-body .note-list .session .session-info .book-author {
   font-size: 10px;
   font-weight: 900;
 }
@@ -8920,7 +9024,10 @@ body .modal-body .book-list .book .quick-actions,
 body .modal-body .book-list .session .quick-actions,
 body .modal-body .session-list .comment .quick-actions,
 body .modal-body .session-list .book .quick-actions,
-body .modal-body .session-list .session .quick-actions {
+body .modal-body .session-list .session .quick-actions,
+body .modal-body .note-list .comment .quick-actions,
+body .modal-body .note-list .book .quick-actions,
+body .modal-body .note-list .session .quick-actions {
   display: inline-block;
   text-align: right;
   float: right;
@@ -8934,7 +9041,10 @@ body .modal-body .book-list .book .quick-actions .material-icons,
 body .modal-body .book-list .session .quick-actions .material-icons,
 body .modal-body .session-list .comment .quick-actions .material-icons,
 body .modal-body .session-list .book .quick-actions .material-icons,
-body .modal-body .session-list .session .quick-actions .material-icons {
+body .modal-body .session-list .session .quick-actions .material-icons,
+body .modal-body .note-list .comment .quick-actions .material-icons,
+body .modal-body .note-list .book .quick-actions .material-icons,
+body .modal-body .note-list .session .quick-actions .material-icons {
   font-size: 18px;
 }
 
@@ -8946,7 +9056,10 @@ body .modal-body .book-list .book:hover,
 body .modal-body .book-list .session:hover,
 body .modal-body .session-list .comment:hover,
 body .modal-body .session-list .book:hover,
-body .modal-body .session-list .session:hover {
+body .modal-body .session-list .session:hover,
+body .modal-body .note-list .comment:hover,
+body .modal-body .note-list .book:hover,
+body .modal-body .note-list .session:hover {
   -webkit-box-shadow: -2px 3px 6px 2px rgba(0, 0, 0, 0.25);
   box-shadow: -2px 3px 6px 2px rgba(0, 0, 0, 0.25);
   -webkit-transition: all 0.3s ease-in;

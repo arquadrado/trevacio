@@ -2,6 +2,8 @@
 
 @section('content')
 <div class="table h20">
+    <h1 class="page-title center">Kooper</h1>
+    <br>
     <div class="eye-suit center middle">
         <button @click="suitEyes" title="Suit your eyes"><i class="material-icons">palette</i></button>
         <button @click="toggleGui" title="Call GUI"><i class="material-icons">local_library</i></button>
@@ -19,6 +21,7 @@
 @section('handover')
 <script>
     window.handover = {
+        authors: {!! json_encode($authors) !!},
         user: {!! $user !!},
         userCollection: {!! json_encode($userCollection) !!},
         library: {!! json_encode($library) !!},

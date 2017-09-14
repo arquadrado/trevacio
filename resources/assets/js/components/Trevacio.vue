@@ -46,7 +46,7 @@
             },
             fakeInputStyle() {
                 return {
-                    'border-bottom': `3px solid ${this.colorScheme.details}`
+                    'border-bottom': `1px solid ${this.colorScheme.details}`
                 }
             },
             ...mapGetters({

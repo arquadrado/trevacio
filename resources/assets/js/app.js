@@ -72,5 +72,10 @@ const app = new Vue({
             toggleGui: 'toggleGui'
         })
     },
+    mounted() {
+        window.onbeforeunload = () => {
+            return true;
+        }
+    },
     store
 });

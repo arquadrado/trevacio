@@ -20,7 +20,7 @@
             </div>
 
             <div class="modal-footer">
-                <button class="modal-default-button" v-if="!loading" :disabled="!canSubmit" @click="getBook">
+                <button class="" v-if="!loading" :disabled="!canSubmit" @click="getBook">
                     Search
                 </button>
                 <button v-if="loading">
@@ -63,19 +63,19 @@
             },
             textareaStyle() {
                 return {
-                    'border': `2px solid ${this.colorScheme.details}`
+                    'border': `1px solid ${this.colorScheme.details}`
                 }
             },
             inputStyle() {
                 return {
-                    'border-bottom': `2px solid ${this.colorScheme.details}`
+                    'border-bottom': `1px solid ${this.colorScheme.details}`
                 }
             },
             style() {
                 return {
                     'background-color': this.colorScheme.background,
                     'color': this.colorScheme.details,
-                    'border': `2px solid ${this.colorScheme.details}`
+                    'border': `1px solid ${this.colorScheme.details}`
                 }
             },
             ...mapGetters({

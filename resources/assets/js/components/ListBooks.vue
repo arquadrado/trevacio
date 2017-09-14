@@ -95,7 +95,6 @@
             ...mapActions({
                 setContent: 'setContent',
                 setSelectedBook: 'setSelectedBook',
-                setContent: 'setContent',
                 setSelectedList: 'setSelectedList',
                 setCurrentCommentList: 'setCurrentCommentList'
             })
