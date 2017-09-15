@@ -33,4 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/rate-book', 'DashboardController@rateBook')->name('rate-book');
     Route::post('/save-comment', 'DashboardController@saveComment')->name('save-comment');
     Route::post('/update-comment', 'DashboardController@updateComment')->name('update-comment');
+    Route::post('/save-color-scheme', 'DashboardController@saveColorScheme')->name('save-color-scheme');
+    Route::post('/update-color-scheme', 'DashboardController@updateColorScheme')->name('update-color-scheme');
+    Route::post('/delete-color-scheme', 'DashboardController@deleteColorScheme')->name('delete-color-scheme');
 });

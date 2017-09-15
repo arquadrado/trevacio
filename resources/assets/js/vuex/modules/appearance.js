@@ -1,5 +1,8 @@
 const state = {
-    colorSchemes: [
+    colorSchemeSet: typeof handover.user.color_schemes != 'undefined' &&
+                    typeof handover.user.color_schemes.length > 0 ? 'user' : 'default',
+    userColorSchemes: typeof handover.user.color_schemes != 'undefined' ? handover.user.color_schemes : [],
+    defaultColorSchemes: [
         {
             details: '#000000',
             background: '#fff7e6',
@@ -50,16 +53,75 @@ const state = {
             background: '#703A9E'
         },
     ],
-    selectedColorSchemeIndex: 0,
+    defaultColorSchemeSelectedIndex: 0,
+    userColorSchemeSelectedIndex: 0,
     loading: false
 }
 
 const getters = {
-    getColorScheme: state => state.colorSchemes[state.selectedColorSchemeIndex],
-    isLoading: state => state.loading
+    getColorSchemeSet: state => state.colorSchemeSet,
+    getColorScheme: state => {
+        if (state.colorSchemeSet == 'user') {
+            return state.userColorSchemes[state.userColorSchemeSelectedIndex]
+        }
+        return state.defaultColorSchemes[state.defaultColorSchemeSelectedIndex]
+    },
+    isLoading: state => state.loading,
+    getUserColorSchemes: state => state.userColorSchemes
 }
 
 const actions = {
+    toggleColorSchemeSet({ commit, state }) {
+        console.log('xis')
+        commit('TOGGLE_COLOR_SCHEME_SET')
+    },
+    updateColorScheme({ commit, state }, data) {
+        console.log(data)
+        $.post('update-color-scheme', {
+            _token: window.handover._token,
+            schemeId: data.id,
+            details: data.details,
+            background: data.background,
+            font: data.font,
+        }, (response) => {
+            console.log(response)
+            commit('UPDATE_COLOR_SCHEME', {
+                index: data.index,
+                details: data.details,
+                background: data.background,
+                font: data.font,
+            })
+        })
+        .fail(() => {
+        })
+    },
+    saveColorScheme({ commit, state }, data) {
+        console.log(data)
+        $.post('save-color-scheme', {
+            _token: window.handover._token,
+            details: data.details,
+            background: data.background,
+            font: data.font,
+        }, (response) => {
+            console.log(response)
+            commit('SAVE_COLOR_SCHEME', {
+                index: data.index,
+                details: data.details,
+                background: data.background,
+                font: data.font,
+                id: response.scheme.id
+            })
+        })
+        .fail(() => {
+
+        })
+    },
+    addColorScheme({ commit, state }) {
+        commit('ADD_COLOR_SCHEME')
+    },
+    setSelectedColorScheme({ commit, state }, scheme) {
+        commit('SET_SELECTED_COLOR_SCHEME', scheme)
+    },
     toggleLoading({ commit, state }) {
         commit('TOGGLE_LOADING')
     },
@@ -69,10 +131,49 @@ const actions = {
 }
 
 const mutations = {
+    'TOGGLE_COLOR_SCHEME_SET': (state) => {
+        if (state.colorSchemeSet === 'default' && state.userColorSchemes.length > 0) {
+            state.colorSchemeSet = 'user'
+        } else {
+            state.colorSchemeSet = 'default'
+        }
+    },
+    'UPDATE_COLOR_SCHEME': (state, data) => {
+        state.userColorSchemes[data.index].details = data.details
+        state.userColorSchemes[data.index].background = data.background
+        state.userColorSchemes[data.index].font = data.font
+    },
+    'SAVE_COLOR_SCHEME': (state, data) => {
+        state.userColorSchemes[data.index].id = data.id
+        state.userColorSchemes[data.index].details = data.details
+        state.userColorSchemes[data.index].background = data.background
+        state.userColorSchemes[data.index].font = data.font
+    },
+    'ADD_COLOR_SCHEME': state => {
+        state.userColorSchemes.push({
+            id: null,
+            details: '#000000',
+            background: '#ffffff',
+            order: 0
+        })
+    },
+    'SET_SELECTED_COLOR_SCHEME': state => {
+
+    },
     'CHANGE_COLOR_SCHEME': state => {
-        let currentIndex = state.selectedColorSchemeIndex
+        console.log('pato bravo')
+        if (state.colorSchemeSet == 'user') {
+            let currentIndex = state.userColorSchemeSelectedIndex
+            let colorSchemes = state.userColorSchemes
+            currentIndex++
+            state.userColorSchemeSelectedIndex = currentIndex % colorSchemes.length
+            return
+
+        }
+        let currentIndex = state.defaultColorSchemeSelectedIndex
+        let colorSchemes = state.defaultColorSchemes
         currentIndex++
-        state.selectedColorSchemeIndex = currentIndex % state.colorSchemes.length
+        state.defaultColorSchemeSelectedIndex = currentIndex % colorSchemes.length
     },
     'TOGGLE_LOADING': state => {
         state.loading = !state.loading

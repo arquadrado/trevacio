@@ -16,6 +16,7 @@
     import CommentItem from './CommentItem.vue'
     import NoteItem from './NoteItem.vue'
     import SessionItem from './SessionItem.vue'
+    import ColorSchemeItem from './ColorSchemeItem.vue'
 
     export default {
         components: {
@@ -23,6 +24,7 @@
             'comment-item': CommentItem,
             'note-item': NoteItem,
             'session-item': SessionItem,
+            'color-scheme-item': ColorSchemeItem,
         },
         props: [
             'className',

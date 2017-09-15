@@ -431,7 +431,11 @@ body {
 	  		}
 	  	}
 	  }
-	  .book-list, .session-list, .comment-list, .note-list {
+	  .book-list, 
+	  .session-list, 
+	  .comment-list, 
+	  .note-list,
+	  .color-scheme-list {
 	  	margin-top: 21px;
 	  	list-style: none;
 	  	padding: 0;
@@ -443,15 +447,19 @@ body {
 	  	}
 	  }
 
-	  .comment-list, .book-list, .session-list, .note-list {
+	  .comment-list,
+	  .book-list,
+	  .session-list,
+	  .note-list,
+	  .color-scheme-list {
 	  	list-style: none;
 	  	padding: 0;
-	  	.comment, .book, .session {
+	  	.comment, .book, .session, .color-scheme-item, .color-scheme {
 	  		text-align: left;
 	  		margin-bottom: 21px;
 	  		cursor: pointer;
 	  		padding: 21px;
-	  		.comment-info, .book-info, .session-info {
+	  		.comment-info, .book-info, .session-info, .color-scheme-info {
 	  			display: inline-block;
 		  		.comment-user, .book-author {
 		  			font-size: 10px;
@@ -469,7 +477,7 @@ body {
 	  		}
 	  	}
 
-	  	.comment:hover, .book:hover, .session:hover {
+	  	.comment:hover, .book:hover, .session:hover, .color-scheme:hover {
 	  		-webkit-box-shadow: -2px 3px 6px 2px rgba(0,0,0,0.25);
 			-moz-box-shadow: -2px 3px 6px 2px rgba(0,0,0,0.25);
 			box-shadow: -2px 3px 6px 2px rgba(0,0,0,0.25); 

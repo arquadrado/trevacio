@@ -16,6 +16,7 @@
                 <br>
                 <div class="user-actions">
                     <button @click="setContent('user-stats')"><span class="clickable-text">User stats</span></button>
+                    <button @click="setContent('preferences')"><span class="clickable-text">Preferences</span></button>
                 </div>
             </div>
             <div class="modal-footer">

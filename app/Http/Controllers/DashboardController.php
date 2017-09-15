@@ -7,6 +7,7 @@ use App\Models\Author;
 use App\Models\ReadingSession;
 use App\Models\Rating;
 use App\Models\Comment;
+use App\Models\ColorScheme;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -35,6 +36,7 @@ class DashboardController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
+        $user->load('colorSchemes');
 
         $userCollection = $user->books->reduce(function($reduced, $book) {
             $book->load('readingSessions.notes');
@@ -60,6 +62,75 @@ class DashboardController extends Controller
             'library' => $library,
             'authors' => $authors
         ]);
+    }
+
+    public function updateColorScheme()
+    {
+        $this->validate(request(), [
+                    'schemeId' => 'required',
+                    'details' => 'required',
+                    'background' => 'required',
+                ]);
+
+        $colorScheme = ColorScheme::find(request('schemeId'));
+
+        if (is_null($colorScheme)) {
+            return response()->json(['message' => 'An error has occurred'], 500);
+        }
+
+        $colorScheme->details = request('details');
+        $colorScheme->background = request('background');
+
+        if (request('font')) {
+            $colorScheme->font = request('font');
+
+        }
+        $colorScheme->save();
+
+        return response()->json([
+            'message' => 'Color scheme updated',
+            'scheme' => $colorScheme
+        ], 200);
+    }
+
+    public function saveColorScheme()
+    {
+        $this->validate(request(), [
+                    'details' => 'required',
+                    'background' => 'required',
+                ]);
+
+        try {
+            $colorScheme = ColorScheme::create([
+                'details' => request('details'),
+                'background' => request('background'),
+                'font' => request('font'),
+                'user_id' => Auth::user()->id
+            ]);
+        } catch (\Exception $e) {
+            dd($e);
+            return response()->json(['message' => 'An error has occurred'], 500);
+        }
+
+        return response()->json([
+            'message' => 'Color scheme saved',
+            'scheme' => $colorScheme
+        ], 200);
+    }
+
+    public function deleteColorScheme()
+    {
+        $this->validate(request(), [
+                    'schemeId' => 'required',
+                ]);
+
+        $colorScheme = ColorScheme::find(request('schemeId'));
+
+        if (is_null($colorScheme)) {
+            return response()->json(['message' => 'An error has occurred'], 500);
+        }
+
+        return response()->json(['message' => 'Color scheme deleted'], 200);
     }
 
     public function updateComment()

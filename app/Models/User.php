@@ -57,6 +57,11 @@ class User extends Authenticatable
         return $this->hasMany(Rating::class);
     }
 
+    public function colorSchemes()
+    {
+        return $this->hasMany(ColorScheme::class)->orderBy('order');
+    }
+
     /*
      *
      * Mutators

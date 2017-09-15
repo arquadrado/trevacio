@@ -9,7 +9,23 @@
 
         <div class="modal-body">
             <div class="preferences">
-                <h3>Preferences</h3>
+                <div class="color-scheme">
+                    <h4>Color scheme</h4>
+                    <label>
+                        <input type="checkbox" :checked="useDefault" @change="toggleColorSchemeSet"> Use default
+                    </label>
+                    <br>
+                    <button @click="addColorScheme">
+                        <span class="clickable-text">
+                            Add color scheme
+                        </span>
+                    </button>
+                    <list 
+                        :className="'color-scheme-list'" 
+                        :itemType="'color-scheme-item'"
+                        :items="userColorSchemes"
+                    ></list>
+                </div>
             </div>
         </div>
     </div>
@@ -18,55 +34,34 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import Navigation from './../mixins/Navigation.js'
+    import List from './utilities/List.vue'
 
     export default {
         mixins: [Navigation],
+        components: {
+            'list': List
+        },
         data() {
             return {
             }
         },
         computed: {
-            hasStatsToShow() {
-                return this.user.stats
-            },
-            barStyle() {
-                return {
-                    'background-color': this.colorScheme.details
-                }
+            useDefault() {
+                return this.getColorSchemeSet === 'default'
             },
             ...mapGetters({
-                selectedBook: 'getSelectedBook',
                 colorScheme: 'getColorScheme',
-                user: 'getUser'
+                user: 'getUser',
+                userColorSchemes: 'getUserColorSchemes',
+                getColorSchemeSet: 'getColorSchemeSet',
             })
         },
         methods: {
-            getDistributionRepresentation(value) {
-                return {
-                    'longest': this.user.longest_session,
-                    'count': value
-                }
-            },
             ...mapActions({
                 setContent: 'setContent',
+                addColorScheme: 'addColorScheme',
+                toggleColorSchemeSet: 'toggleColorSchemeSet'
             })
-        },
-        directives: {
-            bar: {
-                inserted: function (el, binding, vnode) {
-                    let barWidth = ($(el).width() * binding.value.count) / binding.value.longest 
-                    let $span = $(el).find('span')
-                    $span.width(barWidth)
-                },
-                updated: (el) => {
-                    console.log('updated', 'xis')
-                },
-                componentUpdated: (el, binding) => {
-                    let barWidth = ($(el).width() * binding.value.count) / binding.value.longest 
-                    let $span = $(el).find('span')
-                    $span.width(barWidth)
-                }
-            }
         },
         mounted() {}
     }
