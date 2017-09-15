@@ -4,10 +4,10 @@
         <div class="modal-header">
             <h3 class="action">Add a book</h3>
             <br>
-            <button class="" @click="setContent('get')">Get</button>
-            <button class="" @click="setContent('list')">List</button>
-            <button class="" v-if="hasHistory" @click="back">Back</button>
-            <button class="" @click="setContent('trevacio')">close</button>
+            <button @click="setContent('get')"><span class="clickable-text">Get</span></button>
+            <button @click="setContent('list')"><span class="clickable-text">List</span></button>
+            <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
+            <button @click="setContent('trevacio')"><span class="clickable-text">close</span></button>
         </div>
         <div class="new-book" v-if="!submitted">
 
@@ -29,7 +29,7 @@
 
             <div class="modal-footer">
                 <button class="" v-if="!loading" :disabled="!canSubmit" @click="addBookToLibrary">
-                    Save
+                    <span class="clickable-text">Save</span>
                 </button>
                 <button v-if="loading">
                     <loading-spinner></loading-spinner>

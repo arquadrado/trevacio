@@ -4,20 +4,25 @@
             <div class="modal-header">
                 <h3>Profile</h3>
                 <br>
-                <button class="" @click="setContent('list')">List</button>
-                <button class="" @click="setContent('trevacio')">Close</button>
-                <button class="" v-if="hasHistory" @click="back">Back</button>
+                <button @click="setContent('list')"><span class="clickable-text">List</span></button>
+                <button @click="setContent('home')"><span class="clickable-text">Close</span></button>
+                <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
             </div>
             <div class="modal-body">
-                <h4><strong>{{ user.name }}</strong></h4>
-                <span>member since <br><strong>{{ user.created_at }}</strong></span>
+                <div class="user-info">
+                    <h4><strong>{{ user.name }}</strong></h4>
+                    <span>member since <br><strong>{{ user.created_at }}</strong></span>
+                </div>
                 <br>
+                <div class="user-actions">
+                    <button @click="setContent('user-stats')"><span class="clickable-text">User stats</span></button>
+                </div>
             </div>
             <div class="modal-footer">
                 <a class="logout-button" :href="logout_route"
                     onclick="event.preventDefault();
                              document.getElementById('logout-form').submit();">
-                    Logout
+                    <span class="clickable-text">Logout</span>
                 </a>
 
                 <form id="logout-form" :action="logout_route" method="POST" style="display: none;">

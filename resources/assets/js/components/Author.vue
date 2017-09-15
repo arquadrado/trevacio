@@ -5,9 +5,9 @@
                 <h3>{{ selectedAuthor.name }}</h3>
                 <h4>Author</h4>
                 <br>
-                <button class="" @click="setContent('list')">List</button>
-                <button class="" @click="setContent('trevacio')">Close</button>
-                <button class="" v-if="hasHistory" @click="back">Back</button>
+                <button @click="setContent('list')"><span class="clickable-text">List</span></button>
+                <button @click="setContent('trevacio')"><span class="clickable-text">Close</span></button>
+                <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
             </div>
             <div class="modal-body">
                 <div class="show-info" v-if="loading">
@@ -23,8 +23,8 @@
                     </div>
                 </div>
 
-                <button @click="toggleShowWorks" v-if="!showWorks">Show author works</button>
-                <button @click="toggleShowWorks" v-else>hide works</button>
+                <button @click="toggleShowWorks" v-if="!showWorks"><span class="clickable-text">Show author works</span></button>
+                <button @click="toggleShowWorks" v-else><span class="clickable-text">Hide works</span></button>
 
                 <list 
                     v-if="showWorks"
@@ -34,7 +34,7 @@
                 ></list>
             </div>
             <div class="modal-footer">
-                <button @click="toggleShowWorks" v-if="showWorks">hide works</button>
+                <button @click="toggleShowWorks" v-if="showWorks"><span class="clickable-text">Hide works</span></button>
             </div>
         </div>
     </div>

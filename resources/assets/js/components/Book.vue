@@ -3,11 +3,11 @@
         <div class="book" v-if="selectedBook">
             <div class="modal-header">
                 <h3 class="action">Book</h3>
-                <button class="" @click="searchBook">Search</button>
-                <button class="" @click="addBook">Add</button>
-                <button class="" v-if="selectedList" @click="setContent('list')">List</button>
-                <button class="" @click="close">close</button>
-                <button class="" v-if="hasHistory" @click="back">Back</button>
+                <button @click="searchBook"><span class="clickable-text">Search</span></button>
+                <button @click="addBook"><span class="clickable-text">Add</span></button>
+                <button v-if="selectedList" @click="setContent('list')"><span class="clickable-text">List</span></button>
+                <button @click="close"><span class="clickable-text">close</span></button>
+                <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
             </div>
 
             <div class="nav-arrows">
@@ -22,38 +22,40 @@
                         class="author" 
                         @click="selectAuthor(selectedBook.author.id)">by
                         <strong>
-                            {{ selectedBook.author.name }}
+                            <span class="clickable-text">{{ selectedBook.author.name }}</span>
                         </strong>
                     </span>
                     <br>
                     <br>
                     <div class="ratings">
-                        <span>overall rating</span>
                         <div class="overall">
                             <span :style="{'color': colorScheme.background}"><strong>{{ selectedBook.overall_rating }}</strong></span>
                             <i class="material-icons">star</i>
                         </div>
-                        <span v-if="selectedBook.in_library">your rating</span>
+                        <span>overall rating</span>
+                        <br>
+                        <br>
                         <div class="user" v-if="selectedBook.in_library">
                             <i class="material-icons" @click="rateBook(n)" v-for="n in 10">{{selectedBook.user_rating.length &&selectedBook.user_rating[0].rating >= n ? 'star' : 'star_border' }}</i>
                         </div>
+                        <span v-if="selectedBook.in_library">your rating</span>
                     </div>
                 </div>
                 <div class="book-actions">
-                    <button @click="setContent('book-info')">Info</button>
-                    <button v-if="selectedBook.in_library" @click="setContent('reading-session-list')">Reading Sessions</button>
-                    <button @click="showComments">Comments</button>
-                    <button @click="setContent('stats')">Stats</button>
+                    <button @click="setContent('book-info')"><span class="clickable-text">Info</span></button>
+                    <button v-if="selectedBook.in_library" @click="setContent('reading-session-list')"><span class="clickable-text">Reading Sessions</span></button>
+                    <button @click="showComments"><span class="clickable-text">Comments</span></button>
+                    <button @click="setContent('stats')"><span class="clickable-text">Stats</span></button>
                 </div>
             </div>
             
             <div class="modal-footer">
-                <button class="" @click="removeBookFromUserCollection" v-if="selectedBook.in_library">Remove from collection</button>
-                <button class="" v-if="canDeleteBook" @click="deleteBook">Delete</button>
+                <button @click="removeBookFromUserCollection" v-if="selectedBook.in_library"><span class="clickable-text">Remove from collection</span></button>
+                <button v-if="canDeleteBook" @click="deleteBook"><span class="clickable-text">Delete</span></button>
                 <div class="book-not-owned" v-if="!selectedBook.in_library">
                     <h4>This book is not in your library. Add it to perform additional actions</h4>
-                    <button class="" @click="addBookToUserCollection">
-                        Add book
+                    <button @click="addBookToUserCollection">
+                        <span class="clickable-text">Add book</span>
                     </button>
                 </div>
             </div>

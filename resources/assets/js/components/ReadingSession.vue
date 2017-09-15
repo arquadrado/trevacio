@@ -5,9 +5,9 @@
                 <h3 class="action">{{ title }}</h3>
                 <h4 v-if="!adding">reading session</h4>
                 <br>
-                <button @click="setContent('book')">Book</button>
-                <button class="" v-if="hasHistory" @click="back">Back</button>
-                <button v-if="!adding" class="" @click="deleteSession">Delete</button>
+                <button @click="setContent('book')"><span class="clickable-text">Book</span></button>
+                <button class="" v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
+                <button v-if="!adding" class="" @click="deleteSession"><span class="clickable-text">Delete</span></button>
             </div>
             <div class="modal-body">
                 <div class="body-controls"></div>
@@ -35,9 +35,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button v-if="!adding" class="" @click="setSelectedReadingSession(null)">Add another session</button>
+                <button v-if="!adding" class="" @click="setSelectedReadingSession(null)"><span class="clickable-text">Add another</span></button>
                 <button v-if="adding && !loading" class="" :disabled="!canSubmit" @click="saveSession">
-                    Save
+                    <span class="clickable-text">Save</span>
                 </button>
                 <button v-if="adding && loading">
                     <loading-spinner></loading-spinner>

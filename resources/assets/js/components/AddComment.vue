@@ -3,8 +3,8 @@
 
         <div class="modal-header">
             <h3 class="action">{{ title }}</h3>
-            <button class="" v-if="hasHistory" @click="back">Back</button>
-            <button class="" @click="setContent('comment-list')">List</button>
+            <button class="" v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
+            <button class="" @click="setContent('comment-list')"><span class="clickable-text">List</span></button>
         </div>
         <div class="modal-body">
             <div class="input-text">
@@ -14,7 +14,7 @@
         </div>
         <div class="modal-footer">
             <button v-if="!loading" class="" :disabled="!canSubmit" @click="add">
-                Save
+                <span class="clickable-text">Save</span>
             </button>
             <button v-else>
                 <loading-spinner></loading-spinner>

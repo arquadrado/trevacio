@@ -33,7 +33,7 @@ class Book extends Model
 
     protected $with = [
         'author',
-        'readingSessions',
+        //'readingSessions',
         'userRating',
         'ratings',
         'comments'

@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Days of Books') }}</title>
+    <title>{{ config('app.name', 'Bkooper') }}</title>
 
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"

@@ -8522,6 +8522,10 @@ body #app .info-text {
   text-align: justify;
 }
 
+body #app .clickable-text {
+  text-decoration: underline;
+}
+
 body #app button {
   font-size: 12px;
   border: none;

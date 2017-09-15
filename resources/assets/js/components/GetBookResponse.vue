@@ -24,10 +24,10 @@
             <div class="modal-body">
                 <h3>{{ response.message }}</h3>
                 <button @click="setContent('add')">
-                    Add book
+                    <span class="clickable-text">Add</span>
                 </button>
-                <button @click="searchAgain">Search again</button>
-                <button @click="toggleModal">Close</button>
+                <button @click="searchAgain"><span class="clickable-text">Search again</span></button>
+                <button @click="toggleModal"><span class="clickable-text">Close</span></button>
             </div>
         </div>
     </div>

@@ -45,7 +45,10 @@
         },
         methods: {
             execute() {
-                this.setContent(this.action.name)
+                if (this.action.name != 'close') {
+                    this.setContent(this.action.name)
+                }
+                
                 this.toggleGui()
             },
             hoverOn() {

@@ -41,8 +41,14 @@ const state = {
         home: {
             label: 'Home',
             name: 'home',
+            icon: 'home',
+            description: 'Go back to home screen'
+        },
+        close: {
+            label: 'Close',
+            name: 'close',
             icon: 'close',
-            description: 'Close the menu and go back to home screen'
+            description: 'Close menu'
         },
         /*trevacio: {
             label: 'Trevacio',

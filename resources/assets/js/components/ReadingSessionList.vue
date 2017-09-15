@@ -5,14 +5,14 @@
             <h3 class="action">{{ selectedBook.title }}</h3>
             <h4>reading sessions</h4>
             <br>
-            <button class="" v-if="hasHistory" @click="back">Back</button>
-            <button class="" @click="setContent('book')">Book</button>
+            <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
+            <button @click="setContent('book')"><span class="clickable-text">Book</span></button>
         </div>
         <div class="modal-body">
             <div class="body-controls">
-                <button class="" @click="addReadingSession">Add reading session</button>
-                <button v-if="showSessions" @click="toggleListToShow">See all notes</button>
-                <button v-if="showNotes" @click="toggleListToShow">See all sessions</button>
+                <button class="" @click="addReadingSession"><span class="clickable-text">Add reading session</span></button>
+                <button v-if="showSessions" @click="toggleListToShow"><span class="clickable-text">See all notes</span></button>
+                <button v-if="showNotes" @click="toggleListToShow"><span class="clickable-text">See all sessions</span></button>
             </div>
             <list 
                 :className="listClass" 

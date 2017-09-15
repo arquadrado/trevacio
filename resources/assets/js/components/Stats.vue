@@ -4,9 +4,9 @@
             <h3 class="action">{{ selectedBook.title }}</h3>
             <h4>stats</h4>
             <br>
-            <button class="" @click="setContent('book')">Book</button>
-            <button class="" @click="back" v-if="hasHistory">Back</button>
-            <button class="" @click="close">close</button>
+            <button @click="setContent('book')"><span class="clickable-text">Book</span></button>
+            <button @click="back" v-if="hasHistory"><span class="clickable-text">Back</span></button>
+            <button @click="close"><span class="clickable-text">Close</span></button>
         </div>
         <div class="nav-arrows">
             <span class="prev" @click="previousBook"><i class="material-icons">arrow_back</i></span>
@@ -14,8 +14,8 @@
         </div>
         <div class="modal-body" v-if="hasStatsToShow">
             <div class="body-controls">
-                <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow !== 'all'" v-if="selectedBook.in_library">User Stats</button>
-                <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow === 'all'">Book stats</button>
+                <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow !== 'all'" v-if="selectedBook.in_library"><span class="clickable-text">User stats</span></button>
+                <button class="second-order-button" @click="toggleStatsToShow" :disabled="statsToShow === 'all'"><span class="clickable-text">Book stats</span></button>
                 
             </div>
             <div class="stats book-user-stats" v-if="hasUserStats">

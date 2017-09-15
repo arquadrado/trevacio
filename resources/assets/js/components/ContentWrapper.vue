@@ -23,6 +23,8 @@
     import Comment from './Comment.vue'
     import BookInfo from './BookInfo.vue'
     import Author from './Author.vue'
+    import UserStats from './UserStats.vue'
+    import Preferences from './Preferences.vue'
 
     export default {
         components: {
@@ -41,6 +43,8 @@
             'comment': Comment,
             'book-info': BookInfo,
             'author': Author,
+            'user-stats': UserStats,
+            'preferences': Preferences
         },
         computed: {
             style() {

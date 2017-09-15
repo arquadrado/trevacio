@@ -4,13 +4,13 @@
             <h3 class="action">{{ listTitle }}</h3>
             <h4>{{ subtitle }}</h4>
             <br>
-            <button class="" v-if="hasHistory" @click="back">Back</button>
-            <button class="" @click="setContent('book')">Book</button>
-            <button class="" @click="setContent('reading-session-list')">Sessions</button>
+            <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
+            <button @click="setContent('book')"><span class="clickable-text">Book</span></button>
+            <button @click="setContent('reading-session-list')"><span class="clickable-text">Sessions</span></button>
         </div>
         <div class="modal-body">
             <div class="body-controls">
-                <button class="" @click="addComment" v-if="selectedBook.in_library">{{ addText }}</button>
+                <button @click="addComment" v-if="selectedBook.in_library"><span class="clickable-text">{{ addText }}</span></button>
                 <h4 v-else>This book is not in your library. Add it to add comments</h4>
             </div>
             <ul class="comment-list">

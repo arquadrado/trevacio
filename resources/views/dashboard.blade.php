@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="table h20">
-    <h1 class="page-title center">Kooper</h1>
+    <h1 class="page-title center">{{ config('app.name', 'Bkooper') }}</h1>
     <div class="eye-suit center middle">
         <button @click="suitEyes" title="Suit your eyes"><i class="material-icons">palette</i></button>
         <button @click="toggleGui" title="Call GUI"><i class="material-icons">local_library</i></button>

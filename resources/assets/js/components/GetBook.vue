@@ -4,10 +4,10 @@
         <div class="modal-header">
             <h3 class="action">Search for books</h3>
             <br>
-            <button class="" @click="setContent('add')">Add</button>
-            <button class="" @click="listBooks">List</button>
-            <button class="" @click="setContent('home')">close</button>
-            <button class="" v-if="hasHistory" @click="back">Back</button>
+            <button @click="setContent('add')"><span class="clickable-text">Add</span></button>
+            <button @click="listBooks"><span class="clickable-text">List</span></button>
+            <button @click="setContent('home')"><span class="clickable-text">Close</span></button>
+            <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
         </div>
 
         <div class="getbook" v-if="!selectedBook && !response">
@@ -20,8 +20,8 @@
             </div>
 
             <div class="modal-footer">
-                <button class="" v-if="!loading" :disabled="!canSubmit" @click="getBook">
-                    Search
+                <button v-if="!loading" :disabled="!canSubmit" @click="getBook">
+                    <span class="clickable-text">Search</span>
                 </button>
                 <button v-if="loading">
                     <loading-spinner></loading-spinner>

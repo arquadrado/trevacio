@@ -3,8 +3,8 @@
         <div class="success" v-if="status == 200">
             <div class="modal-body">
                 <h3>{{ response.book.title }} added</h3>
-                <button @click="openBook(response.book)">Open book</button>
-                <button @click="addAnother">Add another</button>
+                <button @click="openBook(response.book)"><span class="clickable-text">Open book</span></button>
+                <button @click="addAnother"><span class="clickable-text">Add another</span></button>
             </div>
         </div>
         <div class="book-found" v-if="status == 201">
@@ -31,10 +31,10 @@
             <div class="modal-body">
                 <h3>{{ response.message }}</h3>
                 <button @click="openBook(response.book)">
-                    Open {{ response.book.title }}
+                    <span class="clickable-text">Open {{ response.book.title }}</span>
                 </button>
-                <button @click="addAnother">Add another</button>
-                <button @click="toggleModal">Close</button>
+                <button @click="addAnother"><span class="clickable-text">Add another</span></button>
+                <button @click="toggleModal"><span class="clickable-text">Close</span></button>
             </div>
         </div>
     </div>

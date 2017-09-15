@@ -3,8 +3,8 @@
 
         <div class="modal-header">
             <h3 class="action">{{ title }}</h3>
-            <button class="" v-if="hasHistory" @click="back">Back</button>
-            <button class="" @click="setContent('comment-list')">List</button>
+            <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
+            <button @click="setContent('comment-list')"><span class="clickable-text">List</span></button>
         </div>
         <div class="modal-body">
             <div class="input-text" v-if="editing">
@@ -21,11 +21,11 @@
         </div>
         <div class="modal-footer" v-else>
 
-            <button v-if="editing" @click="edit">Cancel</button>
-            <button class="" :disabled="!canSubmit" @click="save" v-if="editing">
-                Save
+            <button v-if="editing" @click="edit"><span class="clickable-text">Cancel</span></button>
+            <button :disabled="!canSubmit" @click="save" v-if="editing">
+                <span class="clickable-text">Save</span>
             </button>
-            <button v-if="!editing && canEdit" @click="edit">Edit</button>
+            <button v-if="!editing && canEdit" @click="edit"><span class="clickable-text">Edit</span></button>
         </div>
     </div>
 </template>

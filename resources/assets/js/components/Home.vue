@@ -1,7 +1,7 @@
 <template>
     <div class="content-wrapper">
         <h2 class="greeting">Welcome to the library, {{ user.friendly_name }}</h2>
-        <h3 class="cta" @click="toggleGui">Get started</h3>
+        <h3 class="cta" @click="toggleGui"><span class="clickable-text">Get started</span></h3>
     </div>
 </template>
 

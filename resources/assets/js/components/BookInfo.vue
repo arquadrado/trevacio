@@ -5,8 +5,8 @@
             <h3 class="action">{{ title }}</h3>
             <h4>info</h4>
             <br>
-            <button class="" v-if="hasHistory" @click="back">Back</button>
-            <button class="" @click="setContent('book')">Book</button>
+            <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
+            <button @click="setContent('book')"><span class="clickable-text">Book</span></button>
         </div>
         <div class="modal-body">
             <loading-spinner v-if="loading"></loading-spinner>
@@ -26,9 +26,9 @@
                         <input :style="inputStyle" v-model="searchLanguage"></input>
                     </div>
                     <br>
-                    <button @click="fetchBookInfo">search in author books</button>
+                    <button @click="fetchBookInfo"><span class="clickable-text">search in author books</span></button>
                     <br>
-                    <button @click="fetchBookInfoByTitle">search by title</button>
+                    <button @click="fetchBookInfoByTitle"><span class="clickable-text">search by title</span></button>
                 </div>
             </div>
         </div>
