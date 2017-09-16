@@ -29,7 +29,7 @@
 
             <p><strong>User section</strong> is where you can see your profile information, see your personal reading stats and ajust your preferences.</p>
     
-            <button class="cta"><strong><span class="clickable-text">Get started</span></strong></button>
+            <button @click="toggleGui" class="cta"><strong><span class="clickable-text">Get started</span></strong></button>
 
         </div>
         <button @click="toggleHelp" v-if="showHelp"><span class="clickable-text">{{ helpMessage }}</span></button>
