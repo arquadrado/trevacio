@@ -48333,7 +48333,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('span', {
     staticClass: "clickable-text"
-  }, [_vm._v("library")])]), _vm._v(".")]), _vm._v(" "), _vm._m(1), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm._m(3), _vm._v(" "), _vm._m(4), _vm._v(" "), _vm._m(5), _vm._v(" "), _vm._m(6), _vm._v(" "), _vm._m(7), _vm._v(" "), _vm._m(8), _vm._v(" "), _vm._m(9), _vm._v(" "), _vm._m(10), _vm._v(" "), _vm._m(11)]) : _vm._e(), _vm._v(" "), (_vm.showHelp) ? _c('button', {
+  }, [_vm._v("library")])]), _vm._v(".")]), _vm._v(" "), _vm._m(1), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm._m(3), _vm._v(" "), _vm._m(4), _vm._v(" "), _vm._m(5), _vm._v(" "), _vm._m(6), _vm._v(" "), _vm._m(7), _vm._v(" "), _vm._m(8), _vm._v(" "), _vm._m(9), _vm._v(" "), _vm._m(10), _vm._v(" "), _c('button', {
+    staticClass: "cta",
+    on: {
+      "click": _vm.toggleGui
+    }
+  }, [_vm._m(11)])]) : _vm._e(), _vm._v(" "), (_vm.showHelp) ? _c('button', {
     on: {
       "click": _vm.toggleHelp
     }
@@ -48369,11 +48374,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('p', [_c('strong', [_vm._v("User section")]), _vm._v(" is where you can see your profile information, see your personal reading stats and ajust your preferences.")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('button', {
-    staticClass: "cta"
-  }, [_c('strong', [_c('span', {
+  return _c('strong', [_c('span', {
     staticClass: "clickable-text"
-  }, [_vm._v("Get started")])])])
+  }, [_vm._v("Get started")])])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "recent-activity"
