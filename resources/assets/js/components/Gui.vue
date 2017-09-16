@@ -51,6 +51,12 @@
 
         mounted() {
             console.log('Hello! I\'m Gui... Guilhotina!')
+            window.scrollTo(0, 0)
+            $('body').css('overflow', 'hidden')
+        },
+        destroyed() {
+            console.log('destroy guilho')
+            $('body').css('overflow', 'initial')
         }
     }
 </script>

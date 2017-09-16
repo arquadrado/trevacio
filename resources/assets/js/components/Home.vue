@@ -3,7 +3,7 @@
         <h2 class="greeting">Welcome, {{ user.friendly_name }}</h2>
         <button @click="toggleHelp"><span class="clickable-text">{{ helpMessage }}</span></button>
         <div class="help" v-if="showHelp">
-            <p><strong>Bkooper</strong>'s purpose is to track your personal reading habits and give you concrete date based on them. How many days have you spent reading the last book? How many pages per day you read? Was this book faster/easier to read than the previous one? Are you reading as much as you would want? Will you remember the conclusions, insights you got from a book one year from now? Will they be the same two years from now? Bkooper tries to give you some clues on what the answers to these questions might be.</p>
+            <p><strong>Bkooper</strong>'s purpose is to track your personal reading habits and give you concrete data based on them. How many days have you spent reading the last book? How many pages per day you read? Was this book faster/easier to read than the previous one? Are you reading as much as you would want? Will you remember the conclusions, insights you got from a book one year from now? Will they be the same two years from now? Bkooper tries to give you some clues on what the answers to these questions might be.</p>
 
             <p>At the same time you can give your opinion on books and see what other people has been reading and what they say about their and your books.</p>
 
@@ -25,7 +25,7 @@
 
             <p>Since some persons might have high eye sensitivity there is a feature that allows you to choose the colors of the page. By clicking the <i class="material-icons">palette</i> icon on the top of the page you will iterate through a set of color schemes. The default set has a lot of options but you can create your own in your preferences section.</p>
 
-            <p>You can open a general <strong>meny</strong> that allows you to navigate directly to any of the app's sections by clicking on the <i class="material-icons">local_library</i> icon on the top of the page.</p>
+            <p>You can open a general <strong>menu</strong> that allows you to navigate directly to any of the app's sections by clicking on the <i class="material-icons">local_library</i> icon on the top of the page.</p>
 
             <p><strong>User section</strong> is where you can see your profile information, see your personal reading stats and ajust your preferences.</p>
     

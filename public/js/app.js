@@ -48348,7 +48348,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "action"
   }, [_vm._v("Recent activity")]), _vm._v(" "), _vm._m(12)])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('p', [_c('strong', [_vm._v("Bkooper")]), _vm._v("'s purpose is to track your personal reading habits and give you concrete date based on them. How many days have you spent reading the last book? How many pages per day you read? Was this book faster/easier to read than the previous one? Are you reading as much as you would want? Will you remember the conclusions, insights you got from a book one year from now? Will they be the same two years from now? Bkooper tries to give you some clues on what the answers to these questions might be.")])
+  return _c('p', [_c('strong', [_vm._v("Bkooper")]), _vm._v("'s purpose is to track your personal reading habits and give you concrete data based on them. How many days have you spent reading the last book? How many pages per day you read? Was this book faster/easier to read than the previous one? Are you reading as much as you would want? Will you remember the conclusions, insights you got from a book one year from now? Will they be the same two years from now? Bkooper tries to give you some clues on what the answers to these questions might be.")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('p', [_vm._v("Within the "), _c('strong', [_vm._v("book")]), _vm._v(" area you have multiple actions available. You can check the book's "), _c('strong', [_vm._v("rating")]), _vm._v(", "), _c('strong', [_vm._v("info")]), _vm._v(", "), _c('strong', [_vm._v("reading sessions")]), _vm._v(", "), _c('strong', [_vm._v("comments")]), _vm._v(" and, if you have the book in your collection, its "), _c('strong', [_vm._v("stats")]), _vm._v(". You can also go to the "), _c('strong', [_vm._v("author")]), _vm._v(" area.")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -48368,7 +48368,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "material-icons"
   }, [_vm._v("palette")]), _vm._v(" icon on the top of the page you will iterate through a set of color schemes. The default set has a lot of options but you can create your own in your preferences section.")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('p', [_vm._v("You can open a general "), _c('strong', [_vm._v("meny")]), _vm._v(" that allows you to navigate directly to any of the app's sections by clicking on the "), _c('i', {
+  return _c('p', [_vm._v("You can open a general "), _c('strong', [_vm._v("menu")]), _vm._v(" that allows you to navigate directly to any of the app's sections by clicking on the "), _c('i', {
     staticClass: "material-icons"
   }, [_vm._v("local_library")]), _vm._v(" icon on the top of the page.")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -53824,6 +53824,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     mounted: function mounted() {
         console.log('Hello! I\'m Gui... Guilhotina!');
+        window.scrollTo(0, 0);
+        $('body').css('overflow', 'hidden');
+    },
+    destroyed: function destroyed() {
+        console.log('destroy guilho');
+        $('body').css('overflow', 'initial');
     }
 });
 
