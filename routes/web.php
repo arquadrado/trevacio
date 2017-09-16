@@ -21,6 +21,7 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
+
     Route::post('/save-book', 'DashboardController@saveBook')->name('save-book');
     Route::post('/add-to-user-collection', 'DashboardController@addToUserCollection')->name('add-to-user-collection');
     Route::post('/remove-from-user-collection', 'DashboardController@removeFromUserCollection')->name('remove-from-user-collection');
@@ -36,4 +37,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save-color-scheme', 'DashboardController@saveColorScheme')->name('save-color-scheme');
     Route::post('/update-color-scheme', 'DashboardController@updateColorScheme')->name('update-color-scheme');
     Route::post('/delete-color-scheme', 'DashboardController@deleteColorScheme')->name('delete-color-scheme');
+    Route::post('/get-activity', 'AjaxController@getActivity')->name('get-activity');
 });

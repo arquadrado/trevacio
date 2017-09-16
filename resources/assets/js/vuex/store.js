@@ -74,7 +74,9 @@ const state = {
     },
 
     content: 'home',
-    showHelp: false
+    showHelp: false,
+
+    userFeed: typeof handover.userFeed !== 'undefined' ? handover.userFeed : [],  
 }
 
 const getters = {
@@ -93,7 +95,9 @@ const getters = {
     getModalContent: state => state.modalContent,
 
     getContent: state => state.content,
-    getShowHelp: state => state.showHelp
+    getShowHelp: state => state.showHelp,
+
+    getUserFeed: state => state.userFeed
 }
 
 const actions = {

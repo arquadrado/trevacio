@@ -124,7 +124,7 @@
             },
             close() {
                 this.setSelectedBook(null)
-                this.setContent('trevacio')
+                this.setContent('home')
             },
             addBook() {
                 this.setSelectedBook(null)

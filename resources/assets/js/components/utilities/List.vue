@@ -1,5 +1,5 @@
 <template>
-    <ul :class="className" v-if="hasItems">
+    <ul class="base-list" :class="className" v-if="hasItems">
         <component 
             :is="itemType" 
             :item="item" 
@@ -17,6 +17,7 @@
     import NoteItem from './NoteItem.vue'
     import SessionItem from './SessionItem.vue'
     import ColorSchemeItem from './ColorSchemeItem.vue'
+    import FeedItem from './FeedItem.vue'
 
     export default {
         components: {
@@ -25,6 +26,7 @@
             'note-item': NoteItem,
             'session-item': SessionItem,
             'color-scheme-item': ColorSchemeItem,
+            'feed-item': FeedItem,
         },
         props: [
             'className',

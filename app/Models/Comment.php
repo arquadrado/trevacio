@@ -7,7 +7,6 @@ use Auth;
 
 class Comment extends Model
 {
-
     protected $fillable = [
         'user_id',
         'commentable_id',

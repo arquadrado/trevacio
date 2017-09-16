@@ -32,11 +32,11 @@ class Book extends Model
      **/
 
     protected $with = [
-        'author',
+        //'author',
         //'readingSessions',
-        'userRating',
-        'ratings',
-        'comments'
+        //'userRating',
+        //'ratings',
+        //'comments'
     ];
 
     public function users()
@@ -173,3 +173,9 @@ class Book extends Model
         return $this->users()->count() == 1 && $this->users()->first()->id == Auth::user()->id;
     }
 }
+
+/*
+==========================================================================
+    Utilities
+==========================================================================
+*/

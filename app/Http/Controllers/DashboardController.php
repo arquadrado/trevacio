@@ -9,11 +9,14 @@ use App\Models\Rating;
 use App\Models\Comment;
 use App\Models\ColorScheme;
 use Illuminate\Http\Request;
+use App\Support\FeedManager;
 use Auth;
 use DB;
 
 class DashboardController extends Controller
 {
+
+    protected $feedManager;
     /**
      * Create a new controller instance.
      *
@@ -22,10 +25,7 @@ class DashboardController extends Controller
     public function __construct()
     {
         //$this->middleware('auth');
-    }
-
-    public function home() {
-        dd('hey');
+        $this->feedManager = new FeedManager;
     }
 
     /**
@@ -38,14 +38,30 @@ class DashboardController extends Controller
         $user = Auth::user();
         $user->load('colorSchemes');
 
+        $userFeed = $this->feedManager->getUserFeed();
+        //dd($userFeed);
+        $generalFeed = $this->feedManager->getGeneralFeed();
+
         $userCollection = $user->books->reduce(function($reduced, $book) {
-            $book->load('readingSessions.notes');
+            $book->load([
+                'author',
+                'readingSessions.notes',
+                'userRating',
+                'ratings',
+                'comments'
+            ]);
             $reduced[$book->id] = $book;
             return $reduced;
         }, []);
 
         $library = Book::all()->reduce(function($reduced, $book) {
-            $book->load('readingSessions.notes');
+            $book->load([
+                'author',
+                'readingSessions.notes',
+                'userRating',
+                'ratings',
+                'comments'
+            ]); 
             $reduced[$book->id] = $book;
             return $reduced;
         }, []);
@@ -58,6 +74,7 @@ class DashboardController extends Controller
 
         return view('dashboard', [
             'user' => $user,
+            'userFeed' => $userFeed,
             'userCollection' => $userCollection,
             'library' => $library,
             'authors' => $authors
@@ -400,6 +417,7 @@ class DashboardController extends Controller
         try {
             DB::transaction(function () use ($book) {
                 Auth::user()->books()->detach($book->id);
+                $book->comments()->delete();
                 $book->delete();
             });
 
@@ -415,13 +433,25 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         $userCollection = $user->books->reduce(function ($reduced, $book) {
-            $book->load('readingSessions.notes');
+            $book->load([
+                'author',
+                'readingSessions.notes',
+                'userRating',
+                'ratings',
+                'comments'
+            ]);
             $reduced[$book->id] = $book;
             return $reduced;
         }, []);
 
         $library = Book::all()->reduce(function ($reduced, $book) {
-            $book->load('readingSessions.notes');
+            $book->load([
+                'author',
+                'readingSessions.notes',
+                'userRating',
+                'ratings',
+                'comments'
+            ]);
             $reduced[$book->id] = $book;
             return $reduced;
         }, []);
@@ -465,6 +495,7 @@ class DashboardController extends Controller
         try {
             DB::transaction(function () {
                 $readingSession = ReadingSession::find(request('sessionId'));
+                $readingSession->notes()->delete();
                 $readingSession->delete();
             });
 

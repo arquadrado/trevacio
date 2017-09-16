@@ -36,21 +36,36 @@
         <br>
         <br>
         <h3 class="action">Recent activity</h3>
-        <div class="recent-activity">
-            <h4>No activity to show</h4>
+        <div class="recent-activity" v-if="hasRecentActivity">
+            <list 
+                :className="'activity-list'" 
+                :itemType="'feed-item'"
+                :items="userFeed"
+            ></list>         
         </div>
+        <div class="feed" v-else>
+            <h4>No activity to show</h4>
+            <button @click="toggleGui" class="cta"><strong><span class="clickable-text">Get started</span></strong></button>
+        </div> 
     </div>
 </template>
 
 <script>
     import { mapActions, mapGetters } from 'vuex'
+    import List from './utilities/List.vue'
 
     export default {
+        components: {
+            'list': List
+        },
         data() {
             return {
             }
         },
         computed: {
+            hasRecentActivity() {
+                return this.userFeed.length > 0
+            },
             helpMessage() {
                 if (this.showHelp) {
                     return 'Hide help'
@@ -60,7 +75,8 @@
             },
             ...mapGetters({
                 user: 'getUser',
-                showHelp: 'getShowHelp'
+                showHelp: 'getShowHelp',
+                userFeed: 'getUserFeed'
             })
         },
         methods: {
