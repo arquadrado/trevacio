@@ -73,7 +73,8 @@ const state = {
                 }]
     },
 
-    content: 'home'
+    content: 'home',
+    showHelp: false
 }
 
 const getters = {
@@ -92,9 +93,13 @@ const getters = {
     getModalContent: state => state.modalContent,
 
     getContent: state => state.content,
+    getShowHelp: state => state.showHelp
 }
 
 const actions = {
+    toggleShowHelp({ commit }) {
+        commit('TOGGLE_SHOW_HELP')
+    },
     addUserInput({ commit, state }, input) {
         commit('ADD_USER_INPUT', input.trim())
     },
@@ -126,6 +131,9 @@ const actions = {
 }
 
 const mutations = {
+    'TOGGLE_SHOW_HELP': (state) => {
+        state.showHelp = !state.showHelp
+    },
     'UPDATE_USER_INFO': (state, user) => {
         state.user = user
     },

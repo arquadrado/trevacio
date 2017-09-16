@@ -7,7 +7,7 @@
             <button @click="setContent('get')"><span class="clickable-text">Get</span></button>
             <button @click="setContent('list')"><span class="clickable-text">List</span></button>
             <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
-            <button @click="setContent('trevacio')"><span class="clickable-text">close</span></button>
+            <button @click="setContent('home')"><span class="clickable-text">close</span></button>
         </div>
         <div class="new-book" v-if="!submitted">
 
