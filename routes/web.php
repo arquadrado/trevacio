@@ -37,5 +37,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save-color-scheme', 'DashboardController@saveColorScheme')->name('save-color-scheme');
     Route::post('/update-color-scheme', 'DashboardController@updateColorScheme')->name('update-color-scheme');
     Route::post('/delete-color-scheme', 'DashboardController@deleteColorScheme')->name('delete-color-scheme');
-    Route::post('/get-activity', 'AjaxController@getActivity')->name('get-activity');
+    
+    Route::get('/get-activity', 'FeedController@getUserActivity')->name('get-activity');
 });

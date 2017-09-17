@@ -396,9 +396,9 @@ body {
 	  		margin-bottom: 21px;
 	  		cursor: pointer;
 	  		padding: 21px;
-	  		.comment-info, .book-info, .session-info, .color-scheme-info {
+	  		.item-info, .comment-info, .book-info, .session-info, .color-scheme-info {
 	  			display: inline-block;
-		  		.comment-user, .book-author {
+		  		.date, .comment-user, .book-author {
 		  			font-size: 10px;
 		  			font-weight: 900;
 		  		}

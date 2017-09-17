@@ -4,6 +4,7 @@ Vue.use(Vuex)
 
 import appearance from './modules/appearance.js'
 import books from './modules/books.js'
+import feed from './modules/feed.js'
 
 const state = {
     user: handover.user,
@@ -75,8 +76,6 @@ const state = {
 
     content: 'home',
     showHelp: false,
-
-    userFeed: typeof handover.userFeed !== 'undefined' ? handover.userFeed : [],  
 }
 
 const getters = {
@@ -96,8 +95,6 @@ const getters = {
 
     getContent: state => state.content,
     getShowHelp: state => state.showHelp,
-
-    getUserFeed: state => state.userFeed
 }
 
 const actions = {
@@ -179,7 +176,8 @@ export default new Vuex.Store({
     mutations,
     modules: {
         appearance,
-        books
+        books,
+        feed
     },
     strict: true
 })

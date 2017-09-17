@@ -15,9 +15,8 @@ class AjaxController extends Controller
     {
     }
 
-    public function getActivity()
+    public function sendJsonResponse($content, $status)
     {
-        //$manager = new FeedManager;
-        dd(request()->all(), Auth::user());
+        return response()->json($content, $status);
     }
 }

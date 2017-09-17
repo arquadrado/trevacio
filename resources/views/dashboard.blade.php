@@ -22,7 +22,6 @@
     window.handover = {
         authors: {!! json_encode($authors) !!},
         user: {!! $user !!},
-        userFeed: {!! json_encode($userFeed) !!},
         userCollection: {!! json_encode($userCollection) !!},
         library: {!! json_encode($library) !!},
         _token: '{{ csrf_token() }}',

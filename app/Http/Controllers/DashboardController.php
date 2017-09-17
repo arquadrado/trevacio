@@ -9,7 +9,6 @@ use App\Models\Rating;
 use App\Models\Comment;
 use App\Models\ColorScheme;
 use Illuminate\Http\Request;
-use App\Support\FeedManager;
 use Auth;
 use DB;
 
@@ -24,8 +23,6 @@ class DashboardController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth');
-        $this->feedManager = new FeedManager;
     }
 
     /**
@@ -37,10 +34,6 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $user->load('colorSchemes');
-
-        $userFeed = $this->feedManager->getUserFeed();
-        //dd($userFeed);
-        $generalFeed = $this->feedManager->getGeneralFeed();
 
         $userCollection = $user->books->reduce(function($reduced, $book) {
             $book->load([
@@ -74,7 +67,6 @@ class DashboardController extends Controller
 
         return view('dashboard', [
             'user' => $user,
-            'userFeed' => $userFeed,
             'userCollection' => $userCollection,
             'library' => $library,
             'authors' => $authors

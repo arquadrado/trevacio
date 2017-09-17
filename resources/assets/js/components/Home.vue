@@ -36,17 +36,22 @@
         <br>
         <br>
         <h3 class="action">Recent activity</h3>
-        <div class="recent-activity" v-if="hasRecentActivity">
-            <list 
-                :className="'activity-list'" 
-                :itemType="'feed-item'"
-                :items="userFeed"
-            ></list>         
+        <loading-spinner v-if="isLoadingFeed && !initialLoadCompleted"></loading-spinner>
+        <div class="recent-activity" v-else>
+            <div class="feed" v-if="hasRecentActivity">
+                <list 
+                    :className="'activity-list'" 
+                    :itemType="'feed-item'"
+                    :items="userFeed"
+                ></list>      
+                <loading-spinner v-if="isLoadingFeed"></loading-spinner>
+                <button v-else @click="updateUserFeed"><span class="clickable-text">Older entries</span></button>
+            </div>
+            <div class="feed" v-else>
+                <h4>No activity to show</h4>
+                <button @click="toggleGui" class="cta"><strong><span class="clickable-text">Get started</span></strong></button>
+            </div> 
         </div>
-        <div class="feed" v-else>
-            <h4>No activity to show</h4>
-            <button @click="toggleGui" class="cta"><strong><span class="clickable-text">Get started</span></strong></button>
-        </div> 
     </div>
 </template>
 
@@ -76,15 +81,23 @@
             ...mapGetters({
                 user: 'getUser',
                 showHelp: 'getShowHelp',
-                userFeed: 'getUserFeed'
+                userFeed: 'getUserFeed',
+                isLoadingFeed: 'isLoadingFeed',
+                initialLoadCompleted: 'initialLoadCompleted'
             })
         },
         methods: {
             ...mapActions({
                 setContent: 'setContent',
                 toggleGui: 'toggleGui',
-                toggleHelp: 'toggleShowHelp'
+                toggleHelp: 'toggleShowHelp',
+                updateUserFeed: 'updateUserFeed'
             })
+        },
+        mounted() {
+            if (!this.initialLoadCompleted) {
+                this.updateUserFeed()
+            }
         }
     }
 </script>

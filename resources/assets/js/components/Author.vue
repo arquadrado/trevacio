@@ -6,7 +6,7 @@
                 <h4>Author</h4>
                 <br>
                 <button @click="setContent('list')"><span class="clickable-text">List</span></button>
-                <button @click="setContent('trevacio')"><span class="clickable-text">Close</span></button>
+                <button @click="setContent('home')"><span class="clickable-text">Close</span></button>
                 <button v-if="hasHistory" @click="back"><span class="clickable-text">Back</span></button>
             </div>
             <div class="modal-body">

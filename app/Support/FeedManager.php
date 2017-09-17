@@ -16,14 +16,13 @@ class FeedManager
 
     }
 
-    public function getUserFeed($take = 10, $skip = 0)
+    public function getUserFeed($skip = 0, $take = 10)
     {
         $user = Auth::user();
 
         if (is_null($user)) {
             return null;
         }
-
         $books = $user->books;
         $sessions = $user->readingSessions;
         $ratings = $user->ratings;
@@ -62,21 +61,36 @@ class FeedManager
             case 'App\Models\Book':
                 return [
                     'type' => 'book',
-                    'id' => $item->id
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'author' => $item->author->name,
+                    'updated_at' => $item->updated_at->toDateTimeString()
                 ];
 
             case 'App\Models\ReadingSession':
                 return [
                     'type' => 'session',
                     'id' => $item->id,
-                    'bookId' => $item->book->id
+                    'updated_at' => $item->updated_at->toDateTimeString() ,
+                    'pages' => $item->end - $item->start,
+                    'book' => [
+                        'id' => $item->book->id,
+                        'title' => $item->book->title,
+                        'author' => $item->book->author->name
+                    ]
                 ]; 
 
             case 'App\Models\Rating':
                 return [
                     'type' => 'rating',
                     'id' => $item->id,
-                    'bookId' => $item->book->id
+                    'rating' => $item->rating,
+                    'updated_at' => $item->updated_at->toDateTimeString(),
+                    'book' => [
+                        'id' => $item->book->id,
+                        'title' => $item->book->title,
+                        'author' => $item->book->author->name 
+                    ]
                 ];
             
             case 'App\Models\Comment':
@@ -84,14 +98,28 @@ class FeedManager
                     return [
                         'type' => 'note',
                         'id' => $item->id,
-                        'sessionId' => $item->commentable->id,
-                        'bookId' => $item->commentable->book->id 
+                        'updated_at' => $item->updated_at->toDateTimeString(),
+                        'session' => [
+                            'id' => $item->commentable->id,
+                            'date' => $item->commentable->date,
+                            'pages' => $item->commentable->end - $item->commentable->start,
+                        ],
+                        'book' => [
+                            'id' => $item->commentable->book->id,
+                            'title' => $item->commentable->book->title,
+                            'author' => $item->commentable->book->author->name
+                        ]       
                     ];
                 }
                 return [
                     'type' => 'comment',
                     'id' => $item->id,
-                    'bookId' => $item->commentable->id,
+                    'updated_at' => $item->updated_at->toDateTimeString(),
+                    'book' => [
+                        'id' => $item->commentable->id,
+                        'title' => $item->commentable->title,
+                        'author' => $item->commentable->author->name
+                    ] 
                 ];
         }
     }
