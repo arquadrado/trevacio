@@ -54879,8 +54879,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         style: function style() {
             return {
                 'background-color': this.colorScheme.background,
-                'color': this.colorScheme.details,
-                'border': '1px solid ' + this.colorScheme.details
+                'color': this.colorScheme.details
+                //'border': `1px solid ${this.colorScheme.details}`
             };
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({

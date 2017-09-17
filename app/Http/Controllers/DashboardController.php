@@ -206,43 +206,6 @@ class DashboardController extends Controller
 
     }
 
-    public function rateBook()
-    {
-        $this->validate(request(), [
-                    'bookId' => 'required',
-                    'rating' => 'required'
-                ]);
-
-        $book = Book::find(request('bookId'));
-
-        if (is_null($book)) {
-            return response()->json([
-                    'message' => 'Book not found'
-                ], 404);
-        }
-
-        $rating = $book->userRating->first();
-
-        if (is_null($rating)) {
-            $rating = Rating::create([
-                                'book_id' => request('bookId'),
-                                'user_id' => Auth::user()->id,
-                                'rating' => request('rating')
-                            ]);
-
-            return response()->json([
-                    'message' => 'added rating'
-                ], 200);
-        }
-
-        $rating->rating = request('rating');
-        $rating->save();
-
-        return response()->json([
-                    'message' => 'updated rating'
-                ], 200);
-    }
-
     public function updateUserInfo()
     {
         return response()->json(['user' => Auth::user()], 200);
@@ -294,33 +257,6 @@ class DashboardController extends Controller
                 ], 201);
     }
 
-    public function addToUserCollection()
-    {
-        $this->validate(request(), ['book' => 'required']);
-
-        $book = Book::find(request('book')['id']);
-
-        $owned = Auth::user()->books()->where('book_id', $book->id)->first();
-
-        if ($owned) {
-            return response()->json([
-                'message' => 'You already have this book in your library. Do you want to open it?',
-                'book' => $book
-                ], 202);
-        }
-
-        if ($book) {
-            Auth::user()->books()->attach($book->id);
-
-            return response()->json([
-                    'message' => 'Book added',
-                    'book' => $book
-                ], 200);
-        }
-
-        return response()->json(['message' => 'Book not found'], 404);
-    }
-
     public function removeFromUserCollection()
     {
         $this->validate(request(), ['bookId' => 'required']);
@@ -343,81 +279,6 @@ class DashboardController extends Controller
                 'message' => 'You cannot remove a book that is not in your collection.',
                 'book' => $book
                 ], 202);
-    }
-
-    public function saveBook()
-    {
-        $data = array_except(request()->all(), ['_token']);
-
-        $this->validate(request(), [
-                                    'title' => 'required',
-                                    'author' => 'required',
-                                ]);
-
-        $books = Book::where('title', $data['title'])->get();
-
-        if ((isset($data['force']) && $data['force']) || $books->isEmpty()) {
-            $bookId = null;
-            try {
-                DB::transaction(function () use ($data, &$bookId) {
-                    $author = Author::firstOrCreate([
-                                    'name' => $data['author'],
-                                    'country' => 'Xis',
-                                    'birthday' => '1988-07-13'
-                                ]);
-                    $book = Book::create([
-                                'title' => $data['title'],
-                                'author_id' => $author->id
-                            ]);
-
-                    $bookId = $book->id;
-
-                    Auth::user()->books()->attach($book->id);
-                });
-            } catch (\Exception $e) {
-                dd($e);
-            }
-
-            $book = Book::find($bookId);
-
-            return response()->json([
-                    'message' => 'Book added',
-                    'book' => $book
-                ], 200);
-        }
-
-        return response()->json([
-                                'message' => 'Found somebooks with the same title',
-                                'books' => $books
-                            ], 201);
-    }
-
-    public function deleteBook()
-    {
-        $this->validate(request(), ['bookId' => 'required']);
-
-        $book = Book::find(request('bookId'));
-
-        if (is_null($book)) {
-            return response()->json(['message' => 'Book not found'], 404);
-        }
-
-        if (count($book->users) > 1 || $book->users()->first()->id != Auth::user()->id) {
-            return response()->json(['message' => 'You do not have permission to delete this book'], 403);
-        }
-
-        try {
-            DB::transaction(function () use ($book) {
-                Auth::user()->books()->detach($book->id);
-                $book->comments()->delete();
-                $book->delete();
-            });
-
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], $e->getStatus());
-        }
-
-        return response()->json(['message' => 'Book deleted'], 200);
     }
 
     public function updateLibrary()
