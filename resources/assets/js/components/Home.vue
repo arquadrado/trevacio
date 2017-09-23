@@ -45,7 +45,7 @@
                     :items="userFeed"
                 ></list>      
                 <loading-spinner v-if="isLoadingFeed"></loading-spinner>
-                <button v-else @click="updateUserFeed"><span class="clickable-text">Older entries</span></button>
+                <button v-if="!isLoadingFeed && hasMoreEntries" @click="updateUserFeed"><span class="clickable-text">Older entries</span></button>
             </div>
             <div class="feed" v-else>
                 <h4>No activity to show</h4>
@@ -83,7 +83,8 @@
                 showHelp: 'getShowHelp',
                 userFeed: 'getUserFeed',
                 isLoadingFeed: 'isLoadingFeed',
-                initialLoadCompleted: 'initialLoadCompleted'
+                initialLoadCompleted: 'initialLoadCompleted',
+                hasMoreEntries: 'hasMoreEntries'
             })
         },
         methods: {

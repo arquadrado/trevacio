@@ -47230,7 +47230,10 @@ var mutations = {
 var state = {
     initialLoad: false,
     loadingFeed: false,
-    userFeed: []
+    userFeed: {
+        entries: [],
+        hasMoreEntries: false
+    }
 };
 
 var getters = {
@@ -47241,7 +47244,10 @@ var getters = {
         return state.loadingFeed;
     },
     getUserFeed: function getUserFeed(state) {
-        return state.userFeed;
+        return state.userFeed.entries;
+    },
+    hasMoreEntries: function hasMoreEntries(state) {
+        return state.hasMoreEntries;
     }
 };
 
@@ -47263,7 +47269,7 @@ var actions = {
 
         dispatch('toggleFeedLoading');
 
-        $.get('get-activity?skip=' + state.userFeed.length + '&take=10', function (response) {
+        $.get('get-activity?skip=' + state.userFeed.entries.length + '&take=10', function (response) {
             commit('UPDATE_USER_FEED', response.feed);
             dispatch('toggleFeedLoading');
             dispatch('setInitialLoad', true);
@@ -47279,9 +47285,11 @@ var mutations = {
         state.loadingFeed = !state.loadingFeed;
     },
     'UPDATE_USER_FEED': function UPDATE_USER_FEED(state, feed) {
-        feed.forEach(function (item) {
-            state.userFeed.push(item);
+        feed.entries.forEach(function (item) {
+            state.userFeed.entries.push(item);
         });
+
+        state.userFeed.hasMoreEntries = feed.hasMoreEntries;
         console.log('qwuer cartlaho sdfsdf');
     }
 };
@@ -48382,7 +48390,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         showHelp: 'getShowHelp',
         userFeed: 'getUserFeed',
         isLoadingFeed: 'isLoadingFeed',
-        initialLoadCompleted: 'initialLoadCompleted'
+        initialLoadCompleted: 'initialLoadCompleted',
+        hasMoreEntries: 'hasMoreEntries'
     })),
     methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
         setContent: 'setContent',
@@ -49260,8 +49269,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: {
         'book': __WEBPACK_IMPORTED_MODULE_1__BookFeedItem_vue___default.a,
-        'session': __WEBPACK_IMPORTED_MODULE_2__SessionFeedItem_vue___default.a,
-        'rating': __WEBPACK_IMPORTED_MODULE_3__RatingFeedItem_vue___default.a,
+        'session-added': __WEBPACK_IMPORTED_MODULE_2__SessionFeedItem_vue___default.a,
+        'book-rated': __WEBPACK_IMPORTED_MODULE_3__RatingFeedItem_vue___default.a,
         'comment': __WEBPACK_IMPORTED_MODULE_4__CommentFeedItem_vue___default.a,
         'note': __WEBPACK_IMPORTED_MODULE_5__NoteFeedItem_vue___default.a
     },
@@ -49582,12 +49591,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     methods: _extends({
         openAuthor: function openAuthor(event) {
             event.stopPropagation();
-            this.setSelectedBook(this.item.id);
+            this.setSelectedBook(this.item.book.id);
             this.setSelectedAuthor(this.selectedBook.author.id);
             this.setContent('author');
         },
         openBook: function openBook() {
-            this.setSelectedBook(this.item.id);
+            this.setSelectedBook(this.item.book.id);
             this.setContent('book');
         }
     }, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])({
@@ -49928,13 +49937,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "itemType": 'feed-item',
       "items": _vm.userFeed
     }
-  }), _vm._v(" "), (_vm.isLoadingFeed) ? _c('loading-spinner') : _c('button', {
+  }), _vm._v(" "), (_vm.isLoadingFeed) ? _c('loading-spinner') : _vm._e(), _vm._v(" "), (!_vm.isLoadingFeed && _vm.hasMoreEntries) ? _c('button', {
     on: {
       "click": _vm.updateUserFeed
     }
   }, [_c('span', {
     staticClass: "clickable-text"
-  }, [_vm._v("Older entries")])])], 1) : _c('div', {
+  }, [_vm._v("Older entries")])]) : _vm._e()], 1) : _c('div', {
     staticClass: "feed"
   }, [_c('h4', [_vm._v("No activity to show")]), _vm._v(" "), _c('button', {
     staticClass: "cta",

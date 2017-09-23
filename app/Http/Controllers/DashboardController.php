@@ -172,40 +172,6 @@ class DashboardController extends Controller
 
     }
 
-    public function saveComment()
-    {
-        $this->validate(request(), [
-                    'commentableId' => 'required',
-                    'commentableType' => 'required',
-                    'comment' => 'required'
-                ]);
-
-        if (!Auth::check()) {
-            abort(500);
-        }
-
-        $commentableTypes = [
-            'book' => 'App\Models\Book',
-            'session' => 'App\Models\ReadingSession',
-        ];
-
-        if (!array_key_exists(request('commentableType'), $commentableTypes)) {
-            return response()->json(['message' => 'Not found'], 404);
-        }
-
-        $comment = Comment::create([
-            'commentable_type' => $commentableTypes[request('commentableType')],
-            'commentable_id' => request('commentableId'),
-            'body' => request('comment'),
-            'user_id' => Auth::user()->id
-        ]);
-
-        return response()->json(['message' => 'comment added', 'comment' => $comment], 200);
-   
-
-
-    }
-
     public function updateUserInfo()
     {
         return response()->json(['user' => Auth::user()], 200);
@@ -240,8 +206,8 @@ class DashboardController extends Controller
             }
 
             return response()->json([
-                    'message' => 'Book not found'
-                ], 404);
+                'message' => 'Book not found'
+            ], 404);
         }
 
         if (count($books) == 1) {

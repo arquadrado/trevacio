@@ -15,8 +15,8 @@
     export default {
         components: {
             'book': BookFeedItem,
-            'session': SessionFeedItem,
-            'rating': RatingFeedItem,
+            'session-added': SessionFeedItem,
+            'book-rated': RatingFeedItem,
             'comment': CommentFeedItem,
             'note': NoteFeedItem,
         },

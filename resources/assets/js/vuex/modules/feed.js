@@ -1,13 +1,17 @@
 const state = {
     initialLoad: false,
     loadingFeed: false,
-    userFeed: []
+    userFeed: {
+        entries: [],
+        hasMoreEntries: false
+    }
 }
 
 const getters = {
     initialLoadCompleted: state => state.initialLoad,
     isLoadingFeed: state => state.loadingFeed,
-    getUserFeed: state => state.userFeed
+    getUserFeed: state => state.userFeed.entries,
+    hasMoreEntries: state => state.hasMoreEntries
 }
 
 const actions = {
@@ -20,7 +24,7 @@ const actions = {
     updateUserFeed({ commit, dispatch, state }) {
         dispatch('toggleFeedLoading')
 
-        $.get(`get-activity?skip=${state.userFeed.length}&take=10`, (response) => {
+        $.get(`get-activity?skip=${state.userFeed.entries.length}&take=10`, (response) => {
             commit('UPDATE_USER_FEED', response.feed)
             dispatch('toggleFeedLoading')
             dispatch('setInitialLoad', true)
@@ -37,9 +41,11 @@ const mutations = {
         state.loadingFeed = !state.loadingFeed 
     },
     'UPDATE_USER_FEED': (state, feed) => {
-        feed.forEach((item) => {
-            state.userFeed.push(item)
+        feed.entries.forEach((item) => {
+            state.userFeed.entries.push(item)
         })
+
+        state.userFeed.hasMoreEntries = feed.hasMoreEntries 
         console.log('qwuer cartlaho sdfsdf')
     }
 }

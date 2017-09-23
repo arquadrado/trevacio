@@ -14,41 +14,65 @@ class FeedManager
     public function __construct()
     {
 
+
     }
 
     public function getUserFeed($skip = 0, $take = 10)
     {
         $user = Auth::user();
-
+        
         if (is_null($user)) {
             return null;
         }
-        $books = $user->books;
-        $sessions = $user->readingSessions;
-        $ratings = $user->ratings;
-        $comments = $user->comments;
-        $feed = (new Collection)
-                    ->merge($books)
-                    ->merge($sessions)
-                    ->merge($ratings)
-                    ->merge($comments)
-                    ->sortBy(function($item) {
-                        return $item->updated_at;
-                    })
-                    ->reverse()
-                    ->slice($skip, $take)
-                    ->reduce(function ($reduced, $item) {
-                        try {
-                            array_push($reduced, $this->__resolveItem($item));
-                        } catch (\Exception $e) {
-                            dd($e, $item);
-                        }
-
-                        return $reduced;
-                    }, []);
         
-        return $feed;
+        $allEntries = $user
+                    ->notifications;
+        $totalEntriesCount = $allEntries->count();
+        $entries = $allEntries
+                    ->slice((int)$skip, (int)$take)
+                    ->map(function($notification) {
+            return $notification->data;
+        });
+
+        return [
+            'entries' => $entries,
+            'hasMoreEntries' => $totalEntriesCount > $skip + $take
+        ];
     }
+    
+    // public function getUserFeed($skip = 0, $take = 10)
+    // {
+    //     $user = Auth::user();
+
+    //     if (is_null($user)) {
+    //         return null;
+    //     }
+    //     $books = $user->books;
+    //     $sessions = $user->readingSessions;
+    //     $ratings = $user->ratings;
+    //     $comments = $user->comments;
+    //     $feed = (new Collection)
+    //                 ->merge($books)
+    //                 ->merge($sessions)
+    //                 ->merge($ratings)
+    //                 ->merge($comments)
+    //                 ->sortBy(function($item) {
+    //                     return $item->updated_at;
+    //                 })
+    //                 ->reverse()
+    //                 ->slice($skip, $take)
+    //                 ->reduce(function ($reduced, $item) {
+    //                     try {
+    //                         array_push($reduced, $this->__resolveItem($item));
+    //                     } catch (\Exception $e) {
+    //                         dd($e, $item);
+    //                     }
+
+    //                     return $reduced;
+    //                 }, []);
+        
+    //     return $feed;
+    // }
 
     public function getGeneralFeed()
     {

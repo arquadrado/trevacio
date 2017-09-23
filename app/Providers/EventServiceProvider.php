@@ -25,7 +25,12 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\ReadingSessionAdded' => [
             'App\Listeners\ReadingSessionAddedListener',
         ],
-        
+        'App\Events\CommentAdded' => [
+            'App\Listeners\CommentAddedListener',
+        ],
+        'App\Events\NoteAdded' => [
+            'App\Listeners\NoteAddedListener',
+        ],
     ];
 
     /**

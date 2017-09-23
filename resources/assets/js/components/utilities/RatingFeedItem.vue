@@ -27,12 +27,12 @@
         methods: {
             openAuthor(event) {
                 event.stopPropagation()
-                this.setSelectedBook(this.item.id)
+                this.setSelectedBook(this.item.book.id)
                 this.setSelectedAuthor(this.selectedBook.author.id)
                 this.setContent('author')
             },
             openBook() {
-                this.setSelectedBook(this.item.id)
+                this.setSelectedBook(this.item.book.id)
                 this.setContent('book')
             },
             ...mapActions({

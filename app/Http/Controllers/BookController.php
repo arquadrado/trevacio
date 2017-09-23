@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Events\BookAddedToLibrary;
 use App\Events\BookAddedToUserCollection;
 use App\Events\BookRated;
+use App\Events\CommentAdded;
+use App\Events\NoteAdded;
 use App\Events\ReadingSessionAdded;
 use App\Http\Controllers\AjaxController;
 use App\Models\Book;
@@ -24,6 +26,37 @@ class BookController extends AjaxController
     public function __construct(BookManager $manager)
     {
         $this->manager = $manager;
+    }
+
+    public function saveComment()
+    {
+        $this->validate(request(), [
+            'commentableId' => 'required',
+            'commentableType' => 'required',
+            'comment' => 'required'
+        ]);
+
+        if (!Auth::check()) {
+            abort(500);
+        }
+
+        try {
+            $comment = $this->manager->saveComment(array_except(request(), ['_token']));
+        } catch (\Exception $e) {
+            return $this->sendJsonResponse(['message' => $e->getMessage()], 404);
+        }
+
+        if (is_null($comment)) {
+            return $this->sendJsonResponse(['message' => 'Not found'], 404);
+        }
+
+        if (request('commentableType') === 'book') {
+            event(new CommentAdded($comment));
+        } else {
+            event(new NoteAdded($comment));
+        }
+
+        return $this->sendJsonResponse(['message' => 'comment added', 'comment' => $comment], 200);
     }
 
     public function saveReadingSession()

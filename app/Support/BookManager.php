@@ -13,6 +13,27 @@ use DB;
 
 class BookManager
 {
+    protected $commentableTypes = [
+        'book' => 'App\Models\Book',
+        'session' => 'App\Models\ReadingSession',
+    ];
+
+    public function saveComment($commentData)
+    {
+        if (!array_key_exists($commentData['commentableType'], $this->commentableTypes)) {
+            return null;
+        }
+
+        $comment = Comment::create([
+            'commentable_type' => $this->commentableTypes[$commentData['commentableType']],
+            'commentable_id' => $commentData['commentableId'],
+            'body' => $commentData['comment'],
+            'user_id' => Auth::user()->id
+        ]);
+
+        return $comment;
+    }
+
     public function saveReadingSession(Book $book, $session)
     {
         if (is_null($book)) {
