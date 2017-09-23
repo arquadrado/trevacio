@@ -53,26 +53,26 @@ class BookManager
 
     public function rateBook(Book $book, $rating)
     {
-        $rating = $book->userRating->first();
+        $userRating = $book->userRating->first();
         
         if (is_null($rating)) {
-            $rating = Rating::create([
+            $userRating = Rating::create([
                 'book_id' => $book->id,
-                'user_id' => Auth::user()->id
-            ,
+                'user_id' => Auth::user()->id,
                 'rating' => $rating
             ]);
-
-            return $rating;
+                
+            return $userRating;
         }
+            
+        $userRating->rating = $rating;
+        $userRating->save();
 
-        $rating->rating = $rating;
-        $rating->save();
-
-        return $rating;
+        return $userRating;
     }
 
-    public function addBookToUserCollection($bookId) {
+    public function addBookToUserCollection($bookId)
+    {
 
         if (is_null($bookId)) {
             throw new \Exception('Cannot add a book with a null id');

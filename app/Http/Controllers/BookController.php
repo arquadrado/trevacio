@@ -91,13 +91,13 @@ class BookController extends AjaxController
         ]);
 
         $book = Book::find(request('bookId'));
-
+        
         if (is_null($book)) {
             return $this->sendJsonResponse([
                 'message' => 'Book not found'
             ], 404);
         }
-
+        
         try {
             $rating = $this->manager->rateBook($book, request('rating'));
         } catch (\Exception $e) {
@@ -105,7 +105,7 @@ class BookController extends AjaxController
                 'message' => $e->getMessage()
             ], 500);
         }
-
+        
         event(new BookRated($rating));
 
         return $this->sendJsonResponse([

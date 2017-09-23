@@ -27,12 +27,19 @@ class FeedManager
         
         $allEntries = $user
                     ->notifications;
+
         $totalEntriesCount = $allEntries->count();
+
         $entries = $allEntries
                     ->slice((int)$skip, (int)$take)
                     ->map(function($notification) {
-            return $notification->data;
-        });
+                        return $notification->data;
+                    })
+                    ->sort()
+                    ->values()
+                    ->all();
+
+        //dd($entries);
 
         return [
             'entries' => $entries,

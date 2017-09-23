@@ -11,7 +11,7 @@ const getters = {
     initialLoadCompleted: state => state.initialLoad,
     isLoadingFeed: state => state.loadingFeed,
     getUserFeed: state => state.userFeed.entries,
-    hasMoreEntries: state => state.hasMoreEntries
+    hasMoreEntries: state => state.userFeed.hasMoreEntries
 }
 
 const actions = {
@@ -46,7 +46,6 @@ const mutations = {
         })
 
         state.userFeed.hasMoreEntries = feed.hasMoreEntries 
-        console.log('qwuer cartlaho sdfsdf')
     }
 }
 

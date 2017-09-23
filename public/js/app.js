@@ -47247,7 +47247,7 @@ var getters = {
         return state.userFeed.entries;
     },
     hasMoreEntries: function hasMoreEntries(state) {
-        return state.hasMoreEntries;
+        return state.userFeed.hasMoreEntries;
     }
 };
 
@@ -47290,7 +47290,6 @@ var mutations = {
         });
 
         state.userFeed.hasMoreEntries = feed.hasMoreEntries;
-        console.log('qwuer cartlaho sdfsdf');
     }
 };
 
