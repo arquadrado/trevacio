@@ -35,7 +35,7 @@ class FeedManager
                     ->map(function($notification) {
                         return $notification->data;
                     })
-                    ->sort()
+                    ->sortBy('updated_at')
                     ->values()
                     ->all();
 

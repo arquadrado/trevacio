@@ -66,7 +66,7 @@ class BookRated extends Notification
                 'title' => $this->rating->book->title,
                 'author' => $this->rating->book->author->name,
             ],
-            'updated_at' => $this->rating->book->updated_at->toDateTimeString(),
+            'updated_at' => $this->rating->updated_at->toDateTimeString(),
             'added_by' => Auth::user()
         ];
     }
