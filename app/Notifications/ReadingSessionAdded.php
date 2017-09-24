@@ -66,7 +66,7 @@ class ReadingSessionAdded extends Notification
                 'title' => $this->readingSession->book->title,
                 'author' => $this->readingSession->book->author->name,
             ],
-            'updated_at' => $this->readingSession->book->updated_at->toDateTimeString(),
+            'updated_at' => $this->readingSession->updated_at->toDateTimeString(),
             'added_by' => Auth::user()
         ];
     }

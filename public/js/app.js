@@ -48580,9 +48580,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "book-info"
   }, [_c('span', {
     staticClass: "book-title"
-  }, [_vm._v(_vm._s(_vm.item.title))]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.item.title))]), _vm._v(" "), _c('br'), _vm._v(" "), (_vm.item.author) ? _c('span', {
     staticClass: "book-author"
-  }, [_vm._v("by " + _vm._s(_vm.item.author.name))])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("by " + _vm._s(_vm.item.author.name))]) : _vm._e()]), _vm._v(" "), _c('div', {
     staticClass: "quick-actions"
   }, [_c('i', {
     staticClass: "material-icons",
@@ -53930,7 +53930,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     return;
                 }
                 _this.fetchWikipediaPageById(authorPage.pageid, function (response) {
-                    console.log(response, 'pahe');
                     _this.setAuthorInfo(response.query.pages[Object.keys(response.query.pages)[0]]);
                     _this.hasInfo = true;
                     _this.loading = false;
@@ -53951,6 +53950,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         }
 
         this.hasInfo = true;
+
+        console.log(this.selectedAuthor, 'atuhor');
     }
 });
 

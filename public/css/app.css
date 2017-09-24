@@ -8730,6 +8730,10 @@ body #app .page-title {
   margin-top: 28px;
 }
 
+body #app .page-title a {
+  color: inherit;
+}
+
 body #app .eye-suit {
   padding: 14px 0 0 0;
 }

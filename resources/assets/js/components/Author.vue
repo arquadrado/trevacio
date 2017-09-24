@@ -78,7 +78,6 @@
                         return
                     }
                     this.fetchWikipediaPageById(authorPage.pageid, (response) => {
-                        console.log(response, 'pahe')
                         this.setAuthorInfo(response.query.pages[Object.keys(response.query.pages)[0]])
                         this.hasInfo = true
                         this.loading = false
@@ -100,6 +99,8 @@
             }
 
             this.hasInfo = true
+
+            console.log(this.selectedAuthor, 'atuhor')
         }
     }
 </script>

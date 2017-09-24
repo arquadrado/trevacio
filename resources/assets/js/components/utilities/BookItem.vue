@@ -3,7 +3,7 @@
         <div class="book-info">
             <span class="book-title">{{ item.title }}</span>
             <br>
-            <span class="book-author">by {{ item.author.name }}</span>
+            <span class="book-author" v-if="item.author">by {{ item.author.name }}</span>
         </div>
         <div class="quick-actions">
             <i class="material-icons" @click="showBookComments($event, item)">comment</i>
