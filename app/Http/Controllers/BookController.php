@@ -89,7 +89,7 @@ class BookController extends AjaxController
             'bookId' => 'required',
             'rating' => 'required'
         ]);
-
+        
         $book = Book::find(request('bookId'));
         
         if (is_null($book)) {
@@ -195,7 +195,7 @@ class BookController extends AjaxController
         try {
             $this->manager->deleteBook($book->id);
         } catch (\Exception $e) {
-            return $this->sendJsonResponse(['message' => $e->getMessage()], $e->getStatus());
+            return $this->sendJsonResponse(['message' => $e->getMessage()], 500);
         }
         return $this->sendJsonResponse(['message' => 'Book deleted'], 200);
     }

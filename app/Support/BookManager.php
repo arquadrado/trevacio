@@ -55,7 +55,7 @@ class BookManager
     {
         $userRating = $book->userRating->first();
         
-        if (is_null($rating)) {
+        if (is_null($userRating)) {
             $userRating = Rating::create([
                 'book_id' => $book->id,
                 'user_id' => Auth::user()->id,
@@ -64,7 +64,6 @@ class BookManager
                 
             return $userRating;
         }
-            
         $userRating->rating = $rating;
         $userRating->save();
 
@@ -108,7 +107,13 @@ class BookManager
     public function deleteBook($id)
     {
         if (is_null($id)) {
-            throw new \Exception('Invalid id. Cannot delete the book with that kind of attitude');
+          throw new \Exception('Invalid id. Cannot delete the book with that kind of attitude');
+        }
+          
+        $book = Book::find($id);
+        
+        if (is_null($book)) {
+          throw new \Exception('Book not found');
         }
 
         DB::transaction(function () use ($book) {
