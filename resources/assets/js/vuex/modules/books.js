@@ -23,7 +23,7 @@ const getters = {
     return null
   },
   getSelectedReadingSession: state => {
-    if (state.selectedBook && state.selectedReadingSession) {
+    if (state.selectedBook !== null && state.selectedReadingSession !== null) {
       return state.lists.library[state.selectedBook].reading_sessions[state.selectedReadingSession]
     }
     return null
@@ -70,6 +70,7 @@ const actions = {
         successCallback: data.doneCallback,
         errorCallback: null,
       })
+      dispatch('setNeedsUpdate', true)
       console.log('comment updated')
     })
       .fail(() => {
@@ -92,6 +93,7 @@ const actions = {
       })
       dispatch('setSelectedComment', response.comment)
       dispatch('setContent', 'comment')
+      dispatch('setNeedsUpdate', true)
       console.log('comment added')
     })
       .fail(() => {
@@ -113,7 +115,7 @@ const actions = {
         successCallback: null,
         errorCallback: null,
       })
-      console.log('book rated')
+      dispatch('setNeedsUpdate', true)
     })
       .fail(() => {
         commit('RATE_BOOK', previousRating)
@@ -196,8 +198,6 @@ const actions = {
   },
 
   addToLibrary({ commit, dispatch, state }, args) {
-    console.log('xis adding book');
-
     dispatch('toggleLoading')
     $.post('save-book', {
       _token: window.handover._token,
@@ -210,6 +210,7 @@ const actions = {
         if (responseContent.status == 200) {
           commit('ADD_TO_LIBRARY', response.book)
           commit('ADD_TO_USER_COLLECTION', response.book)
+          dispatch('setNeedsUpdate', true)
         }
         dispatch('toggleLoading')
 
@@ -225,6 +226,7 @@ const actions = {
       .done((response, status, responseContent) => {
         if (responseContent.status == 200) {
           commit('ADD_TO_USER_COLLECTION', response.book)
+          dispatch('setNeedsUpdate', true)
         }
         dispatch('toggleLoading')
       })
@@ -269,7 +271,6 @@ const actions = {
     dispatch('toggleLoading')
     $.get('update-library', args.successCallback)
       .done((response) => {
-        console.log(response)
         dispatch('toggleLoading')
         commit('UPDATE_LIBRARY', {
           userCollection: response.userCollection,
@@ -280,7 +281,6 @@ const actions = {
   },
   updateUserInfo({ commit }) {
     $.get('update-user-info', (response) => {
-      console.log(response)
       commit('UPDATE_USER_INFO', response.user)
     })
       .fail(() => { console.log('failed to update user info') })
@@ -299,6 +299,7 @@ const actions = {
         }
         dispatch('updateLibrary', args)
         dispatch('updateUserInfo')
+        dispatch('setNeedsUpdate', true)
       }
 
     })

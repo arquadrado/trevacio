@@ -11,7 +11,7 @@ window.Vue = require('vue')
 
 const VueTouch = require('vue-touch')
 
-Vue.use(VueTouch, {name: 'v-touch'})
+Vue.use(VueTouch, { name: 'v-touch' })
 
 Vue.debug = true
 Vue.devtools = true
@@ -34,48 +34,47 @@ Vue.component('loading-spinner', LoadingSpinner)
 
 
 const app = new Vue({
-    el: '#app',
-    components: {
-        ContentWrapper,
-        Gui,
-        Modal
-    },
-    data: {
-    },
+  el: '#app',
+  components: {
+    ContentWrapper,
+    Gui,
+    Modal
+  },
+  data: {
+  },
 
-    computed: {
-    	selectedSuit() {
-            console.log(this.colorScheme)
-            if (this.colorScheme.hasOwnProperty('font')) {
-                return {
-                    'background-color': this.colorScheme.background,
-                    'color': this.colorScheme.details,
-                    'font-family': this.colorScheme.font,
-                }
-            }
-
-    		return {
-                'background-color': this.colorScheme.background,
-                'color': this.colorScheme.details,
-            }
-    	},
-        ...mapGetters({
-            showGui: 'getShowGui',
-            showModal: 'getShowModal',
-            colorScheme: 'getColorScheme'
-        })
-    },
-
-    methods: {
-        ...mapActions({
-            suitEyes: 'changeColorScheme',
-            toggleGui: 'toggleGui'
-        })
-    },
-    mounted() {
-        window.onbeforeunload = () => {
-            return true;
+  computed: {
+    selectedSuit() {
+      if (this.colorScheme.hasOwnProperty('font')) {
+        return {
+          'background-color': this.colorScheme.background,
+          'color': this.colorScheme.details,
+          'font-family': this.colorScheme.font,
         }
+      }
+
+      return {
+        'background-color': this.colorScheme.background,
+        'color': this.colorScheme.details,
+      }
     },
-    store
+    ...mapGetters({
+      showGui: 'getShowGui',
+      showModal: 'getShowModal',
+      colorScheme: 'getColorScheme'
+    })
+  },
+
+  methods: {
+    ...mapActions({
+      suitEyes: 'changeColorScheme',
+      toggleGui: 'toggleGui'
+    })
+  },
+  mounted() {
+    window.onbeforeunload = () => {
+      return true;
+    }
+  },
+  store
 });

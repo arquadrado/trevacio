@@ -57,6 +57,13 @@
             <span v-if="selectedBook.in_library">your rating</span>
           </div>
         </div>
+
+        <div class="book-actions">
+          <button @click="addReadingSession">
+            <span class="clickable-text">Add reading session</span>
+          </button>
+        </div>
+        <br>
         <div class="book-actions">
           <button @click="setContent('book-info')">
             <span class="clickable-text">Info</span>
@@ -186,6 +193,10 @@ export default {
         }
       })
     },
+    addReadingSession() {
+      this.setSelectedReadingSession(null)
+      this.setContent('reading-session')
+    },
     ...mapActions({
       setContent: 'setContent',
       setSelectedReadingSession: 'setSelectedReadingSession',
@@ -199,7 +210,7 @@ export default {
       nextBook: 'nextBook',
       previousBook: 'previousBook',
       setCurrentCommentList: 'setCurrentCommentList',
-      setSelectedAuthor: 'setSelectedAuthor'
+      setSelectedAuthor: 'setSelectedAuthor',
     })
   }
 }

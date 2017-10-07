@@ -39,7 +39,6 @@ class FeedManager
                     ->values()
                     ->all();
 
-        //dd($entries);
 
         return [
             'entries' => $entries,
