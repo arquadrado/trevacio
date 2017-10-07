@@ -2,7 +2,7 @@
   <div class="content-wrapper">
     <div class="home" v-if="selectedSectionIndex !== null">
       <h2 class="greeting">Welcome, {{ user.friendly_name }}</h2>
-      <button v-for="(section, index) in sections" :key="index" @click="selectSection(index)">
+      <button :disabled="isSelected(index)" v-for="(section, index) in sections" :key="index" @click="selectSection(index)">
         <span class="clickable-text">{{ section.label }}</span>
       </button>
 
@@ -57,6 +57,9 @@ export default {
     })
   },
   methods: {
+    isSelected(index) {
+      return index === this.selectedSectionIndex
+    },
     selectSection(index) {
       this.selectedSectionIndex = index
     },

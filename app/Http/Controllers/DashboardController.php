@@ -72,6 +72,26 @@ class DashboardController extends Controller
             'authors' => $authors
         ]);
     }
+    
+    public function setDefaultColorScheme()
+    {
+        $this->validate(request(), [
+          'value' => 'required',
+        ]);
+        
+        $user = Auth::user();
+        
+        if (is_null($user)) {
+          return response()->json(['message' => 'An error has occurred'], 500);
+        }
+        
+        $user->default_color_scheme = request('value');
+        $user->save();
+        
+        return response()->json([
+            'message' => 'Color scheme set set',
+        ], 200);
+    }
 
     public function updateColorScheme()
     {

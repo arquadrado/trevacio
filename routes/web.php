@@ -35,9 +35,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/delete-session', 'DashboardController@deleteReadingSession')->name('delete-session');
     Route::post('/save-comment', 'BookController@saveComment')->name('save-comment');
     Route::post('/update-comment', 'DashboardController@updateComment')->name('update-comment');
+    
     Route::post('/save-color-scheme', 'DashboardController@saveColorScheme')->name('save-color-scheme');
     Route::post('/update-color-scheme', 'DashboardController@updateColorScheme')->name('update-color-scheme');
     Route::post('/delete-color-scheme', 'DashboardController@deleteColorScheme')->name('delete-color-scheme');
+    Route::post('/set-color-scheme-default', 'DashboardController@setDefaultColorScheme')->name('set-color-scheme-default');
     
     Route::get('/get-activity', 'FeedController@getUserActivity')->name('get-activity');
 });

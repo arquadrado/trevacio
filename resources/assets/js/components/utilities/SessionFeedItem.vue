@@ -29,9 +29,7 @@ export default {
   },
   methods: {
     getSessionIndex() {
-      console.log('here')
       for (let i = 0; i < this.selectedBook.reading_sessions.length; i++) {
-        console.log(this.item.id, this.selectedBook.reading_sessions)
         if (this.item.id == this.selectedBook.reading_sessions[i].id) {
           return i
         }

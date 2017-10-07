@@ -1,6 +1,9 @@
 <template lang="html">
 
   <div class="help">
+  
+      <h3 class="action">Help</h3>
+      
       <button @click="toggleHelp"><span class="clickable-text">{{ helpMessage }}</span></button>
       
       <div class="walkthrough" v-if="showHelp">
